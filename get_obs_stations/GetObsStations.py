@@ -132,7 +132,7 @@ class GetObsStations(object):
         config['OBSERVATIONS']['EX_THRESH'].
         float(config['OBSERVATIONS']['THRESH']).
     """
-    def __init__(self, datum='MSL', unit='metric', product='water_level', yamlname=os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'obs.yml'),timezone='gmt', metadata='',rootdir='None', iosubdir='obspkl'):
+    def __init__(self, datum='MSL', unit='metric', product='water_level', yamlname=os.path.join(os.path.dirname(__file__), '../config', 'obs.yml'),timezone='gmt', metadata='',rootdir='None', iosubdir='obspkl'):
         """
         get_obs_stations constructor
 

@@ -85,8 +85,8 @@ class interpolateScalerField(object):
     Pass in the fully qualified filenames for the observations data and the adcirc data
     Perform some rudimentary checks on times/stations and then compute an error matrix
     """ 
-    def __init__(self, datafile='./kriging_error_test_noclamp.dat',
-                 yamlname=os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'int.yml'),
+    def __init__(self, datafile=None,
+                 yamlname=os.path.join(os.path.dirname(__file__), '../config', 'int.yml'),
                  clampingfile=None, model='kriging', metadata='', rootdir=None):
         """
         interpolateScalerField constructor.
@@ -105,18 +105,20 @@ class interpolateScalerField(object):
             station error image: rootdir/images/image_Discrete_metadata.png
             2D field image: rootdir/images/image_metadata.png 
         """
-        self.f = datafile # Input error field of long,lat,values including clamping zeros
-        self.c = clampingfile
         self.model = model
         self.config = utilities.load_config(yamlname)
         self.iometadata = metadata
         if clampingfile == None:
-            utilities.log.info('No input clampfile provided. Try to fetchj from config yml {}'.format(yamlname))
-            clampfile = os.path.join(os.path.dirname(__file__), "../config", self.config['DEFAULT']['ClampList'])
+            utilities.log.info('No input clampfile provided. Try to fetch from config yml {}'.format(yamlname))
+            clampingfile = os.path.join(os.path.dirname(__file__), "../config", self.config['DEFAULT']['ClampList'])
+            utilities.log.info('Found clampingfile name in yml {}'.format(clampingfile))
+        self.c = clampingfile
+        self.f = datafile # Input error field of long,lat,values including clamping zeros
         if datafile != None and clampingfile != None:
             self.X, self.Y, self.Values, self.inX, self.inY, self.inV = self.readAndProcessData( self.f, self.c )
         else:
-            utilities.log.info('interpolateScalerField initialized with no input file nor clamping file: Proceeding')
+            utilities.log.error('interpolateScalerField initialized with no input file nor clamping file: Abort')
+            sys.exit('Abort interpolatrion job')
         self.rootdir = rootdir
         if self.rootdir == None:
             utilities.log.error('No rootdir was specified')

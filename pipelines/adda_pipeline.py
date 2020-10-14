@@ -78,13 +78,13 @@ def main(args):
     for itimes in range(0,10):
         t0 = tm.time()
 
-        obs_yamlname = os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'obs.yml')
+        obs_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'obs.yml')
         obs_config = utilities.load_config(obs_yamlname)
         station_df = utilities.get_station_list()
         station_id = station_df["stationid"].values.reshape(-1,)
         node_idx = station_df["Node"].values
     
-        adc_yamlname = os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'adc.yml')
+        adc_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'adc.yml')
         adc = Adcirc(adc_yamlname)
         if overridetimeout is None:
             adc.set_times()  # Get current ADC now and chosen starting time
@@ -147,16 +147,20 @@ def main(args):
         adcf = ADCfile
         obsf = obs_wl_smoothed
         meta = metadata
-        err_yamlname = err_yamlname = os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'err.yml')
+        err_yamlname = err_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'err.yml')
         utilities.log.info('Override aveper flag set to '+str(aveper))
         compError = computeErrorField(obsf, adcf, meta, yamlname = err_yamlname, rootdir=rootdir, aveper=aveper)
         errf, finalf, cyclef, metaf, mergedf = compError.executePipeline( metadata = iometadata, subdir='errorfield' )
         utilities.log.info('output files '+errf+' '+finalf+' '+cyclef+' '+metaf+' '+mergedf)
 
         inerrorfile = finalf
-        int_yamlname=os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'int.yml')
-        clampfile='/home/jtilson/ADCIRCSupportTools/config/clamp_list_hsofs.dat'
-        krig_object = interpolateScalerField(datafile=inerrorfile, yamlname=int_yamlname, clampingfile=clampfile, metadata=iometadata, rootdir=rootdir)
+        int_yamlname=os.path.join(os.path.dirname(__file__), '../config', 'int.yml')
+        #int_config = utilities.load_config(int_yamlname)
+        #clampfile=os.path.join(os.path.dirname(__file__), "../config", int_config['DEFAULT']['ClampList'])
+        #clampfile='/home/jtilson/ADCIRCSupportTools/config/clamp_list_hsofs.dat'
+        # If clampingfile is None then it will be detemrioned from the inpout config
+        #krig_object = interpolateScalerField(datafile=inerrorfile, yamlname=int_yamlname, clampingfile=None, metadata=iometadata, rootdir=rootdir)
+        krig_object = interpolateScalerField(datafile=inerrorfile, yamlname=int_yamlname, metadata=iometadata, rootdir=rootdir)
         extraFilebit=''
     
         vparams=None    # If these are none then singleStep would simply read the yaml

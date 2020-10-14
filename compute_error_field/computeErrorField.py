@@ -18,7 +18,7 @@ class computeErrorField(object):
     Perform some rudimentary checks on times/stations and then compute an error matrix
     """
     #def __init__(self, obsf, adcf, meta, bound_lo=None, bound_hi=None, n_cycles=4, n_pad=1, n_period = 12, n_tide = 12.42):
-    def __init__(self, obsf, adcf, meta, yamlname=os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'err.yml'),
+    def __init__(self, obsf, adcf, meta, yamlname=os.path.join(os.path.dirname(__file__), '../config', 'err.yml'),
                  bound_lo=None, bound_hi=None, rootdir=None, aveper=None, zthresh=3):
         self.obs_filename = obsf
         self.adc_filename = adcf

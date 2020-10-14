@@ -89,14 +89,14 @@ def main(args):
     # 2) Setup ADCIRC specific YML-resident inputs
     # Such as node_idx data
     utilities.log.info('Fetch OBS station data')
-    obs_yamlname = os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'obs.yml')
+    obs_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'obs.yml')
     obs_config = utilities.load_config(obs_yamlname)
     station_df = utilities.get_station_list()
     station_ids = station_df["stationid"].values.reshape(-1,)
     node_idx = station_df["Node"].values
 
     utilities.log.info('Fetch ADCIRC')
-    adc_yamlname = os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'adc.yml')
+    adc_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'adc.yml')
     adc_config = utilities.load_config(adc_yamlname)
     ADCfile, ADCjson, timestart, timeend = exec_adcirc(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids)
     utilities.log.info('Completed ADCIRC Reads')
@@ -123,7 +123,7 @@ def main(args):
 
     # 4) Setup ERR specific YML-resident values
     utilities.log.info('Error computation')
-    err_yamlname = os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'err.yml')
+    err_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'err.yml')
     meta = outfiles['OBS_METADATA_PKL']
     obsf = outfiles['OBS_SMOOTHED_PKL']
     adcf = outfiles['ADCIRC_WL_PKL']

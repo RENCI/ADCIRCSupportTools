@@ -38,7 +38,7 @@ def main(args):
     utilities.log.info("Working in {}.".format(os.getcwd()))
 
 # get station-to-node indices for grid
-    obsyamlname=os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'obs.yml')
+    obsyamlname=os.path.join(os.path.dirname(__file__), '../config', 'obs.yml')
     obs_utilities = utilities.load_config(obsyamlname)
     station_df = utilities.get_station_list()
     station_ids = station_df["stationid"].values.reshape(-1,)
@@ -54,7 +54,7 @@ def main(args):
 
     # get class instance
     #adc = Adcirc(dtime1=indtime1, dtime2=indtime2, doffset=indoffset, metadata=iometadata)
-    adcyamlfile = os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'adc.yml')
+    adcyamlfile = os.path.join(os.path.dirname(__file__), '../config', 'adc.yml')
     adc = Adcirc(dtime1=indtime1, dtime2=indtime2, doffset=indoffset, metadata=iometadata,yamlname=adcyamlfile)
 
     if urljson is None:
@@ -115,7 +115,7 @@ def main(args):
 
 # TODO rename doffset to dlag
 class Adcirc:
-    def __init__(self, metadata='', dtime1=None, dtime2=None, doffset=None, yamlname=os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'adc.yml')):
+    def __init__(self, metadata='', dtime1=None, dtime2=None, doffset=None, yamlname=os.path.join(os.path.dirname(__file__), '../config', 'adc.yml')):
         """
         Parameters: 
             datum: str, product reference.
