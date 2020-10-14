@@ -18,7 +18,7 @@ KRIGING: &kriging
    PARAMS:
       method: "ordinary"
       variogram_model: "gaussian"
-      coordinates_type: "euclidean"
+      coordinates_type: "geographic"
       weight: True
       nlags: 2
 
