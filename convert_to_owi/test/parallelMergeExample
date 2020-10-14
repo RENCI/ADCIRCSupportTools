@@ -1,0 +1,17 @@
+# Construct the data sets given the sizes n,p,k,and w
+#
+
+export PATH=$PATH:~bblanton/bin
+export PYTHONPATH=/home/jtilson/ADCIRCSupportTools:$PYTHONPATH
+export dir="/home/jtilson/ADCIRCSupportTools/convert_to_owi"
+
+# Firtst gfetr some data from the CDS
+#
+
+export RUNTIMEDIR="."
+parallel -j20  $dir/era5_to_owi.py --year {1} >> list  ::: `seq 1979 1981` 
+#
+#
+#parallel -j20  $dir/era5_to_owi.py.py {1} {2} --outfile="{1}/{2}.nc" >> list  ::: `seq 1979 1981`  ::: `seq -w 1 12`
+
+

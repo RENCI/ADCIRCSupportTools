@@ -1,0 +1,2 @@
+,ADC_filename,Ave periods,Bounds hi,Bounds lo,OBS_filename,Tidal period ,Tide padding,Time steps per period
+0,./TESTDIR/adc_wl.pkl,4,2020-09-21 18:00:00,2020-09-19 19:00:00,./TESTDIR/obs_wl_smoothed.pkl,12.42,1,12

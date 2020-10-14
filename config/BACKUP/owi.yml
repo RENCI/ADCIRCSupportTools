@@ -1,0 +1,7 @@
+OWI: &owi
+  lon: [-99.00,-50.00]
+  lat: [5.0, 50.0]
+  #time: ['2018-02-01 00:00:00','2018-02-28 23:00:00']
+  #output: 'merge'
+  #variables: ['msl','u10','v10']
+  measurements: ['pressure','velocity'] # If velocity data must include u10 and vb10

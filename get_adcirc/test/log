@@ -1,0 +1,14 @@
+2020-10-10 09:15:49,849 : INFO : <module> : test_getadcirc_manualCalls : adda_services : T1 (start) = 2020-09-19 18:00:00 
+2020-10-10 09:15:49,849 : INFO : <module> : test_getadcirc_manualCalls : adda_services : T2 (end)   = 2020-09-21 18:00:00 
+2020-10-10 09:15:50,232 : DEBUG : get_urls : GetADCIRC : adda_services : 45 : 2020-09-21 18:00:00 in range. 
+2020-10-10 09:15:50,232 : DEBUG : get_urls : GetADCIRC : adda_services : 46 : 2020-09-21 12:00:00 in range. 
+2020-10-10 09:15:50,232 : DEBUG : get_urls : GetADCIRC : adda_services : 47 : 2020-09-21 06:00:00 in range. 
+2020-10-10 09:15:50,232 : DEBUG : get_urls : GetADCIRC : adda_services : 48 : 2020-09-21 00:00:00 in range. 
+2020-10-10 09:15:50,233 : DEBUG : get_urls : GetADCIRC : adda_services : 49 : 2020-09-20 18:00:00 in range. 
+2020-10-10 09:15:50,233 : DEBUG : get_urls : GetADCIRC : adda_services : 50 : 2020-09-20 12:00:00 in range. 
+2020-10-10 09:15:50,233 : DEBUG : get_urls : GetADCIRC : adda_services : 51 : 2020-09-20 06:00:00 in range. 
+2020-10-10 09:15:50,233 : DEBUG : get_urls : GetADCIRC : adda_services : 52 : 2020-09-20 00:00:00 in range. 
+2020-10-10 09:15:50,234 : DEBUG : get_urls : GetADCIRC : adda_services : 53 : 2020-09-19 18:00:00 in range. 
+2020-10-10 09:15:51,573 : INFO : <module> : test_getadcirc_manualCalls : adda_services : adc_wl.pkl exists.  Using that... 
+2020-10-10 09:15:51,574 : INFO : <module> : test_getadcirc_manualCalls : adda_services : ./ADCIRC/adc_wl.pkl 
+2020-10-10 09:15:51,575 : INFO : <module> : test_getadcirc_manualCalls : adda_services : Done ADCIRC Reads 

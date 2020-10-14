@@ -1,0 +1,5 @@
+serial_nr,stationid,stationname,state,vertical_datum,NOAA lon,NOAA lat,navd_to_msl [ft],navd_to_msl [m],Datum Source,lon,lat,bathy,Element,Node
+-,-,-,-,-,deg,deg,ft,m,-,deg,deg,m MSL,-,-
+21,8651370,Duck Pier,NC,MSL,-75.746670,36.183330,0.4200,0.1280,NOAA gage,-75.746670,36.183330,3.4687,3131547,1592136
+22,8656483,Beaufort,NC,MSL,-76.670000,34.720000,0.3700,0.1128,NOAA gage,-76.671000,34.720000,2.1094,2778070,1416194
+23,8658163,Wrightsville Beach,NC,MSL,-77.784973,34.213310,0.5600,0.1707,NOAA gage,-77.784973,34.213310,2.5759,2763936,1405214

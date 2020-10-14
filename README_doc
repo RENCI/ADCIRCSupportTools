@@ -1,0 +1,30 @@
+# Using SPHINX to biuld documentation
+
+cd ADCIRCDataAssimilation
+sphinx-apidoc -F -A "ADCIRC/RENCI ADDA Team" -V "0.1" -o docs /home/jtilson/ADCIRCDataAssimilation
+
+cd docs
+# Modify conf.py to use theme 'classic' instead of 'alabaster'
+# Modify the Makefile to specify BUILDSDIR as ../../ADCIRCDataAssimilationDocs
+make html
+
+cd ../ADCIRCDataAssimilationDocs
+git checkout gh-pages
+
+# make changes
+#
+git add
+git commit
+git push origin gh-pages
+
+# Also follow instructions at 
+# https://daler.github.io/sphinxdoc-test/includeme.html
+# NOTE Jasomn had to make me an admin so I could upload "something" "ANYTHING"
+# TO BE ABLE TO see pages at https://renci.github.io/ADCIRCDataAssimilation/html/index.html
+# Cite: https://github.community/t5/GitHub-Pages/Site-not-published-correctly-for-days/m-p/27306#M1887 
+
+
+
+
+
+

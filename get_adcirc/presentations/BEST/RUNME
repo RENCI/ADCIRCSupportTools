@@ -1,0 +1,3 @@
+python -u test_getadcirc.py | tee new_performance.log
+
+

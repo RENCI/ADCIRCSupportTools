@@ -1,0 +1,15 @@
+--- # adcirc DA config file
+DEFAULT: &default
+  PHOME: $ADCIRCSupportHome     #  this is currently ignored
+  RDIR: $RUNTIMEDIR   
+  LOGGING: true
+  LOGLEVEL: DEBUG
+  GRAPHICS: true
+
+GRAPHICS: &graphics
+  CMAP: "bwr"
+  NCOL: 20
+  VMIN: -0.5
+  VMAX: 0.5
+  MAPRES: "i"
+

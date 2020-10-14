@@ -1,0 +1,22 @@
+2020-10-07 13:59:15,413 : INFO : main : era5_to_owi : adda_services : Specified METADIRNAME METAFILENAME to process 2018, 01 
+2020-10-07 13:59:15,413 : INFO : main : era5_to_owi : adda_services : Directory to find data /projects/ees/TDS/ERA5/global 
+2020-10-07 13:59:15,413 : INFO : main : era5_to_owi : adda_services : Directory to write data ./Reanalysis/Winds 
+2020-10-07 13:59:15,413 : INFO : main : era5_to_owi : adda_services : Date start 201801, Date end 201801 
+2020-10-07 13:59:15,413 : INFO : main : era5_to_owi : adda_services : Must we transform data to EastWest convention ?True 
+2020-10-07 13:59:15,414 : INFO : main : era5_to_owi : adda_services : ERA5 Files to process ['/projects/ees/TDS/ERA5/global/2018/01.nc'] 
+2020-10-07 13:59:15,416 : INFO : loadBoundaries : era5_to_owi : adda_services : Boundary box not found in config: use default None 
+2020-10-07 13:59:15,416 : INFO : main : era5_to_owi : adda_services : Input lons [-99.0, -50.0] 
+2020-10-07 13:59:15,416 : INFO : main : era5_to_owi : adda_services : Input lats [5.0, 50.0] 
+2020-10-07 13:59:15,416 : INFO : main : era5_to_owi : adda_services : Input times None 
+2020-10-07 13:59:15,416 : INFO : main : era5_to_owi : adda_services : ofiles are: {'pressure': './Reanalysis/Winds/2018/01.221', 'velocity': './Reanalysis/Winds/2018/01.222'} 
+2020-10-07 13:59:15,445 : INFO : build_combined_header : era5_to_owi : adda_services : File header determined to be Oceanweather WIN/PRE Format                          2018010100       2018013123 
+2020-10-07 13:59:15,445 : DEBUG : main : era5_to_owi : adda_services : Processing file /projects/ees/TDS/ERA5/global/2018/01.nc, month01 
+2020-10-07 13:59:53,759 : INFO : transformCoordinates : era5_to_owi : adda_services : Current Xarray has been transformed to desired coordinates and units 
+2020-10-07 13:59:53,759 : INFO : transformCoordinates : era5_to_owi : adda_services : Time to transform coors is 38.30831789970398 
+2020-10-07 13:59:53,761 : INFO : conformBoundaries : era5_to_owi : adda_services : Final ranges: 5.0,50.0 
+2020-10-07 13:59:53,762 : INFO : conformBoundaries : era5_to_owi : adda_services : Final ranges: -99.0,-50.0 
+2020-10-07 13:59:53,763 : INFO : conformBoundaries : era5_to_owi : adda_services : Final ranges: 2018-01-01T00:00:00.000000000,2018-01-31T23:00:00.000000000 
+2020-10-07 13:59:53,765 : INFO : main : era5_to_owi : adda_services : Processing file /projects/ees/TDS/ERA5/global/2018/01.nc and measurement pressure 
+2020-10-07 13:59:53,765 : INFO : process_filedata : era5_to_owi : adda_services : Generate SNAP for measurement pressure 
+2020-10-07 14:00:08,168 : INFO : main : era5_to_owi : adda_services : Processing file /projects/ees/TDS/ERA5/global/2018/01.nc and measurement velocity 
+2020-10-07 14:00:08,168 : INFO : process_filedata : era5_to_owi : adda_services : Generate SNAP for measurement velocity 

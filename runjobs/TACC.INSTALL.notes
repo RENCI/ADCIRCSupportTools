@@ -1,0 +1,84 @@
+# NOTE:
+module load python3/3.7.0
+module load basemap
+module load hdf5
+
+# 2) Git clone the repo. Here I am doing this in my home directory
+cd ~
+git clone https://github.com/RENCI/ADCIRCDataAssimilation.git
+
+# 3) In stall reqs. I needed to remove several to make this work on stampede2
+#NOTE for some reason our must uninstall and reinstall PyKrige. If you do not
+#Still may need to import some things manually#
+
+pip3 install --user -r tacc.requirements.txt 
+export PATH=/home1/00381/tg456622/.local/bin:$PATH
+
+# NOTE I still had to do many manually using the pip3 install --user xxx commands
+# but it did ultimately get all installed
+
+# 4) Setup the runtime env. Put these in your setup shell files.
+
+ADDAHOME=~/ADCIRCDataAssimilation
+PYTHONPATH=$ADDAHOME:$PYTHONPATH
+export ADDAHOME
+export PYTHONPATH
+
+# 5) Also specify a default location for storing data files from the pipeline
+# On TACC do not use homedir. Use either scratch or work
+# my work is : /work/00381/tg456622/stampede2 - NOT PURGED
+# my scratch is /scratch/00381/tg456622 - PURGED
+# https://portal.tacc.utexas.edu/user-guides/stampede2#file-systems-introduction
+#
+# Find you own work/scratch space
+# scratch is faster but really intended for BIG files 
+export RUNTIMEDIR="/work/00381/tg456622/stampede2/ADDA"
+
+#
+# Launch a pipeline
+#
+cd ~
+# check out the argument list
+python3 -u $ADDAHOME/ADDA/ADDA_withCLI.py -h
+
+# run a job
+python3 -u $ADDAHOME/ADDA/ADDA_withCLI.py
+
+# Setup for login initialization.
+# edit the .bashrc. See TACC info
+# https://portal.tacc.utexas.edu/tutorials/bashquickstart
+# Setting up the modules
+# Load the folling modules:
+#
+#  module load python3
+#  module load basemap
+#  module load hdf5
+# Set up the env
+# o# 4) Setup the runtime env. Put these in your setup shell files.
+#
+# PATH="~/bin:$PATH"
+# PATH="/home1/00381/tg456622/.local/bin:$PATH"
+#
+# ADDAHOME="~/ADCIRCDataAssimilation"
+# PYTHONPATH="$ADDAHOME:$PYTHONPATH"
+# PYTHONPATH="/opt/apps/intel18/impi18_0/python3/3.7.0/lib/python3.7/site-packages:$PYTHONPATH"
+# PYTHONPATH="/home1/apps/intel18/basemap/1.2.1/lib/python3.7/site-packages:$PYTHONPATH"
+# PYTHONPATH="/home1/00381/tg456622/ADCIRCDataAssimilation:$PYTHONPATH"
+#
+# export PATH
+# export ADDAHOME
+# export PYTHONPATH
+#
+# 5) Also specify a default location for storing data files from the pipeline
+# On TACC do not use homedir. Use either scratch or work
+# my work is : /work/00381/tg456622/stampede2 - NOT PURGED
+# my scratch is /scratch/00381/tg456622 - PURGED
+# https://portal.tacc.utexas.edu/user-guides/stampede2#file-systems-introduction
+#
+# export RUNTIMEDIR="/work/00381/tg456622/stampede2/ADDA"
+#
+## Launch an interactive job
+# using idev
+## idev will bring you to a logged in shell. Then simply run ADDA as usual.
+#
+# 

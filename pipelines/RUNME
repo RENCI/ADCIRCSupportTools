@@ -1,0 +1,3 @@
+python execute_APSVIZ_pipeline.py --iosubdir TESTDIR  --urljson data_test.json 
+
+

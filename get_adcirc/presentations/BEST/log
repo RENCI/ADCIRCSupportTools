@@ -1,0 +1,1050 @@
+2020-10-01 12:18:31,042 : INFO : <module> : test_getadcirc : adda_services : T1 (start) = 2020-09-17 13:00:00 
+2020-10-01 12:18:31,042 : INFO : <module> : test_getadcirc : adda_services : T2 (end)   = 2020-09-21 18:00:00 
+2020-10-01 12:18:31,468 : DEBUG : get_urls : GetADCIRC : adda_services : 18 : 2020-09-21 18:00:00 in range. 
+2020-10-01 12:18:31,468 : DEBUG : get_urls : GetADCIRC : adda_services : 19 : 2020-09-21 12:00:00 in range. 
+2020-10-01 12:18:31,469 : DEBUG : get_urls : GetADCIRC : adda_services : 20 : 2020-09-21 06:00:00 in range. 
+2020-10-01 12:18:31,469 : DEBUG : get_urls : GetADCIRC : adda_services : 21 : 2020-09-21 00:00:00 in range. 
+2020-10-01 12:18:31,469 : DEBUG : get_urls : GetADCIRC : adda_services : 22 : 2020-09-20 18:00:00 in range. 
+2020-10-01 12:18:31,469 : DEBUG : get_urls : GetADCIRC : adda_services : 23 : 2020-09-20 12:00:00 in range. 
+2020-10-01 12:18:31,470 : DEBUG : get_urls : GetADCIRC : adda_services : 24 : 2020-09-20 06:00:00 in range. 
+2020-10-01 12:18:31,470 : DEBUG : get_urls : GetADCIRC : adda_services : 25 : 2020-09-20 00:00:00 in range. 
+2020-10-01 12:18:31,470 : DEBUG : get_urls : GetADCIRC : adda_services : 26 : 2020-09-19 18:00:00 in range. 
+2020-10-01 12:18:31,470 : DEBUG : get_urls : GetADCIRC : adda_services : 27 : 2020-09-19 12:00:00 in range. 
+2020-10-01 12:18:31,471 : DEBUG : get_urls : GetADCIRC : adda_services : 28 : 2020-09-19 06:00:00 in range. 
+2020-10-01 12:18:31,471 : DEBUG : get_urls : GetADCIRC : adda_services : 29 : 2020-09-19 00:00:00 in range. 
+2020-10-01 12:18:31,471 : DEBUG : get_urls : GetADCIRC : adda_services : 30 : 2020-09-18 18:00:00 in range. 
+2020-10-01 12:18:31,471 : DEBUG : get_urls : GetADCIRC : adda_services : 31 : 2020-09-18 12:00:00 in range. 
+2020-10-01 12:18:31,472 : DEBUG : get_urls : GetADCIRC : adda_services : 32 : 2020-09-18 06:00:00 in range. 
+2020-10-01 12:18:31,472 : DEBUG : get_urls : GetADCIRC : adda_services : 33 : 2020-09-18 00:00:00 in range. 
+2020-10-01 12:18:31,472 : DEBUG : get_urls : GetADCIRC : adda_services : 34 : 2020-09-17 18:00:00 in range. 
+2020-10-01 12:18:34,081 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-17 18:00:00 :  
+2020-10-01 12:18:34,081 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:18:34,082 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091718/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:18:42,802 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-17 13:00:00 -> 2020-09-17 18:00:00 
+2020-10-01 12:18:42,804 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-17 18:00:00 
+2020-10-01 12:18:42,805 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 00:00:00 :  
+2020-10-01 12:18:42,805 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:18:42,805 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091800/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:18:51,591 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-17 19:00:00 -> 2020-09-18 00:00:00 
+2020-10-01 12:18:51,593 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 00:00:00 
+2020-10-01 12:18:51,594 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 06:00:00 :  
+2020-10-01 12:18:51,594 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:18:51,594 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091806/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:19:00,276 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 01:00:00 -> 2020-09-18 06:00:00 
+2020-10-01 12:19:00,278 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 06:00:00 
+2020-10-01 12:19:00,278 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 12:00:00 :  
+2020-10-01 12:19:00,278 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:19:00,278 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091812/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:19:09,187 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 07:00:00 -> 2020-09-18 12:00:00 
+2020-10-01 12:19:09,189 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 12:00:00 
+2020-10-01 12:19:09,189 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 18:00:00 :  
+2020-10-01 12:19:09,190 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:19:09,190 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091818/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:19:17,962 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 13:00:00 -> 2020-09-18 18:00:00 
+2020-10-01 12:19:17,964 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 18:00:00 
+2020-10-01 12:19:17,964 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 00:00:00 :  
+2020-10-01 12:19:17,964 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:19:17,965 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091900/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:19:26,839 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 19:00:00 -> 2020-09-19 00:00:00 
+2020-10-01 12:19:26,841 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 00:00:00 
+2020-10-01 12:19:26,841 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 06:00:00 :  
+2020-10-01 12:19:26,841 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:19:26,841 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091906/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:19:35,566 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 01:00:00 -> 2020-09-19 06:00:00 
+2020-10-01 12:19:35,568 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 06:00:00 
+2020-10-01 12:19:35,568 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 12:00:00 :  
+2020-10-01 12:19:35,569 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:19:35,569 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091912/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:19:44,365 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 07:00:00 -> 2020-09-19 12:00:00 
+2020-10-01 12:19:44,367 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 12:00:00 
+2020-10-01 12:19:44,367 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 18:00:00 :  
+2020-10-01 12:19:44,367 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:19:44,368 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091918/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:19:53,115 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 13:00:00 -> 2020-09-19 18:00:00 
+2020-10-01 12:19:53,117 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 18:00:00 
+2020-10-01 12:19:53,117 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 00:00:00 :  
+2020-10-01 12:19:53,117 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:19:53,117 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092000/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:20:01,975 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 19:00:00 -> 2020-09-20 00:00:00 
+2020-10-01 12:20:01,977 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 00:00:00 
+2020-10-01 12:20:01,977 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 06:00:00 :  
+2020-10-01 12:20:01,978 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:20:01,978 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092006/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:20:10,901 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 01:00:00 -> 2020-09-20 06:00:00 
+2020-10-01 12:20:10,903 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 06:00:00 
+2020-10-01 12:20:10,903 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 12:00:00 :  
+2020-10-01 12:20:10,904 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:20:10,904 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092012/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:20:20,370 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 07:00:00 -> 2020-09-20 12:00:00 
+2020-10-01 12:20:20,372 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 12:00:00 
+2020-10-01 12:20:20,372 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 18:00:00 :  
+2020-10-01 12:20:20,372 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:20:20,373 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092018/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:20:30,172 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 13:00:00 -> 2020-09-20 18:00:00 
+2020-10-01 12:20:30,174 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 18:00:00 
+2020-10-01 12:20:30,174 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 00:00:00 :  
+2020-10-01 12:20:30,174 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:20:30,174 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092100/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:20:40,032 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 19:00:00 -> 2020-09-21 00:00:00 
+2020-10-01 12:20:40,034 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 00:00:00 
+2020-10-01 12:20:40,034 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 06:00:00 :  
+2020-10-01 12:20:40,034 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:20:40,034 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092106/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:20:49,690 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 01:00:00 -> 2020-09-21 06:00:00 
+2020-10-01 12:20:49,692 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 06:00:00 
+2020-10-01 12:20:49,692 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 12:00:00 :  
+2020-10-01 12:20:49,693 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:20:49,693 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092112/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:20:59,366 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 07:00:00 -> 2020-09-21 12:00:00 
+2020-10-01 12:20:59,367 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 12:00:00 
+2020-10-01 12:20:59,368 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 18:00:00 :  
+2020-10-01 12:20:59,368 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:20:59,368 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092118/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:21:09,194 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 13:00:00 -> 2020-09-21 18:00:00 
+2020-10-01 12:21:09,196 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 18:00:00 
+2020-10-01 12:21:09,220 : INFO : <module> : test_getadcirc : adda_services : Done ADCIRC Reads 
+2020-10-01 12:21:09,277 : INFO : <module> : test_getadcirc : adda_services : T1 (start) = 2020-09-17 13:00:00 
+2020-10-01 12:21:09,277 : INFO : <module> : test_getadcirc : adda_services : T2 (end)   = 2020-09-21 18:00:00 
+2020-10-01 12:21:10,103 : DEBUG : get_urls : GetADCIRC : adda_services : 18 : 2020-09-21 18:00:00 in range. 
+2020-10-01 12:21:10,103 : DEBUG : get_urls : GetADCIRC : adda_services : 19 : 2020-09-21 12:00:00 in range. 
+2020-10-01 12:21:10,104 : DEBUG : get_urls : GetADCIRC : adda_services : 20 : 2020-09-21 06:00:00 in range. 
+2020-10-01 12:21:10,104 : DEBUG : get_urls : GetADCIRC : adda_services : 21 : 2020-09-21 00:00:00 in range. 
+2020-10-01 12:21:10,104 : DEBUG : get_urls : GetADCIRC : adda_services : 22 : 2020-09-20 18:00:00 in range. 
+2020-10-01 12:21:10,104 : DEBUG : get_urls : GetADCIRC : adda_services : 23 : 2020-09-20 12:00:00 in range. 
+2020-10-01 12:21:10,105 : DEBUG : get_urls : GetADCIRC : adda_services : 24 : 2020-09-20 06:00:00 in range. 
+2020-10-01 12:21:10,105 : DEBUG : get_urls : GetADCIRC : adda_services : 25 : 2020-09-20 00:00:00 in range. 
+2020-10-01 12:21:10,105 : DEBUG : get_urls : GetADCIRC : adda_services : 26 : 2020-09-19 18:00:00 in range. 
+2020-10-01 12:21:10,105 : DEBUG : get_urls : GetADCIRC : adda_services : 27 : 2020-09-19 12:00:00 in range. 
+2020-10-01 12:21:10,105 : DEBUG : get_urls : GetADCIRC : adda_services : 28 : 2020-09-19 06:00:00 in range. 
+2020-10-01 12:21:10,106 : DEBUG : get_urls : GetADCIRC : adda_services : 29 : 2020-09-19 00:00:00 in range. 
+2020-10-01 12:21:10,106 : DEBUG : get_urls : GetADCIRC : adda_services : 30 : 2020-09-18 18:00:00 in range. 
+2020-10-01 12:21:10,106 : DEBUG : get_urls : GetADCIRC : adda_services : 31 : 2020-09-18 12:00:00 in range. 
+2020-10-01 12:21:10,106 : DEBUG : get_urls : GetADCIRC : adda_services : 32 : 2020-09-18 06:00:00 in range. 
+2020-10-01 12:21:10,107 : DEBUG : get_urls : GetADCIRC : adda_services : 33 : 2020-09-18 00:00:00 in range. 
+2020-10-01 12:21:10,107 : DEBUG : get_urls : GetADCIRC : adda_services : 34 : 2020-09-17 18:00:00 in range. 
+2020-10-01 12:21:13,034 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-17 18:00:00 :  
+2020-10-01 12:21:13,034 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:21:13,035 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091718/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:21:22,771 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-17 13:00:00 -> 2020-09-17 18:00:00 
+2020-10-01 12:21:22,773 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-17 18:00:00 
+2020-10-01 12:21:22,773 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 00:00:00 :  
+2020-10-01 12:21:22,773 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:21:22,774 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091800/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:21:32,483 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-17 19:00:00 -> 2020-09-18 00:00:00 
+2020-10-01 12:21:32,485 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 00:00:00 
+2020-10-01 12:21:32,485 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 06:00:00 :  
+2020-10-01 12:21:32,486 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:21:32,486 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091806/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:21:42,332 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 01:00:00 -> 2020-09-18 06:00:00 
+2020-10-01 12:21:42,334 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 06:00:00 
+2020-10-01 12:21:42,334 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 12:00:00 :  
+2020-10-01 12:21:42,335 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:21:42,335 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091812/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:21:52,014 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 07:00:00 -> 2020-09-18 12:00:00 
+2020-10-01 12:21:52,016 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 12:00:00 
+2020-10-01 12:21:52,016 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 18:00:00 :  
+2020-10-01 12:21:52,016 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:21:52,017 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091818/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:22:01,680 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 13:00:00 -> 2020-09-18 18:00:00 
+2020-10-01 12:22:01,682 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 18:00:00 
+2020-10-01 12:22:01,682 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 00:00:00 :  
+2020-10-01 12:22:01,682 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:22:01,682 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091900/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:22:11,584 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 19:00:00 -> 2020-09-19 00:00:00 
+2020-10-01 12:22:11,586 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 00:00:00 
+2020-10-01 12:22:11,586 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 06:00:00 :  
+2020-10-01 12:22:11,587 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:22:11,587 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091906/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:22:21,501 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 01:00:00 -> 2020-09-19 06:00:00 
+2020-10-01 12:22:21,503 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 06:00:00 
+2020-10-01 12:22:21,503 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 12:00:00 :  
+2020-10-01 12:22:21,504 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:22:21,504 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091912/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:22:31,213 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 07:00:00 -> 2020-09-19 12:00:00 
+2020-10-01 12:22:31,214 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 12:00:00 
+2020-10-01 12:22:31,215 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 18:00:00 :  
+2020-10-01 12:22:31,215 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:22:31,215 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091918/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:22:40,965 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 13:00:00 -> 2020-09-19 18:00:00 
+2020-10-01 12:22:40,967 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 18:00:00 
+2020-10-01 12:22:40,967 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 00:00:00 :  
+2020-10-01 12:22:40,967 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:22:40,968 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092000/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:22:50,552 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 19:00:00 -> 2020-09-20 00:00:00 
+2020-10-01 12:22:50,553 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 00:00:00 
+2020-10-01 12:22:50,554 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 06:00:00 :  
+2020-10-01 12:22:50,554 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:22:50,554 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092006/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:23:00,136 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 01:00:00 -> 2020-09-20 06:00:00 
+2020-10-01 12:23:00,138 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 06:00:00 
+2020-10-01 12:23:00,138 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 12:00:00 :  
+2020-10-01 12:23:00,138 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:23:00,138 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092012/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:23:09,777 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 07:00:00 -> 2020-09-20 12:00:00 
+2020-10-01 12:23:09,779 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 12:00:00 
+2020-10-01 12:23:09,780 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 18:00:00 :  
+2020-10-01 12:23:09,780 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:23:09,780 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092018/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:23:19,551 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 13:00:00 -> 2020-09-20 18:00:00 
+2020-10-01 12:23:19,553 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 18:00:00 
+2020-10-01 12:23:19,553 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 00:00:00 :  
+2020-10-01 12:23:19,553 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:23:19,553 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092100/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:23:28,636 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 19:00:00 -> 2020-09-21 00:00:00 
+2020-10-01 12:23:28,638 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 00:00:00 
+2020-10-01 12:23:28,638 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 06:00:00 :  
+2020-10-01 12:23:28,638 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:23:28,639 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092106/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:23:37,451 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 01:00:00 -> 2020-09-21 06:00:00 
+2020-10-01 12:23:37,453 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 06:00:00 
+2020-10-01 12:23:37,453 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 12:00:00 :  
+2020-10-01 12:23:37,453 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:23:37,454 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092112/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:23:46,387 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 07:00:00 -> 2020-09-21 12:00:00 
+2020-10-01 12:23:46,389 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 12:00:00 
+2020-10-01 12:23:46,389 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 18:00:00 :  
+2020-10-01 12:23:46,390 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:23:46,390 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092118/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:23:55,210 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 13:00:00 -> 2020-09-21 18:00:00 
+2020-10-01 12:23:55,211 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 18:00:00 
+2020-10-01 12:23:55,217 : INFO : <module> : test_getadcirc : adda_services : Done ADCIRC Reads 
+2020-10-01 12:23:55,280 : INFO : <module> : test_getadcirc : adda_services : T1 (start) = 2020-09-17 13:00:00 
+2020-10-01 12:23:55,280 : INFO : <module> : test_getadcirc : adda_services : T2 (end)   = 2020-09-21 18:00:00 
+2020-10-01 12:23:56,019 : DEBUG : get_urls : GetADCIRC : adda_services : 18 : 2020-09-21 18:00:00 in range. 
+2020-10-01 12:23:56,020 : DEBUG : get_urls : GetADCIRC : adda_services : 19 : 2020-09-21 12:00:00 in range. 
+2020-10-01 12:23:56,020 : DEBUG : get_urls : GetADCIRC : adda_services : 20 : 2020-09-21 06:00:00 in range. 
+2020-10-01 12:23:56,020 : DEBUG : get_urls : GetADCIRC : adda_services : 21 : 2020-09-21 00:00:00 in range. 
+2020-10-01 12:23:56,020 : DEBUG : get_urls : GetADCIRC : adda_services : 22 : 2020-09-20 18:00:00 in range. 
+2020-10-01 12:23:56,020 : DEBUG : get_urls : GetADCIRC : adda_services : 23 : 2020-09-20 12:00:00 in range. 
+2020-10-01 12:23:56,021 : DEBUG : get_urls : GetADCIRC : adda_services : 24 : 2020-09-20 06:00:00 in range. 
+2020-10-01 12:23:56,021 : DEBUG : get_urls : GetADCIRC : adda_services : 25 : 2020-09-20 00:00:00 in range. 
+2020-10-01 12:23:56,021 : DEBUG : get_urls : GetADCIRC : adda_services : 26 : 2020-09-19 18:00:00 in range. 
+2020-10-01 12:23:56,021 : DEBUG : get_urls : GetADCIRC : adda_services : 27 : 2020-09-19 12:00:00 in range. 
+2020-10-01 12:23:56,021 : DEBUG : get_urls : GetADCIRC : adda_services : 28 : 2020-09-19 06:00:00 in range. 
+2020-10-01 12:23:56,022 : DEBUG : get_urls : GetADCIRC : adda_services : 29 : 2020-09-19 00:00:00 in range. 
+2020-10-01 12:23:56,022 : DEBUG : get_urls : GetADCIRC : adda_services : 30 : 2020-09-18 18:00:00 in range. 
+2020-10-01 12:23:56,022 : DEBUG : get_urls : GetADCIRC : adda_services : 31 : 2020-09-18 12:00:00 in range. 
+2020-10-01 12:23:56,022 : DEBUG : get_urls : GetADCIRC : adda_services : 32 : 2020-09-18 06:00:00 in range. 
+2020-10-01 12:23:56,022 : DEBUG : get_urls : GetADCIRC : adda_services : 33 : 2020-09-18 00:00:00 in range. 
+2020-10-01 12:23:56,023 : DEBUG : get_urls : GetADCIRC : adda_services : 34 : 2020-09-17 18:00:00 in range. 
+2020-10-01 12:23:58,541 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-17 18:00:00 :  
+2020-10-01 12:23:58,541 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:23:58,542 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091718/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:24:07,373 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-17 13:00:00 -> 2020-09-17 18:00:00 
+2020-10-01 12:24:07,375 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-17 18:00:00 
+2020-10-01 12:24:07,375 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 00:00:00 :  
+2020-10-01 12:24:07,375 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:24:07,375 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091800/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:24:16,201 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-17 19:00:00 -> 2020-09-18 00:00:00 
+2020-10-01 12:24:16,203 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 00:00:00 
+2020-10-01 12:24:16,203 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 06:00:00 :  
+2020-10-01 12:24:16,204 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:24:16,204 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091806/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:24:25,086 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 01:00:00 -> 2020-09-18 06:00:00 
+2020-10-01 12:24:25,088 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 06:00:00 
+2020-10-01 12:24:25,088 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 12:00:00 :  
+2020-10-01 12:24:25,088 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:24:25,088 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091812/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:24:33,854 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 07:00:00 -> 2020-09-18 12:00:00 
+2020-10-01 12:24:33,856 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 12:00:00 
+2020-10-01 12:24:33,856 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 18:00:00 :  
+2020-10-01 12:24:33,857 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:24:33,857 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091818/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:24:42,724 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 13:00:00 -> 2020-09-18 18:00:00 
+2020-10-01 12:24:42,726 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 18:00:00 
+2020-10-01 12:24:42,726 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 00:00:00 :  
+2020-10-01 12:24:42,726 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:24:42,726 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091900/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:24:51,679 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 19:00:00 -> 2020-09-19 00:00:00 
+2020-10-01 12:24:51,681 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 00:00:00 
+2020-10-01 12:24:51,681 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 06:00:00 :  
+2020-10-01 12:24:51,681 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:24:51,681 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091906/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:25:00,614 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 01:00:00 -> 2020-09-19 06:00:00 
+2020-10-01 12:25:00,615 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 06:00:00 
+2020-10-01 12:25:00,616 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 12:00:00 :  
+2020-10-01 12:25:00,616 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:25:00,616 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091912/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:25:09,572 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 07:00:00 -> 2020-09-19 12:00:00 
+2020-10-01 12:25:09,574 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 12:00:00 
+2020-10-01 12:25:09,575 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 18:00:00 :  
+2020-10-01 12:25:09,575 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:25:09,575 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091918/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:25:19,178 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 13:00:00 -> 2020-09-19 18:00:00 
+2020-10-01 12:25:19,180 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 18:00:00 
+2020-10-01 12:25:19,180 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 00:00:00 :  
+2020-10-01 12:25:19,181 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:25:19,181 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092000/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:25:28,871 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 19:00:00 -> 2020-09-20 00:00:00 
+2020-10-01 12:25:28,873 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 00:00:00 
+2020-10-01 12:25:28,874 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 06:00:00 :  
+2020-10-01 12:25:28,874 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:25:28,874 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092006/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:25:38,625 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 01:00:00 -> 2020-09-20 06:00:00 
+2020-10-01 12:25:38,627 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 06:00:00 
+2020-10-01 12:25:38,627 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 12:00:00 :  
+2020-10-01 12:25:38,627 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:25:38,628 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092012/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:25:48,441 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 07:00:00 -> 2020-09-20 12:00:00 
+2020-10-01 12:25:48,443 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 12:00:00 
+2020-10-01 12:25:48,443 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 18:00:00 :  
+2020-10-01 12:25:48,443 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:25:48,443 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092018/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:25:58,229 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 13:00:00 -> 2020-09-20 18:00:00 
+2020-10-01 12:25:58,231 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 18:00:00 
+2020-10-01 12:25:58,231 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 00:00:00 :  
+2020-10-01 12:25:58,232 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:25:58,232 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092100/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:26:08,093 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 19:00:00 -> 2020-09-21 00:00:00 
+2020-10-01 12:26:08,095 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 00:00:00 
+2020-10-01 12:26:08,095 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 06:00:00 :  
+2020-10-01 12:26:08,095 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:26:08,095 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092106/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:26:18,051 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 01:00:00 -> 2020-09-21 06:00:00 
+2020-10-01 12:26:18,052 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 06:00:00 
+2020-10-01 12:26:18,053 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 12:00:00 :  
+2020-10-01 12:26:18,053 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:26:18,053 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092112/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:26:28,098 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 07:00:00 -> 2020-09-21 12:00:00 
+2020-10-01 12:26:28,100 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 12:00:00 
+2020-10-01 12:26:28,100 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 18:00:00 :  
+2020-10-01 12:26:28,100 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:26:28,101 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092118/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:26:37,973 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 13:00:00 -> 2020-09-21 18:00:00 
+2020-10-01 12:26:37,975 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 18:00:00 
+2020-10-01 12:26:37,981 : INFO : <module> : test_getadcirc : adda_services : Done ADCIRC Reads 
+2020-10-01 12:26:38,045 : INFO : <module> : test_getadcirc : adda_services : T1 (start) = 2020-09-17 13:00:00 
+2020-10-01 12:26:38,045 : INFO : <module> : test_getadcirc : adda_services : T2 (end)   = 2020-09-21 18:00:00 
+2020-10-01 12:26:38,835 : DEBUG : get_urls : GetADCIRC : adda_services : 18 : 2020-09-21 18:00:00 in range. 
+2020-10-01 12:26:38,836 : DEBUG : get_urls : GetADCIRC : adda_services : 19 : 2020-09-21 12:00:00 in range. 
+2020-10-01 12:26:38,836 : DEBUG : get_urls : GetADCIRC : adda_services : 20 : 2020-09-21 06:00:00 in range. 
+2020-10-01 12:26:38,836 : DEBUG : get_urls : GetADCIRC : adda_services : 21 : 2020-09-21 00:00:00 in range. 
+2020-10-01 12:26:38,836 : DEBUG : get_urls : GetADCIRC : adda_services : 22 : 2020-09-20 18:00:00 in range. 
+2020-10-01 12:26:38,837 : DEBUG : get_urls : GetADCIRC : adda_services : 23 : 2020-09-20 12:00:00 in range. 
+2020-10-01 12:26:38,837 : DEBUG : get_urls : GetADCIRC : adda_services : 24 : 2020-09-20 06:00:00 in range. 
+2020-10-01 12:26:38,837 : DEBUG : get_urls : GetADCIRC : adda_services : 25 : 2020-09-20 00:00:00 in range. 
+2020-10-01 12:26:38,837 : DEBUG : get_urls : GetADCIRC : adda_services : 26 : 2020-09-19 18:00:00 in range. 
+2020-10-01 12:26:38,837 : DEBUG : get_urls : GetADCIRC : adda_services : 27 : 2020-09-19 12:00:00 in range. 
+2020-10-01 12:26:38,838 : DEBUG : get_urls : GetADCIRC : adda_services : 28 : 2020-09-19 06:00:00 in range. 
+2020-10-01 12:26:38,838 : DEBUG : get_urls : GetADCIRC : adda_services : 29 : 2020-09-19 00:00:00 in range. 
+2020-10-01 12:26:38,838 : DEBUG : get_urls : GetADCIRC : adda_services : 30 : 2020-09-18 18:00:00 in range. 
+2020-10-01 12:26:38,838 : DEBUG : get_urls : GetADCIRC : adda_services : 31 : 2020-09-18 12:00:00 in range. 
+2020-10-01 12:26:38,838 : DEBUG : get_urls : GetADCIRC : adda_services : 32 : 2020-09-18 06:00:00 in range. 
+2020-10-01 12:26:38,839 : DEBUG : get_urls : GetADCIRC : adda_services : 33 : 2020-09-18 00:00:00 in range. 
+2020-10-01 12:26:38,839 : DEBUG : get_urls : GetADCIRC : adda_services : 34 : 2020-09-17 18:00:00 in range. 
+2020-10-01 12:26:41,722 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-17 18:00:00 :  
+2020-10-01 12:26:41,723 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:26:41,723 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091718/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:26:51,471 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-17 13:00:00 -> 2020-09-17 18:00:00 
+2020-10-01 12:26:51,473 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-17 18:00:00 
+2020-10-01 12:26:51,473 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 00:00:00 :  
+2020-10-01 12:26:51,474 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:26:51,474 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091800/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:27:01,143 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-17 19:00:00 -> 2020-09-18 00:00:00 
+2020-10-01 12:27:01,145 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 00:00:00 
+2020-10-01 12:27:01,145 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 06:00:00 :  
+2020-10-01 12:27:01,145 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:27:01,146 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091806/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:27:10,864 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 01:00:00 -> 2020-09-18 06:00:00 
+2020-10-01 12:27:10,866 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 06:00:00 
+2020-10-01 12:27:10,866 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 12:00:00 :  
+2020-10-01 12:27:10,866 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:27:10,867 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091812/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:27:20,745 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 07:00:00 -> 2020-09-18 12:00:00 
+2020-10-01 12:27:20,747 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 12:00:00 
+2020-10-01 12:27:20,747 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 18:00:00 :  
+2020-10-01 12:27:20,747 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:27:20,748 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091818/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:27:30,470 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 13:00:00 -> 2020-09-18 18:00:00 
+2020-10-01 12:27:30,472 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 18:00:00 
+2020-10-01 12:27:30,472 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 00:00:00 :  
+2020-10-01 12:27:30,472 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:27:30,472 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091900/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:27:40,301 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 19:00:00 -> 2020-09-19 00:00:00 
+2020-10-01 12:27:40,302 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 00:00:00 
+2020-10-01 12:27:40,303 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 06:00:00 :  
+2020-10-01 12:27:40,303 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:27:40,303 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091906/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:27:50,196 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 01:00:00 -> 2020-09-19 06:00:00 
+2020-10-01 12:27:50,198 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 06:00:00 
+2020-10-01 12:27:50,198 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 12:00:00 :  
+2020-10-01 12:27:50,198 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:27:50,199 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091912/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:28:00,028 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 07:00:00 -> 2020-09-19 12:00:00 
+2020-10-01 12:28:00,030 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 12:00:00 
+2020-10-01 12:28:00,030 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 18:00:00 :  
+2020-10-01 12:28:00,031 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:28:00,031 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091918/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:28:09,998 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 13:00:00 -> 2020-09-19 18:00:00 
+2020-10-01 12:28:10,000 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 18:00:00 
+2020-10-01 12:28:10,001 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 00:00:00 :  
+2020-10-01 12:28:10,001 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:28:10,001 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092000/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:28:19,675 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 19:00:00 -> 2020-09-20 00:00:00 
+2020-10-01 12:28:19,677 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 00:00:00 
+2020-10-01 12:28:19,678 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 06:00:00 :  
+2020-10-01 12:28:19,678 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:28:19,678 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092006/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:28:28,562 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 01:00:00 -> 2020-09-20 06:00:00 
+2020-10-01 12:28:28,563 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 06:00:00 
+2020-10-01 12:28:28,564 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 12:00:00 :  
+2020-10-01 12:28:28,564 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:28:28,564 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092012/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:28:37,357 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 07:00:00 -> 2020-09-20 12:00:00 
+2020-10-01 12:28:37,359 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 12:00:00 
+2020-10-01 12:28:37,359 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 18:00:00 :  
+2020-10-01 12:28:37,360 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:28:37,360 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092018/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:28:46,314 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 13:00:00 -> 2020-09-20 18:00:00 
+2020-10-01 12:28:46,316 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 18:00:00 
+2020-10-01 12:28:46,316 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 00:00:00 :  
+2020-10-01 12:28:46,317 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:28:46,317 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092100/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:28:55,374 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 19:00:00 -> 2020-09-21 00:00:00 
+2020-10-01 12:28:55,376 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 00:00:00 
+2020-10-01 12:28:55,376 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 06:00:00 :  
+2020-10-01 12:28:55,377 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:28:55,377 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092106/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:29:04,260 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 01:00:00 -> 2020-09-21 06:00:00 
+2020-10-01 12:29:04,262 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 06:00:00 
+2020-10-01 12:29:04,262 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 12:00:00 :  
+2020-10-01 12:29:04,262 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:29:04,262 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092112/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:29:13,193 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 07:00:00 -> 2020-09-21 12:00:00 
+2020-10-01 12:29:13,195 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 12:00:00 
+2020-10-01 12:29:13,195 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 18:00:00 :  
+2020-10-01 12:29:13,196 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:29:13,196 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092118/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:29:22,047 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 13:00:00 -> 2020-09-21 18:00:00 
+2020-10-01 12:29:22,049 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 18:00:00 
+2020-10-01 12:29:22,054 : INFO : <module> : test_getadcirc : adda_services : Done ADCIRC Reads 
+2020-10-01 12:29:22,115 : INFO : <module> : test_getadcirc : adda_services : T1 (start) = 2020-09-17 13:00:00 
+2020-10-01 12:29:22,115 : INFO : <module> : test_getadcirc : adda_services : T2 (end)   = 2020-09-21 18:00:00 
+2020-10-01 12:29:22,793 : DEBUG : get_urls : GetADCIRC : adda_services : 18 : 2020-09-21 18:00:00 in range. 
+2020-10-01 12:29:22,793 : DEBUG : get_urls : GetADCIRC : adda_services : 19 : 2020-09-21 12:00:00 in range. 
+2020-10-01 12:29:22,794 : DEBUG : get_urls : GetADCIRC : adda_services : 20 : 2020-09-21 06:00:00 in range. 
+2020-10-01 12:29:22,794 : DEBUG : get_urls : GetADCIRC : adda_services : 21 : 2020-09-21 00:00:00 in range. 
+2020-10-01 12:29:22,794 : DEBUG : get_urls : GetADCIRC : adda_services : 22 : 2020-09-20 18:00:00 in range. 
+2020-10-01 12:29:22,794 : DEBUG : get_urls : GetADCIRC : adda_services : 23 : 2020-09-20 12:00:00 in range. 
+2020-10-01 12:29:22,795 : DEBUG : get_urls : GetADCIRC : adda_services : 24 : 2020-09-20 06:00:00 in range. 
+2020-10-01 12:29:22,795 : DEBUG : get_urls : GetADCIRC : adda_services : 25 : 2020-09-20 00:00:00 in range. 
+2020-10-01 12:29:22,795 : DEBUG : get_urls : GetADCIRC : adda_services : 26 : 2020-09-19 18:00:00 in range. 
+2020-10-01 12:29:22,795 : DEBUG : get_urls : GetADCIRC : adda_services : 27 : 2020-09-19 12:00:00 in range. 
+2020-10-01 12:29:22,796 : DEBUG : get_urls : GetADCIRC : adda_services : 28 : 2020-09-19 06:00:00 in range. 
+2020-10-01 12:29:22,796 : DEBUG : get_urls : GetADCIRC : adda_services : 29 : 2020-09-19 00:00:00 in range. 
+2020-10-01 12:29:22,796 : DEBUG : get_urls : GetADCIRC : adda_services : 30 : 2020-09-18 18:00:00 in range. 
+2020-10-01 12:29:22,796 : DEBUG : get_urls : GetADCIRC : adda_services : 31 : 2020-09-18 12:00:00 in range. 
+2020-10-01 12:29:22,797 : DEBUG : get_urls : GetADCIRC : adda_services : 32 : 2020-09-18 06:00:00 in range. 
+2020-10-01 12:29:22,797 : DEBUG : get_urls : GetADCIRC : adda_services : 33 : 2020-09-18 00:00:00 in range. 
+2020-10-01 12:29:22,797 : DEBUG : get_urls : GetADCIRC : adda_services : 34 : 2020-09-17 18:00:00 in range. 
+2020-10-01 12:29:25,387 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-17 18:00:00 :  
+2020-10-01 12:29:25,388 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:29:25,388 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091718/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:29:34,232 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-17 13:00:00 -> 2020-09-17 18:00:00 
+2020-10-01 12:29:34,234 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-17 18:00:00 
+2020-10-01 12:29:34,234 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 00:00:00 :  
+2020-10-01 12:29:34,234 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:29:34,234 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091800/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:29:43,042 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-17 19:00:00 -> 2020-09-18 00:00:00 
+2020-10-01 12:29:43,044 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 00:00:00 
+2020-10-01 12:29:43,045 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 06:00:00 :  
+2020-10-01 12:29:43,045 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:29:43,045 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091806/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:29:51,891 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 01:00:00 -> 2020-09-18 06:00:00 
+2020-10-01 12:29:51,893 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 06:00:00 
+2020-10-01 12:29:51,893 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 12:00:00 :  
+2020-10-01 12:29:51,893 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:29:51,893 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091812/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:30:00,634 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 07:00:00 -> 2020-09-18 12:00:00 
+2020-10-01 12:30:00,636 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 12:00:00 
+2020-10-01 12:30:00,636 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 18:00:00 :  
+2020-10-01 12:30:00,637 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:30:00,637 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091818/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:30:10,246 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 13:00:00 -> 2020-09-18 18:00:00 
+2020-10-01 12:30:10,248 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 18:00:00 
+2020-10-01 12:30:10,248 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 00:00:00 :  
+2020-10-01 12:30:10,248 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:30:10,249 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091900/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:30:19,991 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 19:00:00 -> 2020-09-19 00:00:00 
+2020-10-01 12:30:19,993 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 00:00:00 
+2020-10-01 12:30:19,993 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 06:00:00 :  
+2020-10-01 12:30:19,993 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:30:19,993 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091906/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:30:29,854 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 01:00:00 -> 2020-09-19 06:00:00 
+2020-10-01 12:30:29,856 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 06:00:00 
+2020-10-01 12:30:29,856 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 12:00:00 :  
+2020-10-01 12:30:29,856 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:30:29,856 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091912/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:30:39,722 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 07:00:00 -> 2020-09-19 12:00:00 
+2020-10-01 12:30:39,724 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 12:00:00 
+2020-10-01 12:30:39,724 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 18:00:00 :  
+2020-10-01 12:30:39,724 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:30:39,725 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091918/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:30:49,471 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 13:00:00 -> 2020-09-19 18:00:00 
+2020-10-01 12:30:49,473 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 18:00:00 
+2020-10-01 12:30:49,473 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 00:00:00 :  
+2020-10-01 12:30:49,474 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:30:49,474 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092000/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:30:59,173 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 19:00:00 -> 2020-09-20 00:00:00 
+2020-10-01 12:30:59,175 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 00:00:00 
+2020-10-01 12:30:59,175 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 06:00:00 :  
+2020-10-01 12:30:59,175 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:30:59,176 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092006/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:31:08,832 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 01:00:00 -> 2020-09-20 06:00:00 
+2020-10-01 12:31:08,834 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 06:00:00 
+2020-10-01 12:31:08,834 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 12:00:00 :  
+2020-10-01 12:31:08,835 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:31:08,835 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092012/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:31:18,578 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 07:00:00 -> 2020-09-20 12:00:00 
+2020-10-01 12:31:18,580 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 12:00:00 
+2020-10-01 12:31:18,580 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 18:00:00 :  
+2020-10-01 12:31:18,580 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:31:18,580 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092018/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:31:28,302 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 13:00:00 -> 2020-09-20 18:00:00 
+2020-10-01 12:31:28,304 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 18:00:00 
+2020-10-01 12:31:28,304 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 00:00:00 :  
+2020-10-01 12:31:28,305 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:31:28,305 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092100/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:31:38,083 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 19:00:00 -> 2020-09-21 00:00:00 
+2020-10-01 12:31:38,085 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 00:00:00 
+2020-10-01 12:31:38,085 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 06:00:00 :  
+2020-10-01 12:31:38,085 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:31:38,085 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092106/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:31:47,785 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 01:00:00 -> 2020-09-21 06:00:00 
+2020-10-01 12:31:47,787 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 06:00:00 
+2020-10-01 12:31:47,787 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 12:00:00 :  
+2020-10-01 12:31:47,787 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:31:47,787 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092112/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:31:57,566 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 07:00:00 -> 2020-09-21 12:00:00 
+2020-10-01 12:31:57,567 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 12:00:00 
+2020-10-01 12:31:57,568 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 18:00:00 :  
+2020-10-01 12:31:57,568 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:31:57,568 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092118/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:32:07,268 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 13:00:00 -> 2020-09-21 18:00:00 
+2020-10-01 12:32:07,270 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 18:00:00 
+2020-10-01 12:32:07,275 : INFO : <module> : test_getadcirc : adda_services : Done ADCIRC Reads 
+2020-10-01 12:32:07,338 : INFO : <module> : test_getadcirc : adda_services : T1 (start) = 2020-09-17 13:00:00 
+2020-10-01 12:32:07,338 : INFO : <module> : test_getadcirc : adda_services : T2 (end)   = 2020-09-21 18:00:00 
+2020-10-01 12:32:08,160 : DEBUG : get_urls : GetADCIRC : adda_services : 18 : 2020-09-21 18:00:00 in range. 
+2020-10-01 12:32:08,161 : DEBUG : get_urls : GetADCIRC : adda_services : 19 : 2020-09-21 12:00:00 in range. 
+2020-10-01 12:32:08,161 : DEBUG : get_urls : GetADCIRC : adda_services : 20 : 2020-09-21 06:00:00 in range. 
+2020-10-01 12:32:08,161 : DEBUG : get_urls : GetADCIRC : adda_services : 21 : 2020-09-21 00:00:00 in range. 
+2020-10-01 12:32:08,161 : DEBUG : get_urls : GetADCIRC : adda_services : 22 : 2020-09-20 18:00:00 in range. 
+2020-10-01 12:32:08,162 : DEBUG : get_urls : GetADCIRC : adda_services : 23 : 2020-09-20 12:00:00 in range. 
+2020-10-01 12:32:08,162 : DEBUG : get_urls : GetADCIRC : adda_services : 24 : 2020-09-20 06:00:00 in range. 
+2020-10-01 12:32:08,162 : DEBUG : get_urls : GetADCIRC : adda_services : 25 : 2020-09-20 00:00:00 in range. 
+2020-10-01 12:32:08,162 : DEBUG : get_urls : GetADCIRC : adda_services : 26 : 2020-09-19 18:00:00 in range. 
+2020-10-01 12:32:08,163 : DEBUG : get_urls : GetADCIRC : adda_services : 27 : 2020-09-19 12:00:00 in range. 
+2020-10-01 12:32:08,163 : DEBUG : get_urls : GetADCIRC : adda_services : 28 : 2020-09-19 06:00:00 in range. 
+2020-10-01 12:32:08,163 : DEBUG : get_urls : GetADCIRC : adda_services : 29 : 2020-09-19 00:00:00 in range. 
+2020-10-01 12:32:08,163 : DEBUG : get_urls : GetADCIRC : adda_services : 30 : 2020-09-18 18:00:00 in range. 
+2020-10-01 12:32:08,164 : DEBUG : get_urls : GetADCIRC : adda_services : 31 : 2020-09-18 12:00:00 in range. 
+2020-10-01 12:32:08,164 : DEBUG : get_urls : GetADCIRC : adda_services : 32 : 2020-09-18 06:00:00 in range. 
+2020-10-01 12:32:08,164 : DEBUG : get_urls : GetADCIRC : adda_services : 33 : 2020-09-18 00:00:00 in range. 
+2020-10-01 12:32:08,164 : DEBUG : get_urls : GetADCIRC : adda_services : 34 : 2020-09-17 18:00:00 in range. 
+2020-10-01 12:32:11,167 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-17 18:00:00 :  
+2020-10-01 12:32:11,167 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:32:11,167 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091718/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:32:20,879 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-17 13:00:00 -> 2020-09-17 18:00:00 
+2020-10-01 12:32:20,881 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-17 18:00:00 
+2020-10-01 12:32:20,881 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 00:00:00 :  
+2020-10-01 12:32:20,881 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:32:20,881 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091800/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:32:30,756 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-17 19:00:00 -> 2020-09-18 00:00:00 
+2020-10-01 12:32:30,758 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 00:00:00 
+2020-10-01 12:32:30,758 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 06:00:00 :  
+2020-10-01 12:32:30,759 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:32:30,759 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091806/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:32:40,466 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 01:00:00 -> 2020-09-18 06:00:00 
+2020-10-01 12:32:40,468 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 06:00:00 
+2020-10-01 12:32:40,468 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 12:00:00 :  
+2020-10-01 12:32:40,469 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:32:40,469 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091812/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:32:50,203 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 07:00:00 -> 2020-09-18 12:00:00 
+2020-10-01 12:32:50,205 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 12:00:00 
+2020-10-01 12:32:50,205 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 18:00:00 :  
+2020-10-01 12:32:50,205 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:32:50,206 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091818/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:32:59,910 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 13:00:00 -> 2020-09-18 18:00:00 
+2020-10-01 12:32:59,912 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 18:00:00 
+2020-10-01 12:32:59,912 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 00:00:00 :  
+2020-10-01 12:32:59,912 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:32:59,912 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091900/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:33:09,677 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 19:00:00 -> 2020-09-19 00:00:00 
+2020-10-01 12:33:09,679 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 00:00:00 
+2020-10-01 12:33:09,679 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 06:00:00 :  
+2020-10-01 12:33:09,680 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:33:09,680 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091906/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:33:19,137 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 01:00:00 -> 2020-09-19 06:00:00 
+2020-10-01 12:33:19,139 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 06:00:00 
+2020-10-01 12:33:19,139 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 12:00:00 :  
+2020-10-01 12:33:19,139 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:33:19,139 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091912/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:33:28,027 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 07:00:00 -> 2020-09-19 12:00:00 
+2020-10-01 12:33:28,029 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 12:00:00 
+2020-10-01 12:33:28,030 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 18:00:00 :  
+2020-10-01 12:33:28,030 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:33:28,030 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091918/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:33:36,814 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 13:00:00 -> 2020-09-19 18:00:00 
+2020-10-01 12:33:36,816 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 18:00:00 
+2020-10-01 12:33:36,816 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 00:00:00 :  
+2020-10-01 12:33:36,816 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:33:36,817 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092000/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:33:45,722 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 19:00:00 -> 2020-09-20 00:00:00 
+2020-10-01 12:33:45,723 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 00:00:00 
+2020-10-01 12:33:45,724 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 06:00:00 :  
+2020-10-01 12:33:45,724 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:33:45,724 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092006/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:33:54,617 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 01:00:00 -> 2020-09-20 06:00:00 
+2020-10-01 12:33:54,619 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 06:00:00 
+2020-10-01 12:33:54,619 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 12:00:00 :  
+2020-10-01 12:33:54,619 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:33:54,619 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092012/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:34:03,487 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 07:00:00 -> 2020-09-20 12:00:00 
+2020-10-01 12:34:03,489 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 12:00:00 
+2020-10-01 12:34:03,489 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 18:00:00 :  
+2020-10-01 12:34:03,489 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:34:03,489 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092018/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:34:12,293 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 13:00:00 -> 2020-09-20 18:00:00 
+2020-10-01 12:34:12,295 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 18:00:00 
+2020-10-01 12:34:12,295 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 00:00:00 :  
+2020-10-01 12:34:12,296 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:34:12,296 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092100/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:34:21,205 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 19:00:00 -> 2020-09-21 00:00:00 
+2020-10-01 12:34:21,207 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 00:00:00 
+2020-10-01 12:34:21,207 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 06:00:00 :  
+2020-10-01 12:34:21,207 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:34:21,208 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092106/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:34:30,045 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 01:00:00 -> 2020-09-21 06:00:00 
+2020-10-01 12:34:30,047 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 06:00:00 
+2020-10-01 12:34:30,047 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 12:00:00 :  
+2020-10-01 12:34:30,047 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:34:30,047 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092112/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:34:39,008 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 07:00:00 -> 2020-09-21 12:00:00 
+2020-10-01 12:34:39,010 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 12:00:00 
+2020-10-01 12:34:39,010 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 18:00:00 :  
+2020-10-01 12:34:39,010 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:34:39,010 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092118/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:34:47,846 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 13:00:00 -> 2020-09-21 18:00:00 
+2020-10-01 12:34:47,848 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 18:00:00 
+2020-10-01 12:34:47,854 : INFO : <module> : test_getadcirc : adda_services : Done ADCIRC Reads 
+2020-10-01 12:34:47,916 : INFO : <module> : test_getadcirc : adda_services : T1 (start) = 2020-09-17 13:00:00 
+2020-10-01 12:34:47,916 : INFO : <module> : test_getadcirc : adda_services : T2 (end)   = 2020-09-21 18:00:00 
+2020-10-01 12:34:48,652 : DEBUG : get_urls : GetADCIRC : adda_services : 18 : 2020-09-21 18:00:00 in range. 
+2020-10-01 12:34:48,652 : DEBUG : get_urls : GetADCIRC : adda_services : 19 : 2020-09-21 12:00:00 in range. 
+2020-10-01 12:34:48,652 : DEBUG : get_urls : GetADCIRC : adda_services : 20 : 2020-09-21 06:00:00 in range. 
+2020-10-01 12:34:48,653 : DEBUG : get_urls : GetADCIRC : adda_services : 21 : 2020-09-21 00:00:00 in range. 
+2020-10-01 12:34:48,653 : DEBUG : get_urls : GetADCIRC : adda_services : 22 : 2020-09-20 18:00:00 in range. 
+2020-10-01 12:34:48,653 : DEBUG : get_urls : GetADCIRC : adda_services : 23 : 2020-09-20 12:00:00 in range. 
+2020-10-01 12:34:48,653 : DEBUG : get_urls : GetADCIRC : adda_services : 24 : 2020-09-20 06:00:00 in range. 
+2020-10-01 12:34:48,654 : DEBUG : get_urls : GetADCIRC : adda_services : 25 : 2020-09-20 00:00:00 in range. 
+2020-10-01 12:34:48,654 : DEBUG : get_urls : GetADCIRC : adda_services : 26 : 2020-09-19 18:00:00 in range. 
+2020-10-01 12:34:48,654 : DEBUG : get_urls : GetADCIRC : adda_services : 27 : 2020-09-19 12:00:00 in range. 
+2020-10-01 12:34:48,654 : DEBUG : get_urls : GetADCIRC : adda_services : 28 : 2020-09-19 06:00:00 in range. 
+2020-10-01 12:34:48,655 : DEBUG : get_urls : GetADCIRC : adda_services : 29 : 2020-09-19 00:00:00 in range. 
+2020-10-01 12:34:48,655 : DEBUG : get_urls : GetADCIRC : adda_services : 30 : 2020-09-18 18:00:00 in range. 
+2020-10-01 12:34:48,655 : DEBUG : get_urls : GetADCIRC : adda_services : 31 : 2020-09-18 12:00:00 in range. 
+2020-10-01 12:34:48,655 : DEBUG : get_urls : GetADCIRC : adda_services : 32 : 2020-09-18 06:00:00 in range. 
+2020-10-01 12:34:48,656 : DEBUG : get_urls : GetADCIRC : adda_services : 33 : 2020-09-18 00:00:00 in range. 
+2020-10-01 12:34:48,656 : DEBUG : get_urls : GetADCIRC : adda_services : 34 : 2020-09-17 18:00:00 in range. 
+2020-10-01 12:34:51,226 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-17 18:00:00 :  
+2020-10-01 12:34:51,226 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:34:51,227 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091718/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:35:00,412 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-17 13:00:00 -> 2020-09-17 18:00:00 
+2020-10-01 12:35:00,414 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-17 18:00:00 
+2020-10-01 12:35:00,415 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 00:00:00 :  
+2020-10-01 12:35:00,415 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:35:00,415 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091800/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:35:09,789 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-17 19:00:00 -> 2020-09-18 00:00:00 
+2020-10-01 12:35:09,791 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 00:00:00 
+2020-10-01 12:35:09,791 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 06:00:00 :  
+2020-10-01 12:35:09,792 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:35:09,792 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091806/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:35:19,433 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 01:00:00 -> 2020-09-18 06:00:00 
+2020-10-01 12:35:19,435 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 06:00:00 
+2020-10-01 12:35:19,435 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 12:00:00 :  
+2020-10-01 12:35:19,435 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:35:19,435 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091812/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:35:29,472 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 07:00:00 -> 2020-09-18 12:00:00 
+2020-10-01 12:35:29,474 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 12:00:00 
+2020-10-01 12:35:29,474 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 18:00:00 :  
+2020-10-01 12:35:29,474 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:35:29,474 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091818/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:35:39,322 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 13:00:00 -> 2020-09-18 18:00:00 
+2020-10-01 12:35:39,324 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 18:00:00 
+2020-10-01 12:35:39,324 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 00:00:00 :  
+2020-10-01 12:35:39,325 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:35:39,325 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091900/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:35:49,238 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 19:00:00 -> 2020-09-19 00:00:00 
+2020-10-01 12:35:49,240 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 00:00:00 
+2020-10-01 12:35:49,240 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 06:00:00 :  
+2020-10-01 12:35:49,240 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:35:49,241 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091906/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:35:59,132 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 01:00:00 -> 2020-09-19 06:00:00 
+2020-10-01 12:35:59,134 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 06:00:00 
+2020-10-01 12:35:59,134 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 12:00:00 :  
+2020-10-01 12:35:59,134 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:35:59,134 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091912/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:36:09,287 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 07:00:00 -> 2020-09-19 12:00:00 
+2020-10-01 12:36:09,289 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 12:00:00 
+2020-10-01 12:36:09,289 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 18:00:00 :  
+2020-10-01 12:36:09,289 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:36:09,290 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091918/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:36:19,212 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 13:00:00 -> 2020-09-19 18:00:00 
+2020-10-01 12:36:19,214 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 18:00:00 
+2020-10-01 12:36:19,214 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 00:00:00 :  
+2020-10-01 12:36:19,214 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:36:19,214 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092000/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:36:29,133 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 19:00:00 -> 2020-09-20 00:00:00 
+2020-10-01 12:36:29,134 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 00:00:00 
+2020-10-01 12:36:29,135 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 06:00:00 :  
+2020-10-01 12:36:29,135 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:36:29,135 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092006/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:36:38,764 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 01:00:00 -> 2020-09-20 06:00:00 
+2020-10-01 12:36:38,766 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 06:00:00 
+2020-10-01 12:36:38,766 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 12:00:00 :  
+2020-10-01 12:36:38,766 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:36:38,766 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092012/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:36:48,724 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 07:00:00 -> 2020-09-20 12:00:00 
+2020-10-01 12:36:48,726 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 12:00:00 
+2020-10-01 12:36:48,726 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 18:00:00 :  
+2020-10-01 12:36:48,726 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:36:48,726 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092018/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:36:58,575 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 13:00:00 -> 2020-09-20 18:00:00 
+2020-10-01 12:36:58,576 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 18:00:00 
+2020-10-01 12:36:58,577 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 00:00:00 :  
+2020-10-01 12:36:58,577 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:36:58,577 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092100/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:37:08,458 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 19:00:00 -> 2020-09-21 00:00:00 
+2020-10-01 12:37:08,460 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 00:00:00 
+2020-10-01 12:37:08,461 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 06:00:00 :  
+2020-10-01 12:37:08,461 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:37:08,461 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092106/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:37:18,238 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 01:00:00 -> 2020-09-21 06:00:00 
+2020-10-01 12:37:18,240 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 06:00:00 
+2020-10-01 12:37:18,240 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 12:00:00 :  
+2020-10-01 12:37:18,240 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:37:18,241 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092112/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:37:28,087 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 07:00:00 -> 2020-09-21 12:00:00 
+2020-10-01 12:37:28,089 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 12:00:00 
+2020-10-01 12:37:28,089 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 18:00:00 :  
+2020-10-01 12:37:28,089 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:37:28,089 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092118/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:37:37,845 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 13:00:00 -> 2020-09-21 18:00:00 
+2020-10-01 12:37:37,846 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 18:00:00 
+2020-10-01 12:37:37,852 : INFO : <module> : test_getadcirc : adda_services : Done ADCIRC Reads 
+2020-10-01 12:37:37,915 : INFO : <module> : test_getadcirc : adda_services : T1 (start) = 2020-09-17 13:00:00 
+2020-10-01 12:37:37,915 : INFO : <module> : test_getadcirc : adda_services : T2 (end)   = 2020-09-21 18:00:00 
+2020-10-01 12:37:38,710 : DEBUG : get_urls : GetADCIRC : adda_services : 18 : 2020-09-21 18:00:00 in range. 
+2020-10-01 12:37:38,710 : DEBUG : get_urls : GetADCIRC : adda_services : 19 : 2020-09-21 12:00:00 in range. 
+2020-10-01 12:37:38,711 : DEBUG : get_urls : GetADCIRC : adda_services : 20 : 2020-09-21 06:00:00 in range. 
+2020-10-01 12:37:38,711 : DEBUG : get_urls : GetADCIRC : adda_services : 21 : 2020-09-21 00:00:00 in range. 
+2020-10-01 12:37:38,711 : DEBUG : get_urls : GetADCIRC : adda_services : 22 : 2020-09-20 18:00:00 in range. 
+2020-10-01 12:37:38,712 : DEBUG : get_urls : GetADCIRC : adda_services : 23 : 2020-09-20 12:00:00 in range. 
+2020-10-01 12:37:38,712 : DEBUG : get_urls : GetADCIRC : adda_services : 24 : 2020-09-20 06:00:00 in range. 
+2020-10-01 12:37:38,712 : DEBUG : get_urls : GetADCIRC : adda_services : 25 : 2020-09-20 00:00:00 in range. 
+2020-10-01 12:37:38,712 : DEBUG : get_urls : GetADCIRC : adda_services : 26 : 2020-09-19 18:00:00 in range. 
+2020-10-01 12:37:38,713 : DEBUG : get_urls : GetADCIRC : adda_services : 27 : 2020-09-19 12:00:00 in range. 
+2020-10-01 12:37:38,713 : DEBUG : get_urls : GetADCIRC : adda_services : 28 : 2020-09-19 06:00:00 in range. 
+2020-10-01 12:37:38,713 : DEBUG : get_urls : GetADCIRC : adda_services : 29 : 2020-09-19 00:00:00 in range. 
+2020-10-01 12:37:38,713 : DEBUG : get_urls : GetADCIRC : adda_services : 30 : 2020-09-18 18:00:00 in range. 
+2020-10-01 12:37:38,713 : DEBUG : get_urls : GetADCIRC : adda_services : 31 : 2020-09-18 12:00:00 in range. 
+2020-10-01 12:37:38,714 : DEBUG : get_urls : GetADCIRC : adda_services : 32 : 2020-09-18 06:00:00 in range. 
+2020-10-01 12:37:38,714 : DEBUG : get_urls : GetADCIRC : adda_services : 33 : 2020-09-18 00:00:00 in range. 
+2020-10-01 12:37:38,714 : DEBUG : get_urls : GetADCIRC : adda_services : 34 : 2020-09-17 18:00:00 in range. 
+2020-10-01 12:37:41,600 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-17 18:00:00 :  
+2020-10-01 12:37:41,600 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:37:41,600 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091718/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:37:51,176 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-17 13:00:00 -> 2020-09-17 18:00:00 
+2020-10-01 12:37:51,178 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-17 18:00:00 
+2020-10-01 12:37:51,178 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 00:00:00 :  
+2020-10-01 12:37:51,178 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:37:51,178 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091800/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:38:00,796 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-17 19:00:00 -> 2020-09-18 00:00:00 
+2020-10-01 12:38:00,798 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 00:00:00 
+2020-10-01 12:38:00,798 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 06:00:00 :  
+2020-10-01 12:38:00,798 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:38:00,798 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091806/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:38:10,555 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 01:00:00 -> 2020-09-18 06:00:00 
+2020-10-01 12:38:10,557 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 06:00:00 
+2020-10-01 12:38:10,557 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 12:00:00 :  
+2020-10-01 12:38:10,557 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:38:10,557 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091812/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:38:19,443 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 07:00:00 -> 2020-09-18 12:00:00 
+2020-10-01 12:38:19,445 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 12:00:00 
+2020-10-01 12:38:19,445 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 18:00:00 :  
+2020-10-01 12:38:19,446 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:38:19,446 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091818/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:38:28,327 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 13:00:00 -> 2020-09-18 18:00:00 
+2020-10-01 12:38:28,329 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 18:00:00 
+2020-10-01 12:38:28,329 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 00:00:00 :  
+2020-10-01 12:38:28,329 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:38:28,330 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091900/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:38:37,127 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 19:00:00 -> 2020-09-19 00:00:00 
+2020-10-01 12:38:37,129 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 00:00:00 
+2020-10-01 12:38:37,130 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 06:00:00 :  
+2020-10-01 12:38:37,130 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:38:37,130 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091906/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:38:45,900 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 01:00:00 -> 2020-09-19 06:00:00 
+2020-10-01 12:38:45,902 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 06:00:00 
+2020-10-01 12:38:45,902 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 12:00:00 :  
+2020-10-01 12:38:45,902 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:38:45,902 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091912/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:38:54,741 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 07:00:00 -> 2020-09-19 12:00:00 
+2020-10-01 12:38:54,743 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 12:00:00 
+2020-10-01 12:38:54,743 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 18:00:00 :  
+2020-10-01 12:38:54,743 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:38:54,744 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091918/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:39:03,532 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 13:00:00 -> 2020-09-19 18:00:00 
+2020-10-01 12:39:03,534 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 18:00:00 
+2020-10-01 12:39:03,534 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 00:00:00 :  
+2020-10-01 12:39:03,534 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:39:03,534 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092000/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:39:12,481 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 19:00:00 -> 2020-09-20 00:00:00 
+2020-10-01 12:39:12,483 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 00:00:00 
+2020-10-01 12:39:12,483 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 06:00:00 :  
+2020-10-01 12:39:12,483 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:39:12,483 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092006/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:39:21,290 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 01:00:00 -> 2020-09-20 06:00:00 
+2020-10-01 12:39:21,292 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 06:00:00 
+2020-10-01 12:39:21,292 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 12:00:00 :  
+2020-10-01 12:39:21,292 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:39:21,292 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092012/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:39:30,244 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 07:00:00 -> 2020-09-20 12:00:00 
+2020-10-01 12:39:30,246 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 12:00:00 
+2020-10-01 12:39:30,246 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 18:00:00 :  
+2020-10-01 12:39:30,246 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:39:30,246 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092018/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:39:39,067 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 13:00:00 -> 2020-09-20 18:00:00 
+2020-10-01 12:39:39,069 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 18:00:00 
+2020-10-01 12:39:39,069 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 00:00:00 :  
+2020-10-01 12:39:39,069 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:39:39,069 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092100/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:39:47,852 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 19:00:00 -> 2020-09-21 00:00:00 
+2020-10-01 12:39:47,854 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 00:00:00 
+2020-10-01 12:39:47,854 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 06:00:00 :  
+2020-10-01 12:39:47,855 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:39:47,855 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092106/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:39:56,571 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 01:00:00 -> 2020-09-21 06:00:00 
+2020-10-01 12:39:56,573 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 06:00:00 
+2020-10-01 12:39:56,573 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 12:00:00 :  
+2020-10-01 12:39:56,573 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:39:56,573 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092112/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:40:05,595 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 07:00:00 -> 2020-09-21 12:00:00 
+2020-10-01 12:40:05,597 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 12:00:00 
+2020-10-01 12:40:05,597 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 18:00:00 :  
+2020-10-01 12:40:05,597 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:40:05,597 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092118/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:40:14,758 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 13:00:00 -> 2020-09-21 18:00:00 
+2020-10-01 12:40:14,760 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 18:00:00 
+2020-10-01 12:40:14,766 : INFO : <module> : test_getadcirc : adda_services : Done ADCIRC Reads 
+2020-10-01 12:40:14,830 : INFO : <module> : test_getadcirc : adda_services : T1 (start) = 2020-09-17 13:00:00 
+2020-10-01 12:40:14,830 : INFO : <module> : test_getadcirc : adda_services : T2 (end)   = 2020-09-21 18:00:00 
+2020-10-01 12:40:15,582 : DEBUG : get_urls : GetADCIRC : adda_services : 18 : 2020-09-21 18:00:00 in range. 
+2020-10-01 12:40:15,582 : DEBUG : get_urls : GetADCIRC : adda_services : 19 : 2020-09-21 12:00:00 in range. 
+2020-10-01 12:40:15,583 : DEBUG : get_urls : GetADCIRC : adda_services : 20 : 2020-09-21 06:00:00 in range. 
+2020-10-01 12:40:15,583 : DEBUG : get_urls : GetADCIRC : adda_services : 21 : 2020-09-21 00:00:00 in range. 
+2020-10-01 12:40:15,583 : DEBUG : get_urls : GetADCIRC : adda_services : 22 : 2020-09-20 18:00:00 in range. 
+2020-10-01 12:40:15,583 : DEBUG : get_urls : GetADCIRC : adda_services : 23 : 2020-09-20 12:00:00 in range. 
+2020-10-01 12:40:15,584 : DEBUG : get_urls : GetADCIRC : adda_services : 24 : 2020-09-20 06:00:00 in range. 
+2020-10-01 12:40:15,584 : DEBUG : get_urls : GetADCIRC : adda_services : 25 : 2020-09-20 00:00:00 in range. 
+2020-10-01 12:40:15,584 : DEBUG : get_urls : GetADCIRC : adda_services : 26 : 2020-09-19 18:00:00 in range. 
+2020-10-01 12:40:15,584 : DEBUG : get_urls : GetADCIRC : adda_services : 27 : 2020-09-19 12:00:00 in range. 
+2020-10-01 12:40:15,585 : DEBUG : get_urls : GetADCIRC : adda_services : 28 : 2020-09-19 06:00:00 in range. 
+2020-10-01 12:40:15,585 : DEBUG : get_urls : GetADCIRC : adda_services : 29 : 2020-09-19 00:00:00 in range. 
+2020-10-01 12:40:15,585 : DEBUG : get_urls : GetADCIRC : adda_services : 30 : 2020-09-18 18:00:00 in range. 
+2020-10-01 12:40:15,585 : DEBUG : get_urls : GetADCIRC : adda_services : 31 : 2020-09-18 12:00:00 in range. 
+2020-10-01 12:40:15,586 : DEBUG : get_urls : GetADCIRC : adda_services : 32 : 2020-09-18 06:00:00 in range. 
+2020-10-01 12:40:15,586 : DEBUG : get_urls : GetADCIRC : adda_services : 33 : 2020-09-18 00:00:00 in range. 
+2020-10-01 12:40:15,586 : DEBUG : get_urls : GetADCIRC : adda_services : 34 : 2020-09-17 18:00:00 in range. 
+2020-10-01 12:40:18,368 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-17 18:00:00 :  
+2020-10-01 12:40:18,369 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:40:18,369 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091718/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:40:28,112 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-17 13:00:00 -> 2020-09-17 18:00:00 
+2020-10-01 12:40:28,114 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-17 18:00:00 
+2020-10-01 12:40:28,114 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 00:00:00 :  
+2020-10-01 12:40:28,115 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:40:28,115 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091800/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:40:37,974 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-17 19:00:00 -> 2020-09-18 00:00:00 
+2020-10-01 12:40:37,975 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 00:00:00 
+2020-10-01 12:40:37,976 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 06:00:00 :  
+2020-10-01 12:40:37,976 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:40:37,976 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091806/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:40:47,781 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 01:00:00 -> 2020-09-18 06:00:00 
+2020-10-01 12:40:47,783 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 06:00:00 
+2020-10-01 12:40:47,783 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 12:00:00 :  
+2020-10-01 12:40:47,784 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:40:47,784 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091812/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:40:57,431 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 07:00:00 -> 2020-09-18 12:00:00 
+2020-10-01 12:40:57,433 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 12:00:00 
+2020-10-01 12:40:57,433 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 18:00:00 :  
+2020-10-01 12:40:57,433 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:40:57,433 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091818/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:41:07,252 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 13:00:00 -> 2020-09-18 18:00:00 
+2020-10-01 12:41:07,254 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 18:00:00 
+2020-10-01 12:41:07,255 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 00:00:00 :  
+2020-10-01 12:41:07,255 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:41:07,255 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091900/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:41:17,313 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 19:00:00 -> 2020-09-19 00:00:00 
+2020-10-01 12:41:17,315 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 00:00:00 
+2020-10-01 12:41:17,315 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 06:00:00 :  
+2020-10-01 12:41:17,315 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:41:17,315 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091906/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:41:27,440 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 01:00:00 -> 2020-09-19 06:00:00 
+2020-10-01 12:41:27,442 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 06:00:00 
+2020-10-01 12:41:27,442 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 12:00:00 :  
+2020-10-01 12:41:27,442 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:41:27,442 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091912/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:41:37,109 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 07:00:00 -> 2020-09-19 12:00:00 
+2020-10-01 12:41:37,110 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 12:00:00 
+2020-10-01 12:41:37,111 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 18:00:00 :  
+2020-10-01 12:41:37,111 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:41:37,111 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091918/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:41:46,810 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 13:00:00 -> 2020-09-19 18:00:00 
+2020-10-01 12:41:46,812 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 18:00:00 
+2020-10-01 12:41:46,812 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 00:00:00 :  
+2020-10-01 12:41:46,812 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:41:46,813 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092000/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:41:56,542 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 19:00:00 -> 2020-09-20 00:00:00 
+2020-10-01 12:41:56,543 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 00:00:00 
+2020-10-01 12:41:56,544 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 06:00:00 :  
+2020-10-01 12:41:56,544 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:41:56,544 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092006/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:42:06,214 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 01:00:00 -> 2020-09-20 06:00:00 
+2020-10-01 12:42:06,216 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 06:00:00 
+2020-10-01 12:42:06,216 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 12:00:00 :  
+2020-10-01 12:42:06,216 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:42:06,216 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092012/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:42:16,075 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 07:00:00 -> 2020-09-20 12:00:00 
+2020-10-01 12:42:16,077 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 12:00:00 
+2020-10-01 12:42:16,077 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 18:00:00 :  
+2020-10-01 12:42:16,077 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:42:16,077 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092018/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:42:25,960 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 13:00:00 -> 2020-09-20 18:00:00 
+2020-10-01 12:42:25,962 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 18:00:00 
+2020-10-01 12:42:25,962 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 00:00:00 :  
+2020-10-01 12:42:25,962 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:42:25,963 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092100/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:42:35,847 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 19:00:00 -> 2020-09-21 00:00:00 
+2020-10-01 12:42:35,849 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 00:00:00 
+2020-10-01 12:42:35,849 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 06:00:00 :  
+2020-10-01 12:42:35,849 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:42:35,850 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092106/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:42:45,562 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 01:00:00 -> 2020-09-21 06:00:00 
+2020-10-01 12:42:45,564 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 06:00:00 
+2020-10-01 12:42:45,564 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 12:00:00 :  
+2020-10-01 12:42:45,565 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:42:45,565 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092112/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:42:55,395 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 07:00:00 -> 2020-09-21 12:00:00 
+2020-10-01 12:42:55,396 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 12:00:00 
+2020-10-01 12:42:55,397 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 18:00:00 :  
+2020-10-01 12:42:55,397 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:42:55,397 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092118/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:43:05,137 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 13:00:00 -> 2020-09-21 18:00:00 
+2020-10-01 12:43:05,139 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 18:00:00 
+2020-10-01 12:43:05,145 : INFO : <module> : test_getadcirc : adda_services : Done ADCIRC Reads 
+2020-10-01 12:43:05,207 : INFO : <module> : test_getadcirc : adda_services : T1 (start) = 2020-09-17 13:00:00 
+2020-10-01 12:43:05,208 : INFO : <module> : test_getadcirc : adda_services : T2 (end)   = 2020-09-21 18:00:00 
+2020-10-01 12:43:06,566 : DEBUG : get_urls : GetADCIRC : adda_services : 18 : 2020-09-21 18:00:00 in range. 
+2020-10-01 12:43:06,566 : DEBUG : get_urls : GetADCIRC : adda_services : 19 : 2020-09-21 12:00:00 in range. 
+2020-10-01 12:43:06,566 : DEBUG : get_urls : GetADCIRC : adda_services : 20 : 2020-09-21 06:00:00 in range. 
+2020-10-01 12:43:06,566 : DEBUG : get_urls : GetADCIRC : adda_services : 21 : 2020-09-21 00:00:00 in range. 
+2020-10-01 12:43:06,567 : DEBUG : get_urls : GetADCIRC : adda_services : 22 : 2020-09-20 18:00:00 in range. 
+2020-10-01 12:43:06,567 : DEBUG : get_urls : GetADCIRC : adda_services : 23 : 2020-09-20 12:00:00 in range. 
+2020-10-01 12:43:06,567 : DEBUG : get_urls : GetADCIRC : adda_services : 24 : 2020-09-20 06:00:00 in range. 
+2020-10-01 12:43:06,567 : DEBUG : get_urls : GetADCIRC : adda_services : 25 : 2020-09-20 00:00:00 in range. 
+2020-10-01 12:43:06,568 : DEBUG : get_urls : GetADCIRC : adda_services : 26 : 2020-09-19 18:00:00 in range. 
+2020-10-01 12:43:06,568 : DEBUG : get_urls : GetADCIRC : adda_services : 27 : 2020-09-19 12:00:00 in range. 
+2020-10-01 12:43:06,568 : DEBUG : get_urls : GetADCIRC : adda_services : 28 : 2020-09-19 06:00:00 in range. 
+2020-10-01 12:43:06,568 : DEBUG : get_urls : GetADCIRC : adda_services : 29 : 2020-09-19 00:00:00 in range. 
+2020-10-01 12:43:06,569 : DEBUG : get_urls : GetADCIRC : adda_services : 30 : 2020-09-18 18:00:00 in range. 
+2020-10-01 12:43:06,569 : DEBUG : get_urls : GetADCIRC : adda_services : 31 : 2020-09-18 12:00:00 in range. 
+2020-10-01 12:43:06,569 : DEBUG : get_urls : GetADCIRC : adda_services : 32 : 2020-09-18 06:00:00 in range. 
+2020-10-01 12:43:06,569 : DEBUG : get_urls : GetADCIRC : adda_services : 33 : 2020-09-18 00:00:00 in range. 
+2020-10-01 12:43:06,570 : DEBUG : get_urls : GetADCIRC : adda_services : 34 : 2020-09-17 18:00:00 in range. 
+2020-10-01 12:43:09,177 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-17 18:00:00 :  
+2020-10-01 12:43:09,177 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:43:09,177 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091718/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:43:17,974 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-17 13:00:00 -> 2020-09-17 18:00:00 
+2020-10-01 12:43:17,976 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-17 18:00:00 
+2020-10-01 12:43:17,977 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 00:00:00 :  
+2020-10-01 12:43:17,977 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:43:17,977 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091800/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:43:26,877 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-17 19:00:00 -> 2020-09-18 00:00:00 
+2020-10-01 12:43:26,879 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 00:00:00 
+2020-10-01 12:43:26,879 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 06:00:00 :  
+2020-10-01 12:43:26,880 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:43:26,880 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091806/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:43:35,998 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 01:00:00 -> 2020-09-18 06:00:00 
+2020-10-01 12:43:36,000 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 06:00:00 
+2020-10-01 12:43:36,000 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 12:00:00 :  
+2020-10-01 12:43:36,001 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:43:36,001 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091812/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:43:44,860 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 07:00:00 -> 2020-09-18 12:00:00 
+2020-10-01 12:43:44,862 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 12:00:00 
+2020-10-01 12:43:44,862 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-18 18:00:00 :  
+2020-10-01 12:43:44,862 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:43:44,862 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091818/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:43:53,678 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 13:00:00 -> 2020-09-18 18:00:00 
+2020-10-01 12:43:53,679 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-18 18:00:00 
+2020-10-01 12:43:53,679 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 00:00:00 :  
+2020-10-01 12:43:53,680 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:43:53,680 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091900/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:44:02,612 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-18 19:00:00 -> 2020-09-19 00:00:00 
+2020-10-01 12:44:02,614 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 00:00:00 
+2020-10-01 12:44:02,614 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 06:00:00 :  
+2020-10-01 12:44:02,615 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:44:02,615 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091906/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:44:11,507 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 01:00:00 -> 2020-09-19 06:00:00 
+2020-10-01 12:44:11,508 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 06:00:00 
+2020-10-01 12:44:11,509 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 12:00:00 :  
+2020-10-01 12:44:11,509 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:44:11,509 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091912/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:44:20,422 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 07:00:00 -> 2020-09-19 12:00:00 
+2020-10-01 12:44:20,424 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 12:00:00 
+2020-10-01 12:44:20,424 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-19 18:00:00 :  
+2020-10-01 12:44:20,424 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:44:20,425 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020091918/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:44:29,621 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 13:00:00 -> 2020-09-19 18:00:00 
+2020-10-01 12:44:29,623 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-19 18:00:00 
+2020-10-01 12:44:29,623 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 00:00:00 :  
+2020-10-01 12:44:29,624 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:44:29,624 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092000/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:44:38,526 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-19 19:00:00 -> 2020-09-20 00:00:00 
+2020-10-01 12:44:38,528 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 00:00:00 
+2020-10-01 12:44:38,528 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 06:00:00 :  
+2020-10-01 12:44:38,529 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:44:38,529 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092006/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:44:47,423 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 01:00:00 -> 2020-09-20 06:00:00 
+2020-10-01 12:44:47,425 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 06:00:00 
+2020-10-01 12:44:47,425 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 12:00:00 :  
+2020-10-01 12:44:47,426 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:44:47,426 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092012/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:44:56,312 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 07:00:00 -> 2020-09-20 12:00:00 
+2020-10-01 12:44:56,313 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 12:00:00 
+2020-10-01 12:44:56,314 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-20 18:00:00 :  
+2020-10-01 12:44:56,314 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:44:56,314 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092018/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:45:05,369 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 13:00:00 -> 2020-09-20 18:00:00 
+2020-10-01 12:45:05,370 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-20 18:00:00 
+2020-10-01 12:45:05,371 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 00:00:00 :  
+2020-10-01 12:45:05,371 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:45:05,371 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092100/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:45:14,647 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-20 19:00:00 -> 2020-09-21 00:00:00 
+2020-10-01 12:45:14,648 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 00:00:00 
+2020-10-01 12:45:14,649 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 06:00:00 :  
+2020-10-01 12:45:14,649 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:45:14,649 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092106/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:45:24,257 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 01:00:00 -> 2020-09-21 06:00:00 
+2020-10-01 12:45:24,259 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 06:00:00 
+2020-10-01 12:45:24,259 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 12:00:00 :  
+2020-10-01 12:45:24,259 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:45:24,259 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092112/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:45:34,076 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 07:00:00 -> 2020-09-21 12:00:00 
+2020-10-01 12:45:34,078 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 12:00:00 
+2020-10-01 12:45:34,079 : INFO : get_water_levels63 : GetADCIRC : adda_services : 2020-09-21 18:00:00 :  
+2020-10-01 12:45:34,079 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-10-01 12:45:34,079 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020092118/hsofs/hatteras.renci.org/hsofs-nam-bob/nowcast/fort.63.nc 
+2020-10-01 12:45:43,898 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :  df_sub time range = 2020-09-21 13:00:00 -> 2020-09-21 18:00:00 
+2020-10-01 12:45:43,900 : DEBUG : get_water_levels63 : GetADCIRC : adda_services :                                       df_cat time range = 2020-09-17 13:00:00 -> 2020-09-21 18:00:00 
+2020-10-01 12:45:43,906 : INFO : <module> : test_getadcirc : adda_services : Done ADCIRC Reads 

@@ -1,0 +1,37 @@
+--- #  Compute errors and interpolate
+
+# This is a convenience entry to facilitate some basic diagnostic graphing
+REGRID: &regrid
+  InterpToAdcirc: true
+  RECT:
+    lowerleft_x: -100
+    lowerleft_y: 20
+    res: .1  # resolution in deg
+    nx: 400
+    ny: 300
+
+KRIGING: &kriging
+   VPARAMS:
+      sill: 2
+      range: 2
+      nugget: 0.1
+   PARAMS:
+      method: "ordinary"
+      variogram_model: "gaussian"
+      coordinates_type: "euclidean"
+      weight: True
+      nlags: 2
+
+CVKRIGING: &cvkriging
+   VPARAMS:
+      sill: [1, 2, 3]
+      range: [1, 2, 3]
+      nugget: [0.05, 0.1, 0.2, 0.3]
+   PARAMS:
+      method: ["ordinary"]
+      variogram_model: ["gaussian", "spherical"]
+      coordinates_type: ["geographic"]
+      anisotropy_scaling: [1]
+      anisotropy_angle: [0]
+      weight: [True, False]
+      nlags: [1, 2, 4, 6, 8]

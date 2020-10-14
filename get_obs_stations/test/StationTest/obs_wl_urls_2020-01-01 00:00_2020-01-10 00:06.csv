@@ -1,0 +1,6 @@
+station,noaa_url,new
+8656483,https://tidesandcurrents.noaa.gov/waterlevels.html?id=8656483&units=metric&bdate=20200101&edate=20200110&timezone=gmt&datum=MSL&interval=6&action=+,2
+8658163,https://tidesandcurrents.noaa.gov/waterlevels.html?id=8658163&units=metric&bdate=20200101&edate=20200110&timezone=gmt&datum=MSL&interval=6&action=+,2
+8775241,https://tidesandcurrents.noaa.gov/waterlevels.html?id=8775241&units=metric&bdate=20200101&edate=20200110&timezone=gmt&datum=MSL&interval=6&action=+,2
+8775870,https://tidesandcurrents.noaa.gov/waterlevels.html?id=8775870&units=metric&bdate=20200101&edate=20200110&timezone=gmt&datum=MSL&interval=6&action=+,2
+8779748,https://tidesandcurrents.noaa.gov/waterlevels.html?id=8779748&units=metric&bdate=20200101&edate=20200110&timezone=gmt&datum=MSL&interval=6&action=+,2

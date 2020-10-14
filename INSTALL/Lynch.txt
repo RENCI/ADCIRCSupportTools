@@ -1,0 +1,30 @@
+# 1) Install conda on your system 
+
+export PATH=~/.local/bin:$PATH
+
+# 4) 
+
+# For some reasona this causes a clash in accessing thew NOAA_COOPS site. Must be a socket
+# incompatability ?
+
+conda activate astools
+conda create -n astools xarray basemap matplotlib pandas matplotlib netCDF4 basemap cartopy scipy
+conda activate astools
+
+
+# 4) Get the reqs same as ADCIRC
+pip install cdsapi
+pip install -r requirements.txt
+pip install seaborn
+pip install pyyaml
+
+# 4) Get the reqs same as ADCIRC
+
+# NOTE: Even though the requirements file is right, sometimes it just seems to skip a ferw. Pretty
+# regularly, scipy wil not actually get build and you must pip install scipy manually. IDKW
+
+
+#conda deactivate
+
+
+

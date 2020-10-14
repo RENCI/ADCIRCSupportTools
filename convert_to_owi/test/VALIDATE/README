@@ -1,0 +1,13 @@
+Here we compare OWI from a world grid (DegEast coordinates) versus OWI from a adcirc-grid cds download
+using area:  area: [50, -99, 5, -55]
+
+# World grid data at 
+/projects/sequence_analysis/vol1/prediction_work/VALIDATE_ERA5/2018-global
+requires conversion of longitude coords
+
+# LImited ADCIRC grid is at 
+/projects/sequence_analysis/vol1/prediction_work/VALIDATE_ERA5/2018-ADCIRC
+
+
+
+

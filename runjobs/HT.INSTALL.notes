@@ -1,0 +1,67 @@
+# NOTE:
+# Preliminary tips for getting your environment set up and working
+#
+# Ensure you have python (3)  installed and in the path as well as virtualenv
+# For Hatteras we can simply use modules
+# cd ADCIRCDataAssimilation
+# pip freeze --local | grep -v ADCIRCDataAssimilation > requirements.txt
+
+# 1) Ensure python3 is available
+module load python/3.7.0
+
+# 2) Git clone the repo. Here I am doing this in my home directory
+cd ~
+git clone https://github.com/RENCI/ADCIRCDataAssimilation.git
+
+# Build/update basic tools
+pip install virtualenv
+export PATH=~/.local/bin:$PATH
+
+# 3) Construct virtual environment
+
+cd ADCIRCDataAssimilation
+virtualenv venv
+source venv/bin/activate
+
+# 4) Get the reqs
+pip install -r requirements.txt
+
+# 5) update your PYTHONPATH variable and insert into .bash_profile
+
+ADDAHOME=~/ADCIRCDataAssimilation
+PYTHONPATH=$ADDAHOME:$PYTHONPATH
+export ADDAHOME
+export PYTHONPATH
+
+# Also specify a default location for storing dtaa files from the pipeline
+export RUNTIMEDIR="."
+
+module load intelc
+module load intelfort
+
+LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/bblanton/lib"
+
+pip install git+https://github.com/matplotlib/basemap.git
+
+##########################################################
+#On May 5th I tried another approach which works to include basemap
+#
+# FOr this approach I am currently using an anaconda3 install stack
+# which is my default env
+
+cd ~
+git clone https://github.com/RENCI/ADCIRCDataAssimilation.git
+
+export PATH=~/.local/bin:$PATH
+
+# Use this to generate a basic environment thaqt includes basemap
+2) 
+conda create -n myenv basemap matplotlib pandas matplotlib netCDF4 pyyaml
+conda activate myenv
+
+
+cd ADCIRCDataAssimilation
+
+# 4) Get the reqs
+pip install -r requirements.txt
+

@@ -1,0 +1,35 @@
+# This is a convenience entry to facilitate some basic diagnostic graphing
+REGRID: &regrid
+  InterpToAdcirc: true
+  RECT:
+    lowerleft_x: -100
+    lowerleft_y: 5 
+    res: .1  # resolution in deg
+    nx: 500
+    ny: 400
+
+KRIGING: &kriging
+   VPARAMS:
+      sill: 0.2
+      range: 20 
+      nugget: 0.1 
+   PARAMS:
+      method: "ordinary"
+      variogram_model: "spherical"
+      coordinates_type: "geographic"
+      weight: False
+      nlags: 6
+
+CVKRIGING: &cvkriging
+   VPARAMS:
+      sill: [.1, .2, .3, .5, 1., 2., 5., 10.]
+      range: [10, 20, 30, 40, 50 ]
+      nugget: [0.1,0.2,0.3]
+   PARAMS:
+      method: ["ordinary"] # Note ordinary and universal have different variables
+      variogram_model: ["spherical", "gaussian"]
+      coordinates_type: ["euclidean"]
+      anisotropy_scaling: [1]
+      anisotropy_angle: [0]
+      weight: [False]
+      nlags: [1, 2, 4, 6]

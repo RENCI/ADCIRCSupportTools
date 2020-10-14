@@ -1,0 +1,21 @@
+##
+## A series of usage tips 
+##
+
+## Missingness.
+1) Data station listed form the ADCIRC system get passed to the retrieveRealProductLevels class
+for meta data ( lon,lat, location, etc.). Stations that are missing wil cause problems downstream. 
+These are removed and a new list of stations is returned. The user could turn off this exclusion 
+in the yaml file if the goal is only to do some testing. But, generally it is a bad idea.
+2) Data stations are then passed to the class to fetch the water levels (wl). It has been observed that 
+occasionally COOPs may return multiple values for a single station. This is a problem. So, based on a single
+manual test, it was determined COOPS reports the FIRST value in the multiple values list. So we do the same
+and only keep the first value. If the user chooses, this station may also be Excluded. If so, a new station 
+list is provided bhy the class. Note. No missingness is applied to the ADC data itself.
+3) Once the ADC and OBS data sets are constructed, the errors are calculated. Before this, the OBS station lists are (optionally) checked for missingness in the wl data itself. So after the df_detailed is returned, the user
+should pass the dataframe to the rpl.removeMissingProducts() method with the desired threshold. The threshold is 
+the percent nans permissible for a station. setting to 100% means fetch all data. 
+
+##
+## Using Doxygen to construct HTML paqges
+##

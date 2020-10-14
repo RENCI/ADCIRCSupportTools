@@ -1,0 +1,21 @@
+#!/bin/bash
+#----------------------------------------------------
+# Sample Slurm job script
+#   for TACC Stampede2 KNL nodes
+#
+#----------------------------------------------------
+
+#SBATCH -J myjob           # Testing
+#SBATCH -o slurm.o%j       # Name of stdout output file
+#SBATCH -e slurm.e%j       # Name of stdout output file
+#SBATCH -p skx-normal          # Queue (partition) name
+#SBATCH -N 1              # Total # of nodes 
+#SBATCH -n 1              # Total # of tasks
+#SBATCH -t 04:00:00        # Run time (hh:mm:ss)
+##SBATCH --mail-user=jtilson@renci.org
+##SBATCH --mail-type=all    # Send email at begin and end of job
+#SBATCH -A SOCI-Xmers       # Allocation name (req'd if you have more than 1)
+
+module list
+python3 $ADDAHOME/ADDA/ADDA_withCLI.py 
+

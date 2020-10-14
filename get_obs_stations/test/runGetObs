@@ -1,0 +1,7 @@
+# Get the NOW data
+python ../GetObsStations.py
+
+# Get specific range
+python ../GetObsStations.py --timein='2020-09-17 12:00' --timeout='2020-09-21 18:00'
+
+# Specify some metadata informnation

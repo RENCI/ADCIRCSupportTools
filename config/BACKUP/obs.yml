@@ -1,0 +1,11 @@
+OBSERVATIONS: &observations
+  StationFile: "CERA_NOAA_HSOFS_stations_V2.csv"
+  EX_COOPS_NANS: True
+  EX_MULTIVALUE: False
+  EX_THRESH: True
+  THRESH: 10
+  DATUM: "MSL"
+  UNIT: "metric"
+  TIMEZONE: "gmt"
+  PRODUCT: "water_level"
+  STATIONS: [8410140, 8413320, 8418150] 

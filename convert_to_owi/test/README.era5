@@ -1,0 +1,163 @@
+#####################################################
+# era5_to_owi.py
+#
+# This method grabs ERA5 data prestaged onto the local filesystem
+# and constructs ADCIRC compatible .221 and .222 files
+#
+# This method may be invoked to transform a single file OR
+# to transform and MERGE multiple files.
+# 
+#
+# 1) Set up the ../config/owi.yml file. Generally, you only need to do this once 
+# as users will generally apply their grid and measurement selections once
+#
+
+OWI: &owi
+  lon: [-99.00,-55.00]
+  lat: [5.0, 50.0]
+  #time: ['2018-02-01 00:00:00','2018-02-28 23:00:00']
+  measurements: ['pressure','velocity'] # If velocity data must include u10 and vb10
+
+# 2) Prestage desired ERA5 files using cds_request.py 
+
+# 3) set up your environment
+
+cd /projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools
+conda activate cdsdenv
+export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools:$PYTHONPATH
+export RUNTIMEDIR="."
+
+Regarding the output directories.
+If the user supplies  a value for --odir ORID, then output files are stored into ORID/year 
+If the user chooses the default location ($RUNTIMEDIR), then files will be stored into $RUNTIMEDIR/basedirExtra/year
+For this case the default basedirExtra is "Reanalysis/Winds" which is our environmental setup
+
+
+# 4) Examples of running the code:
+
+Regarding the output directories.
+If the user supplies  a value for --odir ORID, then output files are stored into ORID/year
+If the user chooses the default location (via $RUNTIMEDIR), then files will be stored into $RUNTIMEDIR/basedirExtra/year
+where basedirExtra could be "". For this case the default basedirExtra is "Reanalysis/Winds" which is our environmental setup
+
+Regarding output filenames. Generally, if the user wishes to OWI transform a single month, then the output file(s) 
+typically have the nomenclature month.221/month.222 eg 01.221, 01.222 for January
+However, since we can MERGE data, we also proviude the ability to specify the output file rootnames.
+That scenario usually is a yearly merge but with flanking months on either side. So this file is usually named YYYY.221, YYYY.222
+but the user can choose whatever b ase name they prefer. 
+
+The input data must also be found. For this, --ddir must be specified as a root directoru underwhich subdirs exists with the names YYYY.
+So for example if the user specifies --ddir /projects/ees/TDS/ERA5/global, the additional year and month attributes will be used to find a specific
+file such as /projects/ees/TDS/ERA5/global/2018/01.nc
+
+# 5) transform a single month to OWI format. In this scenario, the date_end=date_start. The metadirname will be appended to whatever is specified by 
+# $RUNTIMEDIR and the metaname will be used to crerate the files metaname.221, metaname.222. convertEastWest True is required because the ERA5 .nc files
+# were assembled with lons in DegEast orientation
+
+year="2018"
+month="01"
+date='%4d' % (year) + month
+DDIR="/projects/ees/TDS/ERA5/global"
+#python -u ../era5_to_owi.py --metafilename month --metadirname year --convertEastWest True --ddir DDIR --date_start date --date_end date 
+python -u ../era5_to_owi.py --metafilename "01" --metadirname "2018" --convertEastWest True --ddir "/projects/ees/TDS/ERA5/global" --date_start "201801" --date_end "201801"
+
+# 6) Merge 3 months of data of 2017. Place results into the files test.221/test.222 into a dir named:
+# $RUNTIMEDIR/Reanalysis/Winds/2017
+
+python -u ../era5_to_owi.py --metafilename "test" --metadirname "2017" --convertEastWest True --ddir "/projects/ees/TDS/ERA5/global" --date_start "201701" --date_end "201703"
+
+# 7) Merge 3 months of 2018 into a specified directory -> ODIR/2018
+#
+ODIR="./TEMP"
+mkdir TEMP
+python -u ../era5_to_owi.py --metafilename "test" --metadirname "2018" --convertEastWest True --ddir "/projects/ees/TDS/ERA5/global" --odir "./TEMP" --date_start "201801" --date_end "201803"
+
+# 8) A Slurm example that processes all individual months of the selected years
+
+def build_slurm(ddir,odir,date_start,date_end,year,month):
+    slurm = list()
+    slurm.append('#!/bin/sh')
+    slurm.append('#SBATCH -t 128:00:00')
+    slurm.append('#SBATCH -p batch')
+    slurm.append('#SBATCH -N 1')
+    slurm.append('#SBATCH -n 2')
+    slurm.append('#SBATCH -J OWI'+year) 
+    slurm.append('#SBATCH --mem-per-cpu 64000')
+    slurm.append('echo "Begin the OWI processing" ')
+    slurm.append('export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools:$PYTHONPATH')
+    slurm.append('dir="/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/convert_to_owi"')
+    slurm.append('python -u $dir/era5_to_owi.py --metafilename "'+month+'" --metadirname "'+year+'" --convertEastWest True --ddir "'+ddir+'" --date_start "'+date_start+'" --date_end "'+date_end+'"')
+    shName = '_'.join([month,year,'runSlurm.sh'])
+    with open(shName, 'w') as file:
+        for row in slurm:
+            file.write(row+'\n')
+    file.close()
+    return (shName)
+
+ncBaseDir='/projects/ees/TDS/ERA5/global'
+owiBasedir=None # Will pick up from RUNTIMEDIR
+
+yearlist = [2010,2011,2012,2013,2014,2015,2016,2017,2018]
+months=['01','02']
+
+for iyear in yearlist:
+    for month in months:
+        date='%4d' % (iyear) + month
+        date_start = date
+        date_end = date
+        year = str(iyear)
+        print('Processing CDS {}'.format(year))
+        ddir = ncBaseDir
+        odir = owiBasedir 
+        print('Processing DDIR {}'.format(ddir))
+        slurmFilename = build_slurm(ddir,odir,date_start,date_end,year,month)
+        cmd = 'sbatch ./'+slurmFilename
+        print('Launching job {} as {} '.format(ddir,odir))
+        os.system(cmd) 
+print('Finished')
+
+# 9) A slurm example that merges a year's work of months +/- a 1 month flank into a "yearly" file
+
+def build_slurm(ddir,odir,date_start,date_end,year):
+    slurm = list()
+    slurm.append('#!/bin/sh')
+    slurm.append('#SBATCH -t 128:00:00')
+    slurm.append('#SBATCH -p batch')
+    slurm.append('#SBATCH -N 1')
+    slurm.append('#SBATCH -n 2')
+    slurm.append('#SBATCH -J OWI'+year)
+    slurm.append('#SBATCH --mem-per-cpu 64000')
+    slurm.append('echo "Begin the OWI processing" ')
+    slurm.append('export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools:$PYTHONPATH')
+    slurm.append('dir="/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/convert_to_owi"')
+    slurm.append('python -u $dir/era5_to_owi.py --metafilename "'+year+'" --metadirname "'+year+'" --convertEastWest True --ddir "'+ddir+'" --date_start "'+date_start+'" --date_end "'+date_end+'"')
+    shName = '_'.join([year,'runSlurm.sh'])
+    with open(shName, 'w') as file:
+        for row in slurm:
+            file.write(row+'\n')
+    file.close()
+    return (shName)
+
+yearlist = [2018]
+
+ncBaseDir='/projects/ees/TDS/ERA5/global'
+owiBasedir=None # Will pick up from RUNTIMEDIR
+for iyear in yearlist:
+    date_start = '%4d12' %(iyear-1)
+    date_end ='%4d01' %(iyear+1)
+    year = str(iyear)
+    print('Processing CDS {}'.format(year))
+    ddir = ncBaseDir
+    odir = owiBasedir # Create this directory insoide of era5
+    print('Processing DDIR {}'.format(ddir))
+    slurmFilename = build_slurm(ddir,odir,date_start,date_end,year)
+    cmd = 'sbatch ./'+slurmFilename
+    print('Launching job {} as {} '.format(ddir,odir))
+    os.system(cmd) 
+print('Finished')
+
+# 10) Using GNU parallel to 12 months 
+
+export dir="/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/convert_to_owi"
+~bblanton/bin/parallel -j1  $dir/era5_to_owi.py --metafilename '2018' --metadirname '2018' --convertEastWest True --basedirextra 'Reanalysis/Winds' --date_start '201712' --date_end '201901'  >> list 
+

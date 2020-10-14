@@ -1,0 +1,30 @@
+# Brian, Try to initialize using this conda
+
+__conda_setup="$('/projects/sequence_analysis/vol1/prediction_work/PythonMethods/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/projects/sequence_analysis/vol1/prediction_work/PythonMethods/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/projects/sequence_analysis/vol1/prediction_work/PythonMethods/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/projects/sequence_analysis/vol1/prediction_work/PythonMethods/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+
+conda activate myenv
+
+# Set up the env
+
+ADDAHOME=/home/jtilson/ADCIRCDataAssimilation
+PYTHONPATH=$ADDAHOME:$PYTHONPATH
+export ADDAHOME
+export PYTHONPATH
+export RUNTIMEDIR="."
+
+# Run ADDA_withCLI
+
+python /home/jtilson/ADCIRCDataAssimilation/ADDA/ADDA_withCLI.py
+
+
+

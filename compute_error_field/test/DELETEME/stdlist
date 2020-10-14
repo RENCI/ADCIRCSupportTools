@@ -1,0 +1,273 @@
+Opened yaml file /home/jtilson/ADCIRCSupportTools/utilities/../config/main.yml
+Numpy Version = 1.18.1
+Matplotlib Version = 3.1.3
+Numpy Version = 1.18.1
+netCDF4 Version = 1.5.3
+Opened yaml file /home/jtilson/ADCIRCSupportTools/utilities/../config/main.yml
+Opened yaml file /home/jtilson/ADCIRCSupportTools/config/int.yml
+Opened yaml file /home/jtilson/ADCIRCSupportTools/config/int.yml
+POOP perm dicts [{'sill': 1, 'range': 1, 'nugget': 0.05}, {'sill': 1, 'range': 1, 'nugget': 0.1}, {'sill': 1, 'range': 1, 'nugget': 0.2}, {'sill': 1, 'range': 1, 'nugget': 0.3}, {'sill': 1, 'range': 2, 'nugget': 0.05}, {'sill': 1, 'range': 2, 'nugget': 0.1}, {'sill': 1, 'range': 2, 'nugget': 0.2}, {'sill': 1, 'range': 2, 'nugget': 0.3}, {'sill': 1, 'range': 3, 'nugget': 0.05}, {'sill': 1, 'range': 3, 'nugget': 0.1}, {'sill': 1, 'range': 3, 'nugget': 0.2}, {'sill': 1, 'range': 3, 'nugget': 0.3}, {'sill': 2, 'range': 1, 'nugget': 0.05}, {'sill': 2, 'range': 1, 'nugget': 0.1}, {'sill': 2, 'range': 1, 'nugget': 0.2}, {'sill': 2, 'range': 1, 'nugget': 0.3}, {'sill': 2, 'range': 2, 'nugget': 0.05}, {'sill': 2, 'range': 2, 'nugget': 0.1}, {'sill': 2, 'range': 2, 'nugget': 0.2}, {'sill': 2, 'range': 2, 'nugget': 0.3}, {'sill': 2, 'range': 3, 'nugget': 0.05}, {'sill': 2, 'range': 3, 'nugget': 0.1}, {'sill': 2, 'range': 3, 'nugget': 0.2}, {'sill': 2, 'range': 3, 'nugget': 0.3}, {'sill': 3, 'range': 1, 'nugget': 0.05}, {'sill': 3, 'range': 1, 'nugget': 0.1}, {'sill': 3, 'range': 1, 'nugget': 0.2}, {'sill': 3, 'range': 1, 'nugget': 0.3}, {'sill': 3, 'range': 2, 'nugget': 0.05}, {'sill': 3, 'range': 2, 'nugget': 0.1}, {'sill': 3, 'range': 2, 'nugget': 0.2}, {'sill': 3, 'range': 2, 'nugget': 0.3}, {'sill': 3, 'range': 3, 'nugget': 0.05}, {'sill': 3, 'range': 3, 'nugget': 0.1}, {'sill': 3, 'range': 3, 'nugget': 0.2}, {'sill': 3, 'range': 3, 'nugget': 0.3}]
+Fitting 10 folds for each of 120 candidates, totalling 1200 fits
+
+CV results::
+GridSearchCV(cv=10, error_score='raise',
+             estimator=Krige(anisotropy_angle=0.0, anisotropy_angle_x=0.0,
+                             anisotropy_angle_y=0.0, anisotropy_angle_z=0.0,
+                             anisotropy_scaling=1.0, anisotropy_scaling_y=1.0,
+                             anisotropy_scaling_z=1.0,
+                             coordinates_type='euclidean', drift_terms=None,
+                             enable_statistics=False, external_drift=None,
+                             external_drift_x=None, external_drift_y=Non...
+                             verbose=False, weight=False),
+             iid=True, n_jobs=None,
+             param_grid={'anisotropy_angle': [0], 'anisotropy_scaling': [1],
+                         'coordinates_type': ['euclidean', 'geographic'],
+                         'method': ['ordinary', 'universal'],
+                         'nlags': [1, 2, 4, 6, 8],
+                         'variogram_model': ['exponential', 'gaussian',
+                                             'spherical'],
+                         'weight': [True, False]},
+             pre_dispatch='2*n_jobs', refit=True, return_train_score=True,
+             scoring='r2', verbose=True)
+Fitting 10 folds for each of 120 candidates, totalling 1200 fits
+
+CV results::
+GridSearchCV(cv=10, error_score='raise',
+             estimator=Krige(anisotropy_angle=0.0, anisotropy_angle_x=0.0,
+                             anisotropy_angle_y=0.0, anisotropy_angle_z=0.0,
+                             anisotropy_scaling=1.0, anisotropy_scaling_y=1.0,
+                             anisotropy_scaling_z=1.0,
+                             coordinates_type='euclidean', drift_terms=None,
+                             enable_statistics=False, external_drift=None,
+                             external_drift_x=None, external_drift_y=Non...
+                             verbose=False, weight=False),
+             iid=True, n_jobs=None,
+             param_grid={'anisotropy_angle': [0], 'anisotropy_scaling': [1],
+                         'coordinates_type': ['euclidean', 'geographic'],
+                         'method': ['ordinary', 'universal'],
+                         'nlags': [1, 2, 4, 6, 8],
+                         'variogram_model': ['exponential', 'gaussian',
+                                             'spherical'],
+                         'weight': [True, False]},
+             pre_dispatch='2*n_jobs', refit=True, return_train_score=True,
+             scoring='r2', verbose=True)
+Fitting 10 folds for each of 120 candidates, totalling 1200 fits
+
+CV results::
+GridSearchCV(cv=10, error_score='raise',
+             estimator=Krige(anisotropy_angle=0.0, anisotropy_angle_x=0.0,
+                             anisotropy_angle_y=0.0, anisotropy_angle_z=0.0,
+                             anisotropy_scaling=1.0, anisotropy_scaling_y=1.0,
+                             anisotropy_scaling_z=1.0,
+                             coordinates_type='euclidean', drift_terms=None,
+                             enable_statistics=False, external_drift=None,
+                             external_drift_x=None, external_drift_y=Non...
+                             verbose=False, weight=False),
+             iid=True, n_jobs=None,
+             param_grid={'anisotropy_angle': [0], 'anisotropy_scaling': [1],
+                         'coordinates_type': ['euclidean', 'geographic'],
+                         'method': ['ordinary', 'universal'],
+                         'nlags': [1, 2, 4, 6, 8],
+                         'variogram_model': ['exponential', 'gaussian',
+                                             'spherical'],
+                         'weight': [True, False]},
+             pre_dispatch='2*n_jobs', refit=True, return_train_score=True,
+             scoring='r2', verbose=True)
+Fitting 10 folds for each of 120 candidates, totalling 1200 fits
+
+CV results::
+GridSearchCV(cv=10, error_score='raise',
+             estimator=Krige(anisotropy_angle=0.0, anisotropy_angle_x=0.0,
+                             anisotropy_angle_y=0.0, anisotropy_angle_z=0.0,
+                             anisotropy_scaling=1.0, anisotropy_scaling_y=1.0,
+                             anisotropy_scaling_z=1.0,
+                             coordinates_type='euclidean', drift_terms=None,
+                             enable_statistics=False, external_drift=None,
+                             external_drift_x=None, external_drift_y=Non...
+                             verbose=False, weight=False),
+             iid=True, n_jobs=None,
+             param_grid={'anisotropy_angle': [0], 'anisotropy_scaling': [1],
+                         'coordinates_type': ['euclidean', 'geographic'],
+                         'method': ['ordinary', 'universal'],
+                         'nlags': [1, 2, 4, 6, 8],
+                         'variogram_model': ['exponential', 'gaussian',
+                                             'spherical'],
+                         'weight': [True, False]},
+             pre_dispatch='2*n_jobs', refit=True, return_train_score=True,
+             scoring='r2', verbose=True)
+Fitting 10 folds for each of 120 candidates, totalling 1200 fits
+
+CV results::
+GridSearchCV(cv=10, error_score='raise',
+             estimator=Krige(anisotropy_angle=0.0, anisotropy_angle_x=0.0,
+                             anisotropy_angle_y=0.0, anisotropy_angle_z=0.0,
+                             anisotropy_scaling=1.0, anisotropy_scaling_y=1.0,
+                             anisotropy_scaling_z=1.0,
+                             coordinates_type='euclidean', drift_terms=None,
+                             enable_statistics=False, external_drift=None,
+                             external_drift_x=None, external_drift_y=Non...
+                             verbose=False, weight=False),
+             iid=True, n_jobs=None,
+             param_grid={'anisotropy_angle': [0], 'anisotropy_scaling': [1],
+                         'coordinates_type': ['euclidean', 'geographic'],
+                         'method': ['ordinary', 'universal'],
+                         'nlags': [1, 2, 4, 6, 8],
+                         'variogram_model': ['exponential', 'gaussian',
+                                             'spherical'],
+                         'weight': [True, False]},
+             pre_dispatch='2*n_jobs', refit=True, return_train_score=True,
+             scoring='r2', verbose=True)
+Fitting 10 folds for each of 120 candidates, totalling 1200 fits
+
+CV results::
+GridSearchCV(cv=10, error_score='raise',
+             estimator=Krige(anisotropy_angle=0.0, anisotropy_angle_x=0.0,
+                             anisotropy_angle_y=0.0, anisotropy_angle_z=0.0,
+                             anisotropy_scaling=1.0, anisotropy_scaling_y=1.0,
+                             anisotropy_scaling_z=1.0,
+                             coordinates_type='euclidean', drift_terms=None,
+                             enable_statistics=False, external_drift=None,
+                             external_drift_x=None, external_drift_y=Non...
+                             verbose=False, weight=False),
+             iid=True, n_jobs=None,
+             param_grid={'anisotropy_angle': [0], 'anisotropy_scaling': [1],
+                         'coordinates_type': ['euclidean', 'geographic'],
+                         'method': ['ordinary', 'universal'],
+                         'nlags': [1, 2, 4, 6, 8],
+                         'variogram_model': ['exponential', 'gaussian',
+                                             'spherical'],
+                         'weight': [True, False]},
+             pre_dispatch='2*n_jobs', refit=True, return_train_score=True,
+             scoring='r2', verbose=True)
+Fitting 10 folds for each of 120 candidates, totalling 1200 fits
+
+CV results::
+GridSearchCV(cv=10, error_score='raise',
+             estimator=Krige(anisotropy_angle=0.0, anisotropy_angle_x=0.0,
+                             anisotropy_angle_y=0.0, anisotropy_angle_z=0.0,
+                             anisotropy_scaling=1.0, anisotropy_scaling_y=1.0,
+                             anisotropy_scaling_z=1.0,
+                             coordinates_type='euclidean', drift_terms=None,
+                             enable_statistics=False, external_drift=None,
+                             external_drift_x=None, external_drift_y=Non...
+                             verbose=False, weight=False),
+             iid=True, n_jobs=None,
+             param_grid={'anisotropy_angle': [0], 'anisotropy_scaling': [1],
+                         'coordinates_type': ['euclidean', 'geographic'],
+                         'method': ['ordinary', 'universal'],
+                         'nlags': [1, 2, 4, 6, 8],
+                         'variogram_model': ['exponential', 'gaussian',
+                                             'spherical'],
+                         'weight': [True, False]},
+             pre_dispatch='2*n_jobs', refit=True, return_train_score=True,
+             scoring='r2', verbose=True)
+Fitting 10 folds for each of 120 candidates, totalling 1200 fits
+
+CV results::
+GridSearchCV(cv=10, error_score='raise',
+             estimator=Krige(anisotropy_angle=0.0, anisotropy_angle_x=0.0,
+                             anisotropy_angle_y=0.0, anisotropy_angle_z=0.0,
+                             anisotropy_scaling=1.0, anisotropy_scaling_y=1.0,
+                             anisotropy_scaling_z=1.0,
+                             coordinates_type='euclidean', drift_terms=None,
+                             enable_statistics=False, external_drift=None,
+                             external_drift_x=None, external_drift_y=Non...
+                             verbose=False, weight=False),
+             iid=True, n_jobs=None,
+             param_grid={'anisotropy_angle': [0], 'anisotropy_scaling': [1],
+                         'coordinates_type': ['euclidean', 'geographic'],
+                         'method': ['ordinary', 'universal'],
+                         'nlags': [1, 2, 4, 6, 8],
+                         'variogram_model': ['exponential', 'gaussian',
+                                             'spherical'],
+                         'weight': [True, False]},
+             pre_dispatch='2*n_jobs', refit=True, return_train_score=True,
+             scoring='r2', verbose=True)
+Fitting 10 folds for each of 120 candidates, totalling 1200 fits
+
+CV results::
+GridSearchCV(cv=10, error_score='raise',
+             estimator=Krige(anisotropy_angle=0.0, anisotropy_angle_x=0.0,
+                             anisotropy_angle_y=0.0, anisotropy_angle_z=0.0,
+                             anisotropy_scaling=1.0, anisotropy_scaling_y=1.0,
+                             anisotropy_scaling_z=1.0,
+                             coordinates_type='euclidean', drift_terms=None,
+                             enable_statistics=False, external_drift=None,
+                             external_drift_x=None, external_drift_y=Non...
+                             verbose=False, weight=False),
+             iid=True, n_jobs=None,
+             param_grid={'anisotropy_angle': [0], 'anisotropy_scaling': [1],
+                         'coordinates_type': ['euclidean', 'geographic'],
+                         'method': ['ordinary', 'universal'],
+                         'nlags': [1, 2, 4, 6, 8],
+                         'variogram_model': ['exponential', 'gaussian',
+                                             'spherical'],
+                         'weight': [True, False]},
+             pre_dispatch='2*n_jobs', refit=True, return_train_score=True,
+             scoring='r2', verbose=True)
+Fitting 10 folds for each of 120 candidates, totalling 1200 fits
+
+CV results::
+GridSearchCV(cv=10, error_score='raise',
+             estimator=Krige(anisotropy_angle=0.0, anisotropy_angle_x=0.0,
+                             anisotropy_angle_y=0.0, anisotropy_angle_z=0.0,
+                             anisotropy_scaling=1.0, anisotropy_scaling_y=1.0,
+                             anisotropy_scaling_z=1.0,
+                             coordinates_type='euclidean', drift_terms=None,
+                             enable_statistics=False, external_drift=None,
+                             external_drift_x=None, external_drift_y=Non...
+                             verbose=False, weight=False),
+             iid=True, n_jobs=None,
+             param_grid={'anisotropy_angle': [0], 'anisotropy_scaling': [1],
+                         'coordinates_type': ['euclidean', 'geographic'],
+                         'method': ['ordinary', 'universal'],
+                         'nlags': [1, 2, 4, 6, 8],
+                         'variogram_model': ['exponential', 'gaussian',
+                                             'spherical'],
+                         'weight': [True, False]},
+             pre_dispatch='2*n_jobs', refit=True, return_train_score=True,
+             scoring='r2', verbose=True)
+Fitting 10 folds for each of 120 candidates, totalling 1200 fits
+
+CV results::
+GridSearchCV(cv=10, error_score='raise',
+             estimator=Krige(anisotropy_angle=0.0, anisotropy_angle_x=0.0,
+                             anisotropy_angle_y=0.0, anisotropy_angle_z=0.0,
+                             anisotropy_scaling=1.0, anisotropy_scaling_y=1.0,
+                             anisotropy_scaling_z=1.0,
+                             coordinates_type='euclidean', drift_terms=None,
+                             enable_statistics=False, external_drift=None,
+                             external_drift_x=None, external_drift_y=Non...
+                             verbose=False, weight=False),
+             iid=True, n_jobs=None,
+             param_grid={'anisotropy_angle': [0], 'anisotropy_scaling': [1],
+                         'coordinates_type': ['euclidean', 'geographic'],
+                         'method': ['ordinary', 'universal'],
+                         'nlags': [1, 2, 4, 6, 8],
+                         'variogram_model': ['exponential', 'gaussian',
+                                             'spherical'],
+                         'weight': [True, False]},
+             pre_dispatch='2*n_jobs', refit=True, return_train_score=True,
+             scoring='r2', verbose=True)
+Fitting 10 folds for each of 120 candidates, totalling 1200 fits
+
+CV results::
+GridSearchCV(cv=10, error_score='raise',
+             estimator=Krige(anisotropy_angle=0.0, anisotropy_angle_x=0.0,
+                             anisotropy_angle_y=0.0, anisotropy_angle_z=0.0,
+                             anisotropy_scaling=1.0, anisotropy_scaling_y=1.0,
+                             anisotropy_scaling_z=1.0,
+                             coordinates_type='euclidean', drift_terms=None,
+                             enable_statistics=False, external_drift=None,
+                             external_drift_x=None, external_drift_y=Non...
+                             verbose=False, weight=False),
+             iid=True, n_jobs=None,
+             param_grid={'anisotropy_angle': [0], 'anisotropy_scaling': [1],
+                         'coordinates_type': ['euclidean', 'geographic'],
+                         'method': ['ordinary', 'universal'],
+                         'nlags': [1, 2, 4, 6, 8],
+                         'variogram_model': ['exponential', 'gaussian',
+                                             'spherical'],
+                         'weight': [True, False]},
+             pre_dispatch='2*n_jobs', refit=True, return_train_score=True,
+             scoring='r2', verbose=True)

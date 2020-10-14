@@ -1,0 +1,4 @@
+station,noaa_url,new
+8410140,https://tidesandcurrents.noaa.gov/waterlevels.html?id=8410140&units=metric&bdate=20200101&edate=20200110&timezone=gmt&datum=MSL&interval=6&action=+,2
+8413320,https://tidesandcurrents.noaa.gov/waterlevels.html?id=8413320&units=metric&bdate=20200101&edate=20200110&timezone=gmt&datum=MSL&interval=6&action=+,2
+8418150,https://tidesandcurrents.noaa.gov/waterlevels.html?id=8418150&units=metric&bdate=20200101&edate=20200110&timezone=gmt&datum=MSL&interval=6&action=+,2
