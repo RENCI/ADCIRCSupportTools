@@ -11,14 +11,14 @@ rootdir = utilities.fetchBasedir(config['DEFAULT']['RDIR'], basedirExtra='ADCIRC
 print('rootdir {}'.format(rootdir))
 
 # get station-to-node indices for grid
-obsyamlname=os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'obs.yml')
+obsyamlname=os.path.join(os.path.dirname(__file__), '../../config', 'obs.yml')
 obs_utilities = utilities.load_config(obsyamlname)
 station_df = utilities.get_station_list()
 station_ids = station_df["stationid"].values.reshape(-1,)
 node_idx = station_df["Node"].values
 
-adcyamlfile = os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'adc.yml')
-adc = Adcirc(yamlname=adcyamlfile, metadata='junk', dtime1='2020-09-17 12:00', dtime2='2020-09-21 18:00')
+adcyamlfile = os.path.join(os.path.dirname(__file__), '../../config', 'adc.yml')
+adc = Adcirc(yamlname=adcyamlfile, metadata='junk', dtime1='2020-09-17 12', dtime2='2020-09-21 18')
 
 # adc.set_times(dtime1='2020-09-17 12', dtime2='2020-09-21 18') # would also work 
 

@@ -4,20 +4,20 @@ from get_adcirc.GetADCIRC import Adcirc, get_water_levels63
 from utilities.utilities import utilities as utilities
 import json
 
-urljson='/home/jtilson/ADCIRCSupportTools/get_adcirc/test/data.json'
+urljson='./data.json'
 
 config = utilities.load_config() # Get main comnfig. RUNTIMEDIR, etc
 iometadata=''
 rootdir = utilities.fetchBasedir(config['DEFAULT']['RDIR'], basedirExtra='ADCIRC')
 
 # get station-to-node indices for grid
-obsyamlname=os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'obs.yml')
+obsyamlname=os.path.join(os.path.dirname(__file__), '../../config', 'obs.yml')
 obs_utilities = utilities.load_config(obsyamlname)
 station_df = utilities.get_station_list()
 station_ids = station_df["stationid"].values.reshape(-1,)
 node_idx = station_df["Node"].values
 
-adcyamlfile = os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'adc.yml')
+adcyamlfile = os.path.join(os.path.dirname(__file__), '../../config', 'adc.yml')
 
 if not os.path.exists(urljson):
     utilities.log.error('urljson file not found.')
