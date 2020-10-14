@@ -24,8 +24,8 @@ def build_slurm(year,month):
     slurm.append('#SBATCH -J CDS'+year) 
     slurm.append('#SBATCH --mem-per-cpu 32000')
     slurm.append('echo "Begin the CDS query" ')
-    slurm.append('export PYTHONPATH=/home/jtilson/ADCIRCSupportTools:$PYTHONPATH')
-    slurm.append('dir="/home/jtilson/ADCIRCSupportTools/convert_to_owi"')
+    slurm.append('export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools:$PYTHONPATH')
+    slurm.append('dir="/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/convert_to_owi"')
     slurm.append('python -u $dir/cds_request.py --year "'+year+'" --month "'+month+'"') 
     shName = '_'.join([year,'runSlurm.sh'])
     with open(shName, 'w') as file:

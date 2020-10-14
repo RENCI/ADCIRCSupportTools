@@ -1,6 +1,10 @@
 --- #  Compute errors and interpolate
 
 # This is a convenience entry to facilitate some basic diagnostic graphing
+
+DEFAULT: &DEFAULT
+  ClampList: "clamp_list_hsofs.dat"
+
 REGRID: &regrid
   InterpToAdcirc: true
   RECT:

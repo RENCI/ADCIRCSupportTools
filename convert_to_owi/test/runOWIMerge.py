@@ -21,7 +21,7 @@ def build_slurm(ddir,odir,date_start,date_end,year,extra):
     slurm.append('#SBATCH --mem-per-cpu 64000')
     slurm.append('echo "Begin the OWI processing" ')
     slurm.append('export PYTHONPATH=/home/jtilson/ADCIRCSupportTools:$PYTHONPATH')
-    slurm.append('dir="/home/jtilson/ADCIRCSupportTools/convert_to_owi"')
+    slurm.append('dir="/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/convert_to_owi"')
     slurm.append('python -u $dir/era5_to_owi.py --metafilename "'+year+'" --metadirname "'+year+'" --convertEastWest --ddir "'+ddir+'" --date_start "'+date_start+'" --date_end "'+date_end+'"')
     shName = '_'.join([year,'runSlurm.sh'])
     with open(shName, 'w') as file:

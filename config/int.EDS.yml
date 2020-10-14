@@ -1,4 +1,8 @@
 # This is a convenience entry to facilitate some basic diagnostic graphing
+
+DEFAULT: &DEFAULT
+  ClampList: "clamp_box.dat"
+
 REGRID: &regrid
   InterpToAdcirc: true
   RECT:
