@@ -20,7 +20,7 @@ iometadata = '_example'
 config = utilities.load_config() # Defaults to main.yml as sapecified in the config
 rootdir=utilities.fetchBasedir(config['DEFAULT']['RDIR'], basedirExtra='StationTestAboveManual')
 
-rpl = GetObsStations(rootdir=rootdir, iosubdir='MANUAL', yamlname=os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'obs.yml'), metadata=iometadata)
+rpl = GetObsStations(rootdir=rootdir, iosubdir='MANUAL', yamlname=os.path.join('/home/jtilson/ADCIRCSupportTools', '../../config', 'obs.yml'), metadata=iometadata)
 df_stationNodelist = rpl.fetchStationNodeList()
 stations = df_stationNodelist['stationid'].to_list()
 stations = stations + [999999] # Just a trick to show this gets removed as superfluous
