@@ -51,7 +51,7 @@ def main(args):
     rootdir=utilities.fetchBasedir(config['DEFAULT']['RDIR'],basedirExtra=extraExpDir)
    
     # Set up interpolation YML. To find clamp file if not specified
-    yamlname=os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'int.yml')
+    yamlname=os.path.join(os.path.dirname(__file__), '../../config', 'int.yml')
     # Override config for now
     config = utilities.load_config(yamlname)
 
@@ -68,11 +68,10 @@ def main(args):
     clampfile = args.clampfile
 
     if clampfile==None:
-    #    utilities.log.warning('No clampfile: Try to learn from YML')
-        clampfile='/home/jtilson/ADCIRCSupportTools/config/clamp_list_hsofs.dat'
-    #    config = utilities.load_config(yamlname)
-    #    #clampname = config['DEFAULT']['ClampList']
+    #    clampfile='/home/jtilson/ADCIRCSupportTools/config/clamp_list_hsofs.dat'
     #    clampfile = os.path.join(os.path.dirname(__file__), "../config", config['DEFAULT']['ClampList'])
+        utilities.log.info('No clampfile specified. Grab the one specified in the yaml')
+        clampingfile = os.path.join(os.path.dirname(__file__), "../../config", self.config['DEFAULT']['ClampList'])
 
     do_adcird_grid=False
     if clampfile!='Skip':

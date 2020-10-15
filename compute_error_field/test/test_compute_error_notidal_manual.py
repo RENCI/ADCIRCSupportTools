@@ -32,13 +32,13 @@ def main(args):
     #dir='/home/jtilson/ADCIRCDataAssimilation/test/errorfield/'
     #dir='../test/errorfield/'
     if missingFiles:
-        dir = '/home/jtilson/ADCIRCSupportTools/ADCIRC'
+        dir = os.path.dirname(__file__)+'/ADCIRC'
         utilities.log.info('1 or more inputs files missing Try instead to find in dir {}'.format(dir))
         meta='/'.join([dir,'obs_wl_metadata.pkl'])
         obsf='/'.join([dir,'obs_wl_smoothed.pkl'])
         adcf='/'.join([dir,'adc_wl.pkl'])
     print('Run computeErrorField')
-    cmp = computeErrorField(obsf, adcf, meta, rootdir=rootdir, aveper=4, yamlname=os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'err.yml'))
+    cmp = computeErrorField(obsf, adcf, meta, rootdir=rootdir, aveper=4, yamlname=os.path.join(os.path.dirname(__file__), '../../config', 'err.yml'))
     testSubdir='testDir'
     dummy = cmp._intersectionStations()
     dummy = cmp._intersectionTimes()
