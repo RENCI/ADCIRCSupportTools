@@ -18,7 +18,7 @@ iometadata = '_'+timein+'_'+timeout
 config = utilities.load_config() # Defaults to main.yml as sapecified in the config
 rootdir=utilities.fetchBasedir(config['DEFAULT']['RDIR'], basedirExtra='StationTest')
 
-rpl = GetObsStations(iosubdir='',rootdir=rootdir, yamlname=os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'obs.yml'), metadata=iometadata)
+rpl = GetObsStations(iosubdir='',rootdir=rootdir, yamlname=os.path.join(os.path.dirname(__file__), '../config', 'obs.yml'), metadata=iometadata)
 stations = stations + [999999]
 
 df_stationData, stationNodelist = rpl.fetchStationMetaDataFromIDs(stations)

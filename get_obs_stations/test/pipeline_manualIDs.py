@@ -17,7 +17,7 @@ iometadata = ''
 config = utilities.load_config() # Defaults to main.yml as sapecified in the config
 rootdir=utilities.fetchBasedir(config['DEFAULT']['RDIR'], basedirExtra='StationTest')
 
-rpl = GetObsStations(rootdir=rootdir, yamlname=os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'obs.yml'), metadata=iometadata)
+rpl = GetObsStations(rootdir=rootdir, yamlname=os.path.join(os.path.dirname(__file__), '../config', 'obs.yml'), metadata=iometadata)
 detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv = rpl.executeBasicPipeline(timein, timeout)
 
 utilities.log.info('Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {}'.format(detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv))
