@@ -318,7 +318,7 @@ def main(args):
     #dir='/home/jtilson/ADCIRCDataAssimilation/test/errorfield/'
     #dir='../test/errorfield/'
     if missingFiles:
-        dir = '/home/jtilson/ADCIRCSupportTools/ADCIRC'
+        dir = os.path.dirname(__file__)+'/ADCIRC'
         utilities.log.info('1 or more inputs files missing Try instead to find in dir {}'.format(dir))
         meta='/'.join([dir,'obs_wl_metadata.pkl'])
         obsf='/'.join([dir,'obs_wl_smoothed.pkl'])
