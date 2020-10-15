@@ -71,7 +71,8 @@ def main(args):
     #    clampfile='/home/jtilson/ADCIRCSupportTools/config/clamp_list_hsofs.dat'
     #    clampfile = os.path.join(os.path.dirname(__file__), "../config", config['DEFAULT']['ClampList'])
         utilities.log.info('No clampfile specified. Grab the one specified in the yaml')
-        clampingfile = os.path.join(os.path.dirname(__file__), "../../config", self.config['DEFAULT']['ClampList'])
+    #    clampingfile = os.path.join(os.path.dirname(__file__), "../../config", self.config['DEFAULT']['ClampList'])
+        clampfile='../../config/clamp_list_hsofs.dat'
 
     do_adcird_grid=False
     if clampfile!='Skip':

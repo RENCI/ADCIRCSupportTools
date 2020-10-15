@@ -3,6 +3,31 @@
 
 export PATH=~/.local/bin:$PATH
 
+# 2) Build conda env
+conda create -n apsenv xarray basemap matplotlib pandas matplotlib netCDF4 pyyaml scipy cartopy gdal rasterio geopandas
+
+# 3) Pip install the known requirements
+
+conda activate apsenv
+pip install cdsapi
+pip install datedelta
+pip install siphon
+#pip install -r requirements.txt
+
+
+# 4) Install the local noaa_coops 
+#git clone https://github.com/GClunies/noaa_coops.git
+cd noaa_coops
+python setup.py install --user
+
+export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools
+export RUNTIMEDIR="."
+
+
+conda deactivate
+
+
+
 # 4) 
 conda create -n metenv xarray basemap matplotlib pandas matplotlib netCDF4 pyyaml
 conda activate metenv
