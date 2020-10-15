@@ -540,7 +540,7 @@ class GetObsStations(object):
         metadata = self.iometadata
         rootdir=self.rootdir
     
-        rpl = GetObsStations(rootdir=rootdir, yamlname=os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'obs.yml'), metadata=metadata) 
+        rpl = GetObsStations(rootdir=rootdir, yamlname=os.path.join(os.path.dirname(__file__), '../config', 'obs.yml'), metadata=metadata) 
         df_stationNodelist = rpl.fetchStationNodeList() 
         stationNodelist = df_stationNodelist['stationid'].to_list()
         #Fetch metadata abnd remove stations from the list that did not exists in coops
@@ -569,7 +569,7 @@ def executeBasicPipeline(rootdir, timein, timeout, metadata=''):
     config = utilities.load_config() # Defaults to main.yml as sapecified in the config
     rootdir=utilities.fetchBasedir(config['DEFAULT']['RDIR'], basedirExtra='StationTest')
 
-    rpl = GetObsStations(rootdir=rootdir, yamlname=os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'obs.yml'), metadata=metadata) 
+    rpl = GetObsStations(rootdir=rootdir, yamlname=os.path.join(os.path.dirname(__file__), '../config', 'obs.yml'), metadata=metadata) 
     df_stationNodelist = rpl.fetchStationNodeList() 
     stationNodelist = df_stationNodelist['stationid'].to_list()
     # Add a fake node
