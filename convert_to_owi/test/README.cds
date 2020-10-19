@@ -71,7 +71,7 @@ export RUNTIMEDIR="."
 # 3a) 
 export year='2018'
 export month='01'
-python -u $dir/cds_request.py --year year --month month
+python -u ../cds_request.py --year $year --month $month
 
 # 3b) simply grab the year an month data from the YML.  If multiple months in the YAML
 # Then the resulting file will include those multiple months
