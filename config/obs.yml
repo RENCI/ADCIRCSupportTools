@@ -1,8 +1,7 @@
-#DEFAULT: &default
-  #StationFile: "CERA_NOAA_HSOFS_stations_V2.csv"
+DEFAULT: &default
+  StationFile: "CERA_NOAA_HSOFS_stations_V2.csv"
 
 OBSERVATIONS: &observations
-  StationFile: "CERA_NOAA_HSOFS_stations_V2.csv"
   EX_COOPS_NANS: True
   EX_MULTIVALUE: False
   EX_THRESH: True
