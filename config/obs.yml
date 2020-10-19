@@ -1,5 +1,5 @@
-DEFAULT: &default
-  StationFile: "CERA_NOAA_HSOFS_stations_V2.csv"
+#DEFAULT: &default
+  #StationFile: "CERA_NOAA_HSOFS_stations_V2.csv"
 
 OBSERVATIONS: &observations
   StationFile: "CERA_NOAA_HSOFS_stations_V2.csv"
