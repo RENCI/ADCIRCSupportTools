@@ -204,7 +204,7 @@ class GetObsStations(object):
         Results:
             Return dataframe ('stationid','Node','lon','lat']). 
         """
-        config = self.config['OBSERVATIONS']
+        config = self.config['DEFAULT']
         stafile = os.path.join(os.path.dirname(__file__), "../config", config['StationFile'])
         try:
             # NOTE datafile format in flux Need to skip the 2nd row
