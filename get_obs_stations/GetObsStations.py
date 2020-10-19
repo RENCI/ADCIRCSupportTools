@@ -248,9 +248,11 @@ class GetObsStations(object):
             dataframe: if station metadfata 'stationid', 'stationname', 'lat', 'lon', 'Node'].
             stationlist: List (str) of retained stationIDs (dep on value for EX_COOPS_NANS).
         """
-        config = self.config['OBSERVATIONS']
+        #config = self.config['OBSERVATIONS']
+        config = self.config
+
         tempstationlist = stationlist
-        stafile = os.path.join(os.path.dirname(__file__), "../config", config['StationFile'])
+        stafile = os.path.join(os.path.dirname(__file__), "../config", config['DEFAULT']['StationFile'])
         try:
             # NOTE datafile format in flux Need ot skip the 2nd row
             df = pd.read_csv(stafile, index_col=0, header=0, skiprows=[1], sep=',')
