@@ -63,7 +63,7 @@ def main(args):
 
     cvKriging = args.cv_kriging
     percentStationMissing = args.station_missing_threshold
-    adcdataformat = args.adc_fortran_63
+    adcdataformat = args.adc_fortran_61
     overrideRepeats = args.override_repeats
     overridetimeout = None if args.time2 is None else str2datetime(args.time2)
     aveper = None if args.aveper is None else int(args.aveper)
@@ -144,12 +144,11 @@ def main(args):
     # If we were to read URLs then we would want to update the timei /out with those from levels_63
     if not os.path.exists(ADCfile):
         if adcdataformat:
-            df = get_water_levels63(adc.urls, node_idx, station_id) # Gets ADCIRC water levels
-            #adc.T1 = df.index[0]
-            #adc.T2 = df.index[-1]
-            df.to_pickle(ADCfile)
-        else:
+            utilities.log.error('ADC: Format 61 is not implemented yet')
             sys.exit('ADC: Format 61 is not implemented yet')
+        else:
+            df = get_water_levels63(adc.urls, node_idx, station_id) # Gets ADCIRC water levels
+            df.to_pickle(ADCfile)
     else:
         utilities.log.info("adc_wl.pkl exists.  Using that...")
         utilities.log.info(ADCfile)
@@ -309,8 +308,8 @@ if __name__ == '__main__':
                         help='Boolean: Invoke a CV procedure prior to fitting kriging model')
     parser.add_argument('--station_missing_threshold', action='store', dest='station_missing_threshold', default=100,
                         help='Float: maximum percent missing station data')
-    parser.add_argument('--adc_fortran_63', action='store_true',
-                        help='Boolean: Choose either Fortran.63 method or Fortran.61 method')
+    parser.add_argument('--adc_fortran_61', action='store_true',
+                        help='Boolean: Choose Fortran.61 method instead Fortran.63 method')
     parser.add_argument('--override_repeats',action='store_true',
                         help='Boolean: Force rerunning a pipeline even if timein-timeout flank is already done')
     parser.add_argument('--time2', action='store', dest='time2', default=None,
