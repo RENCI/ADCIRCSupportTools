@@ -225,9 +225,10 @@ def main(args):
     inerrorfile = finalf
 
     int_yamlname=os.path.join(os.path.dirname(__file__), 'config', 'int.yml')
-    clampfile = os.path.join(os.path.dirname(__file__), "../config", config['DEFAULT']['ClampList'])
+    #clampfile = os.path.join(os.path.dirname(__file__), "../config", config['DEFAULT']['ClampList'])
     #clampfile='/home/jtilson/ADCIRCSupportTools/config/clamp_list_hsofs.dat'
-    krig_object = interpolateScalerField(datafile=inerrorfile, yamlname=int_yamlname, clampingfile=clampfile, metadata=iometadata, rootdir=rootdir)
+    #Send a None to clampingfile and code automatically looks in yaml
+    krig_object = interpolateScalerField(datafile=inerrorfile, yamlname=int_yamlname, metadata=iometadata, rootdir=rootdir)
 
     vparams=None
     param_dict=None
