@@ -58,19 +58,19 @@ year="2018"
 month="01"
 date='%4d' % (year) + month
 DDIR="/projects/ees/TDS/ERA5/global"
-#python -u ../era5_to_owi.py --metafilename month --metadirname year --convertEastWest True --ddir DDIR --date_start date --date_end date 
-python -u ../era5_to_owi.py --metafilename "01" --metadirname "2018" --convertEastWest True --ddir "/projects/ees/TDS/ERA5/global" --date_start "201801" --date_end "201801"
+#python -u ../era5_to_owi.py --metafilename month --metadirname year --convertEastWest --ddir DDIR --date_start date --date_end date 
+python -u ../era5_to_owi.py --metafilename "01" --metadirname "2018" --convertEastWest --ddir "/projects/ees/TDS/ERA5/global" --date_start "201801" --date_end "201801"
 
 # 6) Merge 3 months of data of 2017. Place results into the files test.221/test.222 into a dir named:
 # $RUNTIMEDIR/Reanalysis/Winds/2017
 
-python -u ../era5_to_owi.py --metafilename "test" --metadirname "2017" --convertEastWest True --ddir "/projects/ees/TDS/ERA5/global" --date_start "201701" --date_end "201703"
+python -u ../era5_to_owi.py --metafilename "test" --metadirname "2017" --convertEastWest --ddir "/projects/ees/TDS/ERA5/global" --date_start "201701" --date_end "201703"
 
 # 7) Merge 3 months of 2018 into a specified directory -> ODIR/2018
 #
 ODIR="./TEMP"
 mkdir TEMP
-python -u ../era5_to_owi.py --metafilename "test" --metadirname "2018" --convertEastWest True --ddir "/projects/ees/TDS/ERA5/global" --odir "./TEMP" --date_start "201801" --date_end "201803"
+python -u ../era5_to_owi.py --metafilename "test" --metadirname "2018" --convertEastWest --ddir "/projects/ees/TDS/ERA5/global" --odir "./TEMP" --date_start "201801" --date_end "201803"
 
 # 8) A Slurm example that processes all individual months of the selected years
 
@@ -86,7 +86,7 @@ def build_slurm(ddir,odir,date_start,date_end,year,month):
     slurm.append('echo "Begin the OWI processing" ')
     slurm.append('export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools:$PYTHONPATH')
     slurm.append('dir="/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/convert_to_owi"')
-    slurm.append('python -u $dir/era5_to_owi.py --metafilename "'+month+'" --metadirname "'+year+'" --convertEastWest True --ddir "'+ddir+'" --date_start "'+date_start+'" --date_end "'+date_end+'"')
+    slurm.append('python -u $dir/era5_to_owi.py --metafilename "'+month+'" --metadirname "'+year+'" --convertEastWest --ddir "'+ddir+'" --date_start "'+date_start+'" --date_end "'+date_end+'"')
     shName = '_'.join([month,year,'runSlurm.sh'])
     with open(shName, 'w') as file:
         for row in slurm:
@@ -130,7 +130,7 @@ def build_slurm(ddir,odir,date_start,date_end,year):
     slurm.append('echo "Begin the OWI processing" ')
     slurm.append('export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools:$PYTHONPATH')
     slurm.append('dir="/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/convert_to_owi"')
-    slurm.append('python -u $dir/era5_to_owi.py --metafilename "'+year+'" --metadirname "'+year+'" --convertEastWest True --ddir "'+ddir+'" --date_start "'+date_start+'" --date_end "'+date_end+'"')
+    slurm.append('python -u $dir/era5_to_owi.py --metafilename "'+year+'" --metadirname "'+year+'" --convertEastWest --ddir "'+ddir+'" --date_start "'+date_start+'" --date_end "'+date_end+'"')
     shName = '_'.join([year,'runSlurm.sh'])
     with open(shName, 'w') as file:
         for row in slurm:
@@ -159,5 +159,5 @@ print('Finished')
 # 10) Using GNU parallel to 12 months 
 
 export dir="/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/convert_to_owi"
-~bblanton/bin/parallel -j1  $dir/era5_to_owi.py --metafilename '2018' --metadirname '2018' --convertEastWest True --basedirextra 'Reanalysis/Winds' --date_start '201712' --date_end '201901'  >> list 
+~bblanton/bin/parallel -j1  $dir/era5_to_owi.py --metafilename '2018' --metadirname '2018' --convertEastWest --basedirextra 'Reanalysis/Winds' --date_start '201712' --date_end '201901'  >> list 
 
