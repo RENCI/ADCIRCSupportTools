@@ -62,9 +62,9 @@ from pykrige.ok import OrdinaryKriging
 from pykrige.uk import UniversalKriging
 from pykrige.rk import Krige
 from pykrige.compat import GridSearchCV
-from sympy import pretty_print as pp, latex
 from sklearn.externals import joblib
 #from sklearn.externals.joblib import Parallel, delayed
+#from sympy import pretty_print as pp, latex
 from utilities.utilities import utilities
 import datetime
 
