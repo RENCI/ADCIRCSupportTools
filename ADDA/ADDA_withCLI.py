@@ -210,7 +210,7 @@ def main(args):
     obsf = obs_wl_smoothed
     meta = metadata
 
-    err_yamlname = err_yamlname = os.path.join(os.path.dirname(__file__), 'config', 'err.yml')
+    err_yamlname = err_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'err.yml')
     utilities.log.info('Override aveper flag set to '+str(aveper))
     compError = computeErrorField(obsf, adcf, meta, yamlname = err_yamlname, rootdir=rootdir, aveper=aveper)
     errf, finalf, cyclef, metaf, mergedf = compError.executePipeline( metadata = iometadata, subdir='errorfield' )
