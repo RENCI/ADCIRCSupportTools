@@ -1,46 +1,71 @@
+# Hatteras
 # 1) Install conda on your system 
-# DO not load the system python 
+# Do not load the hatteras modules python 
 
 export PATH=~/.local/bin:$PATH
 
+# 1) Get the code
+git clone https://github.com/jtilson/ADCIRCSupportTools.git
+
 # 2) Build conda env
-conda create -n apsenv xarray basemap matplotlib pandas matplotlib netCDF4 pyyaml scipy cartopy gdal rasterio geopandas
+conda create -n apsenv scikit-learn xarray basemap matplotlib numpy pandas matplotlib netCDF4 pyyaml scipy cartopy gdal rasterio geopandas
 
 # 3) Pip install the known requirements
 
 conda activate apsenv
-pip install cdsapi
-pip install datedelta
-pip install siphon
-#pip install -r requirements.txt
 
-
-# 4) Install the local noaa_coops 
-#git clone https://github.com/GClunies/noaa_coops.git
+git clone https://github.com/GClunies/noaa_coops.git
 cd noaa_coops
 python setup.py install --user
 
-export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools
-export RUNTIMEDIR="."
-
-
-conda deactivate
-
-
-
-# 4) 
-conda create -n metenv xarray basemap matplotlib pandas matplotlib netCDF4 pyyaml
-conda activate metenv
-
-# 4) Get the reqs same as ADCIRC
 pip install cdsapi
 pip install datedelta
-pip install -r requirements.txt
+pip install siphon
+pip install seaborn 
+pip install PyKrige # needs scikit-learn
 
-# NOTE: Even though the requirements file is right, sometimes it just seems to skip a ferw. Pretty
-# regularly, scipy wil not actually get build and you must pip install scipy manually. IDKW
+# Install using requirements causes getObs to hang on the fetch
+#pip install -r requirements.txt
 
-#conda deactivate
+# 4) Test runs
+
+export PYTHONPATH=./ADCIRCSupportTools
+export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/HATTERAS/ADCIRCSupportTools
+export RUNTIMEDIR="."
+
+# 4a) test the OBS codes
+# Installs files into $RUNTIMEDIR/StationTest
+python ../GetObsStations.py --timein='2020-10-17 12:00' --timeout='2020-10-21 18:00'
+
+# 4b) get_adcirc test
+
+# 4c) computeError
+export dir="/home/jtilson/ADCIRCSupportTools/TEST_DATA/ADCIRC"
+python ../computeErrorField.py --obsmeta "$dir/obs_wl_metadata.pkl" --obsdata "$dir/obs_wl_smoothed.pkl" --adcdata "$dir/adc_wl.pkl"
 
 
+# 4d) Kriging test
+python test_CVkriging.py --errorfile '/projects/sequence_analysis/vol1/prediction_work/HATTERAS/ADCIRCSupportTools/TEST_DATA/ADCIRC/stationSummaryAves_manualtest.csv' --gridjsonfile '/projects/sequence_analysis/vol1/prediction_work/HATTERAS/ADCIRCSupportTools/TEST_DATA/ADCIRC/adc_coord.json' --clampfile '/projects/sequence_analysis/vol1/prediction_work/HATTERAS/ADCIRCSupportTools/config/clamp_list_hsofs.dat' --subdir_name 'TESTINT' --iometadata 'IOMETA'
 
+# 4e) pipeline test 
+python execute_APSVIZ_pipeline.py --iosubdir TESTDIR  --urljson data_test.json 
+
+# 5) CDS/OWI testing
+# 5a) Fetch a month from CDS
+export year='2018'
+export month='01'
+python -u ../cds_request.py --year $year --month $month
+
+# 5b) Convert a month to OWI. Uses data from the TDS directory (EDS research) /projects/ees/TDS/ERA5/global
+
+mkdir TEMP
+python -u ../era5_to_owi.py --metafilename "test" --metadirname "2018" --convertEastWest --ddir "/projects/ees/TDS/ERA5/global" --odir "./TEMP" --date_start "201801" --date_end "201803"
+
+# 6) ADDA pipeline. Modern variant of the original and fully backward compatible.
+# 6a) Straight up ADDA run
+python -u ./ADDA_withCLI.py --override_repeats
+
+# 6b) AN ADDA run with CV optimizastion of the kriging params (lengthy execution time)
+python -u ADDA_CVcollect.py --cv_kriging  --override_repeats --time2 20200811-00:00:00
+
+conda deactivate
