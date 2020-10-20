@@ -82,7 +82,7 @@ def main(args):
     # 2) Read the OBS yml to get station data
     # Such as node_idx data
     utilities.log.info('Fetch OBS station data')
-    obs_yamlname = os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'obs.yml')
+    obs_yamlname = os.path.join(os.path.dirname(__file__), 'config', 'obs.yml')
     obs_config = utilities.load_config(obs_yamlname)
     station_df = utilities.get_station_list()
     station_id = station_df["stationid"].values.reshape(-1,)
@@ -92,7 +92,7 @@ def main(args):
     # 3) Get ADCIRC data: Use it to decide on desired stations and time ranges
     # Build metadata string
 
-    adc_yamlname = os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'adc.yml')
+    adc_yamlname = os.path.join(os.path.dirname(__file__), 'config', 'adc.yml')
     adc = Adcirc(adc_yamlname)
 
     if overridetimeout is None:
@@ -210,7 +210,7 @@ def main(args):
     obsf = obs_wl_smoothed
     meta = metadata
 
-    err_yamlname = err_yamlname = os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'err.yml')
+    err_yamlname = err_yamlname = os.path.join(os.path.dirname(__file__), 'config', 'err.yml')
     utilities.log.info('Override aveper flag set to '+str(aveper))
     compError = computeErrorField(obsf, adcf, meta, yamlname = err_yamlname, rootdir=rootdir, aveper=aveper)
     errf, finalf, cyclef, metaf, mergedf = compError.executePipeline( metadata = iometadata, subdir='errorfield' )
@@ -224,9 +224,9 @@ def main(args):
 
     inerrorfile = finalf
 
-    int_yamlname=os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'int.yml')
-    #clampfile = os.path.join(os.path.dirname(__file__), "../config", config['DEFAULT']['ClampList'])
-    clampfile='/home/jtilson/ADCIRCSupportTools/config/clamp_list_hsofs.dat'
+    int_yamlname=os.path.join(os.path.dirname(__file__), 'config', 'int.yml')
+    clampfile = os.path.join(os.path.dirname(__file__), "../config", config['DEFAULT']['ClampList'])
+    #clampfile='/home/jtilson/ADCIRCSupportTools/config/clamp_list_hsofs.dat'
     krig_object = interpolateScalerField(datafile=inerrorfile, yamlname=int_yamlname, clampingfile=clampfile, metadata=iometadata, rootdir=rootdir)
 
     vparams=None
