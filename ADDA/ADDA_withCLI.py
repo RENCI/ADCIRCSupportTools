@@ -82,7 +82,7 @@ def main(args):
     # 2) Read the OBS yml to get station data
     # Such as node_idx data
     utilities.log.info('Fetch OBS station data')
-    obs_yamlname = os.path.join(os.path.dirname(__file__), 'config', 'obs.yml')
+    obs_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'obs.yml')
     obs_config = utilities.load_config(obs_yamlname)
     station_df = utilities.get_station_list()
     station_id = station_df["stationid"].values.reshape(-1,)
@@ -92,7 +92,7 @@ def main(args):
     # 3) Get ADCIRC data: Use it to decide on desired stations and time ranges
     # Build metadata string
 
-    adc_yamlname = os.path.join(os.path.dirname(__file__), 'config', 'adc.yml')
+    adc_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'adc.yml')
     adc = Adcirc(adc_yamlname)
 
     if overridetimeout is None:
