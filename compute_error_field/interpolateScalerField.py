@@ -70,6 +70,7 @@ from utilities.utilities import utilities
 import datetime
 
 import matplotlib
+import copy
 #matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
@@ -531,7 +532,8 @@ class interpolateScalerField(object):
         subdir = "images" # The yaml imgdir/subdir for storing images
         fig = plt.figure(figsize=(8, 10))
         ax = fig.add_axes([0.1, 0.1, 0.8, 0.8])
-        cmap = plt.get_cmap('seismic')
+        #cmap = plt.get_cmap('seismic') # Recommended by deprecation warning
+        cmap = copy.copy(plt.cm.get_cmap("seismic"))
         cmap.set_under('gray')
         cax = ax.scatter(x, y, c=values, s=100, cmap=cmap, vmin=values.min(), vmax=values.max())
         fig.colorbar(cax)
