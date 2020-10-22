@@ -1,0 +1,30 @@
+# A slightly different format than used for our typical ADCIRC thredds calls
+
+ADCIRC: &adcirc
+  AdcircGrid: 'hsofs'
+  Machine: 'hatteras.renci.org'
+  NodeList: 'adcirc_test_nodes.dat'
+  Instance: "hsofs-nam-bob"  #  "ncfs-dev-hsofs-nam-master"
+  baseurl: 'http://tds.renci.org:8080/thredds/'
+  catPart: '/catalog/2020/nam/catalog.xml'
+  dodsCpart: '/dodsC/%s/nam/%s/%s/%s/%s/%s/%s'
+  fortNumber: '63'
+
+VARFILEMAP: &varfilemap
+  zeta_max: 'maxele.63.nc'
+  vel_max: 'maxvel.63.nc'
+  inun_max: 'maxinundepth.63.nc'
+  zeta: 'fort.63.nc'
+
+TIME: &time
+  doffset: 0
+  hoffset: -6
+  period: 6
+
+GRAPHICS: &graphics
+  CMAP: "bwr"
+  NCOL: 20
+  VMIN: -0.5
+  VMAX: 0.5
+  MAPRES: "i"
+
