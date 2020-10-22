@@ -4,14 +4,13 @@
 # This code originally derived from a jhub notebook 
 # implements an approach for computing geotiffs from ADCIRC FEM output in netCDF.
 
-# If inputting urlk as a json then we muist have filename metadata incliuded as:
+# If inputing url as a json then we must have filename metadata included as:
 #{"1588269600000": "http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020043018/hsofs/hatteras.renci.org/ncfs-dev-hsofs-nam-master/nowcast/maxele.63.nc"}
 # If simply imputting a raw url (not expected to be a common approach) then the utime value will be set to 0000
 
 import os
 import sys
 import time
-#import re
 import datetime as dt
 import numpy.ma as ma
 import pandas as pd
@@ -40,30 +39,6 @@ utilities.log.info("Geopandas Version = {}".format(gpd.__version__))
 
 ensname = 'namforecast'
 
-def str2bool(v):
-    if isinstance(v, bool):
-        return v
-    if v.lower() in ('yes', 'true', 't', 'y', '1'):
-        return True
-    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
-        return False
-    else:
-        raise argparse.ArgumentTypeError('Boolean value expected.')
-
-
-# TODO: Jeff, the original intent of the regex that checkEnumuation replaced
-# was to catch the "max" in the variable name.  If max is in the name,
-# then the ADCIRC solution component being "geotiffed" in this run
-# does NOT contain time, and thus the time index does not exist.
-# We do not want to do that check in this "def" way.
-# We may want validate the variable name parameter, but rather like this:
-# possible_vars = ['zeta_max',
-#                  'vel_max',
-#                  'inun_max']
-# if var not in possible_vars:
-#     error...
-
-
 def checkEnumuation(v):
     if v.lower() in ('zeta_max'):
         return True
@@ -72,7 +47,6 @@ def checkEnumuation(v):
     if v.lower() in ('inun_max'):
         return True
     return False
-
 
 def get_url(dict_cfg, varname, datestr, hourstr, yearstr, enstag):
     """
@@ -156,7 +130,7 @@ def default_inter_grid():
     return targetgrid, crs
 
 
-def read_inter_grid_yaml():
+def read_inter_grid_yaml(geo_yamlfile=os.path.join( os.path.dirname(__file__), '../config', 'geotiff.yml')):
     """
     fetch geotiff grid parameters from the yaml
     Returns:
@@ -164,21 +138,21 @@ def read_inter_grid_yaml():
         target crs 
     """
     try:
-        config = utilities.load_config()['TARGETGRID']
+        config = utilities.load_config(geo_yamlfile)['REGRID']
     except:
-        utilities.log.error("TARGETGRID: load_config yaml failed")
+        utilities.log.error("REGRID: load_config yaml failed")
     upperleft_lo = config['upperleft_lo']
     upperleft_la = config['upperleft_la']
     res = config['res']
     nx = config['nx']
     ny = config['ny']
-    crs = config['coordrefsys']
+    #crs = config['coordrefsys']
+    crs = config['reference']
     targetgrid = {'Latitude': [upperleft_la],
                   'Longitude': [upperleft_lo],
                   'res': res,
                   'nx': nx,
                   'ny': ny}
-
     return targetgrid, crs
 
 # Define geopandas processors
@@ -204,7 +178,6 @@ def construct_geopandas(agdict, targetepsg):
     utilities.log.info('Time to create geopandas was {}'.format(time.time()-t0))
     utilities.log.debug('GDF data set {}'.format(gdf))
     return xtemp, ytemp, gdf
-
 
 # project interpolation grid to target crs
 def compute_geotiff_grid(targetgrid, targetepsg):
@@ -236,7 +209,6 @@ def compute_geotiff_grid(targetgrid, targetepsg):
     ym = (y[1:] + y[:-1]) / 2
     xxm, yym = np.meshgrid(xm, ym)
     utilities.log.debug('compute_mesh: lon {}. lat {}'.format(upperleft_x, upperleft_y))
-    
     meshdict = {'uplx': upperleft_x,
                 'uply': upperleft_y,
                 'x': x,
@@ -250,17 +222,18 @@ def compute_geotiff_grid(targetgrid, targetepsg):
 
 # Aggregation of individual methods
 
-def construct_url(varname):
+def construct_url(varname, geo_yamlfile=os.path.join(os.path.dirname(__file__), '../config', 'geotiff.yml')):
     """
     Assembles several method into an aggregate method to grab parameters
     from the yaml and construct a url. This is skipped if the user
     specified a URL on input.
     """
-    varnamedict = utilities.load_config()['VARFILEMAP'] 
+    geo_yml= utilities.load_config(geo_yamlfile)
+    varnamedict = geo_yml['VARFILEMAP'] 
     varfile = varnamedict[varname]
     utilities.log.info('map dict {}'.format(varnamedict))
     # Specify time parameters of interest
-    timedict = utilities.load_config()['TIME'] 
+    timedict = geo_yml['TIME'] 
     doffset = timedict['doffset']
     hoffset = timedict['hoffset']
 
@@ -271,7 +244,7 @@ def construct_url(varname):
     ystr = dt.datetime.strftime(thisdate, "%Y")  # NOTE slight API change to get_url
 
     # Fetch url
-    urldict = utilities.load_config()['ADCIRC']
+    urldict = geo_yml['ADCIRC']
     utilities.log.info('url dict {}'.format(urldict))
 
     # TODO: we will also need to elevate "namforecast" to be a default/input parameter, since this
@@ -421,12 +394,10 @@ def plot_png(filename='test.png'):
 # urlinput='http://tds.renci.org:8080/thredds//dodsC/2020/nam/2020042912/hsofs/hatteras.renci.org/ncfs-dev-hsofs-nam-master/namforecast/maxele.63.nc'
 #
 
-
 def main(args):
     """
     Prototype script to construct geotiff files from the ADCIRC triangular grid
     """
-    setGetURL = True
     utilities.log.info(args)
     experimentTag = args.experiment_name
     filename = args.filename
@@ -443,28 +414,18 @@ def main(args):
         utilities.info.error('Incorrect varname input {}'.format(varname))
 
     utilities.log.info('Start ADCIRC2Geotiff')
-    config = utilities.load_config()
-
-    if args.url is not None and args.urljson is not None:
-        utilities.log.error('Cannot specify both url and urljson.')
-        sys.exit(1)
-
-    if args.url is not None:
-        setGetURL = False
-        urls = {'single': args.url}
-        dstr = '00'  # Need to fake these if you input a url
-        cyc = '00'
+    main_config = utilities.load_config()
 
     if args.urljson is not None:
         setGetURL = False
         if not os.path.exists(args.urljson):
             utilities.log.error('urljson file not found.')
             sys.exit(1)
+        utilities.log.info('Read data from supplied urljson')
         urls = utilities.read_json_file(args.urljson)
         dstr = '00'  # Need to fake these if you input a urljson
         cyc = '00'
-
-    if setGetURL:
+    else:
         utilities.log.info('Executing the getURL process')
         url, dstr, cyc = construct_url(varname)
         urls = {'dstr': url}
@@ -475,12 +436,12 @@ def main(args):
     # Now construct filename destination using the dstr, cyc data
     iometadata = '_'.join([dstr, cyc])
     utilities.log.info('Attempt building dir name: {}, {}, {}'.format(
-                 config['DEFAULT']['RDIR'], iometadata, experimentTag))
+                 main_config['DEFAULT']['RDIR'], iometadata, experimentTag))
 
     if experimentTag is None:
-        rootdir = utilities.fetchBasedir(config['DEFAULT']['RDIR'], basedirExtra='APSVIZ_'+iometadata)
+        rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'], basedirExtra='APSVIZ_'+iometadata)
     else:
-        rootdir = utilities.fetchBasedir(config['DEFAULT']['RDIR'], basedirExtra='APSVIZ_'+experimentTag+'_'+iometadata)
+        rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'], basedirExtra='APSVIZ_'+experimentTag+'_'+iometadata)
 
 #Build final pieces for the subsequent plots
 #    if args.urljson is not None:
@@ -553,7 +514,6 @@ def main(args):
 
     utilities.log.info('Finished') 
 
-
 if __name__ == '__main__':
     from argparse import ArgumentParser
     import sys
@@ -564,16 +524,14 @@ if __name__ == '__main__':
                         help='String: tif output file name will be prepended by new path. Must include extension')
     parser.add_argument('--png_filename', action='store', dest='png_filename', default='test.png',
                         help='String: png output file name will be prepended by new path. Must include extension')
-    parser.add_argument('--showInterpolatedPlot', type=str2bool, action='store', dest='showInterpolatedPlot', default=False,
+    parser.add_argument('--showInterpolatedPlot', action='store_true', 
                         help='Boolean: Display the comparison of Trangular and interpolated plots')
-    parser.add_argument('--showRasterizedPlot', type=str2bool, action='store', dest='showRasterizedPlot', default=False,
+    parser.add_argument('--showRasterizedPlot', action='store_true',
                         help='Boolean: Display the generated and saved tif plot')
-    parser.add_argument('--showPNGPlot', type=str2bool, action='store', dest='showPNGPlot', default=False,
+    parser.add_argument('--showPNGPlot', action='store_true', 
                         help='Boolean: Display the generated and saved png plot')
     parser.add_argument('--varname', action='store', dest='varname', default='zeta_max',
                         help='String: zeta_max, vel_max, or inun_max')
-    parser.add_argument('--url', action='store', dest='url', default=None,
-                        help='String: simply input a URL for processing')
     parser.add_argument('--urljson', action='store', dest='urljson', default=None,
                         help='String: Filename with a json of urls to loop over.')
     args = parser.parse_args()

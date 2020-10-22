@@ -10,6 +10,14 @@ ADCIRC: &adcirc
   dodsCpart: '/dodsC/%s/nam/%s/%s/%s/%s/%s/%s'
   fortNumber: '63'
 
+REGRID: &regrid
+  upperleft_lo: -77.09
+  upperleft_la: 35.7
+  res: 100  # resolution in deg
+  nx: 1000
+  ny: 1000
+  reference: 'epsg:6346'
+
 VARFILEMAP: &varfilemap
   zeta_max: 'maxele.63.nc'
   vel_max: 'maxvel.63.nc'
