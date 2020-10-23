@@ -1,6 +1,10 @@
-# Hatteras
-# 1) Install conda on your system 
-# Do not load the hatteras modules python 
+
+# Lynch
+# Coming up with a decent set of reqs has been a problem because of including ADRAS code.
+#
+
+##########
+# 1) Install conda on your system
 
 export PATH=~/.local/bin:$PATH
 
@@ -8,11 +12,12 @@ export PATH=~/.local/bin:$PATH
 git clone https://github.com/jtilson/ADCIRCSupportTools.git
 
 # 2) Build conda env
-conda create -n apsenv scikit-learn xarray basemap matplotlib numpy pandas matplotlib netCDF4 pyyaml scipy cartopy gdal rasterio geopandas
+conda create -n apsenv basemap rasterio scikit-learn xarray matplotlib numpy pandas matplotlib netCDF4 pyyaml scipy cartopy gdal geopandas
 
 # 3) Pip install the known requirements
 
 conda activate apsenv
+pip install --force rasterio # Needs to be upgraded
 
 git clone https://github.com/GClunies/noaa_coops.git
 cd noaa_coops
@@ -22,13 +27,17 @@ pip install cdsapi
 pip install datedelta
 pip install siphon
 pip install seaborn 
+pip install pyyaml
+pip install netCDF4
 pip install PyKrige # needs scikit-learn
+pip install --force rasterio
 
-# Install using requirements causes getObs to hang on the fetch
-#pip install -r requirements.txt
+#####
+export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/CRAP/ADCIRCSupportTools
+export RUNTIMEDIR=./TEST
 
 # 4) Test runs
-
+scikit-learn xarray basemap matplotlib numpy pandas matplotlib netCDF4 pyyaml scipy cartopy gdal rasterio geopandas
 export PYTHONPATH=./ADCIRCSupportTools
 export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/HATTERAS/ADCIRCSupportTools
 export RUNTIMEDIR="."
