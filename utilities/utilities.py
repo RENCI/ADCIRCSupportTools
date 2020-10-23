@@ -185,6 +185,21 @@ class Utilities:
             raise IOerror("Failed to write file %s" % (newfilename))
         return newfilename
 
+    def writeJson(self, df, rootdir='.',subdir='errorfile',fileroot='filename',iometadata='Nometadata'):
+        """
+        Write out current self.merged as a Json. Must not use a datetime index
+        """
+        newfilename=None
+        try:
+            mdir = rootdir
+            newfilename = self.getSubdirectoryFileName(mdir, subdir, fileroot+iometadata+'.json')
+            df.to_json(newfilename)
+            print('Wrote JSON file {}'.format(newfilename))
+        except IOError:
+            raise IOerror("Failed to write file %s" % (newfilename))
+        return newfilename
+
+
     def read_json_file(self, filepath):
         # Read data from JSON file specified by full path
         data = {}

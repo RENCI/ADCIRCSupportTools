@@ -272,10 +272,12 @@ class computeErrorField(object):
         self.metafilename=utilities.writeCsv(df_metadata,rootdir=self.rootdir,subdir=subdir,fileroot='stationMetaData',iometadata=metadata)
         self.mergedname=utilities.writeCsv(self.df_merged,rootdir=self.rootdir,subdir=subdir,fileroot='adc_obs_error_merged',iometadata=metadata)
         self.errorfilename=utilities.writePickle(self.diff,rootdir=self.rootdir,subdir=subdir,fileroot='tideTimeErrors',iometadata=metadata)
-        utilities.log.info('save averaging files ' + self.finalfilename +' and '+ self.cyclefilename +' and '+self.metafilename +' and '+self.errorfilename +' and '+ self.mergedname) 
+        self.jsonfilename=utilities.writeJson(self.df_merged.reset_index(),rootdir=self.rootdir,subdir=subdir,fileroot='adc_obs_error_merged',iometadata=metadata)
+        #self.df_merged.reset_index().to_json(self.jsonfilename)
+        utilities.log.info('save averaging files ' + self.finalfilename +' and '+ self.cyclefilename +' and '+self.metafilename +' and '+self.errorfilename +' and '+ self.mergedname +' and '+ self.jsonfilename) 
 
     def _fetchOutputFilenames(self):
-        return self.errorfilename, self.finalfilename, self.cyclefilename, self.metafilename, self.mergedname
+        return self.errorfilename, self.finalfilename, self.cyclefilename, self.metafilename, self.mergedname, self.jsonfilename
 
     def executePipeline(self, metadata = 'Nometadata',subdir=''):
         dummy = self._intersectionStations()
@@ -284,9 +286,9 @@ class computeErrorField(object):
         dummy = self._applyTimeBounds()
         dummy = self._computeAndAverageErrors()
         dummy = self._outputDataToFiles(metadata=metadata,subdir=subdir)
-        errf, finalf, cyclef, metaf, mergedf = self._fetchOutputFilenames()
+        errf, finalf, cyclef, metaf, mergedf, jsonf = self._fetchOutputFilenames()
         ##dummy = self._generatePerStationPlot(metadata='Nometadata')
-        return errf, finalf, cyclef, metaf, mergedf
+        return errf, finalf, cyclef, metaf, mergedf, jsonf
 
     def executePipelineNoTidalTransform(self, metadata = 'Nometadata',subdir=''):
         dummy = self._intersectionStations()
@@ -295,8 +297,8 @@ class computeErrorField(object):
         dummy = self._applyTimeBounds()
         dummy = self._computeAndAverageErrors()
         dummy = self._outputDataToFiles(metadata=metadata,subdir=subdir)
-        errf, finalf, cyclef, metaf, mergedf = self._fetchOutputFilenames()
-        return errf, finalf, cyclef, metaf, mergedf
+        errf, finalf, cyclef, metaf, mergedf, jsonf = self._fetchOutputFilenames()
+        return errf, finalf, cyclef, metaf, mergedf, jsonf
 
 # Combine these intermediate steps into a single caller
 def main(args):
@@ -332,8 +334,8 @@ def main(args):
     dummy = cmp._computeAndAverageErrors()
     dummy = cmp._outputDataToFiles(metadata='_maintest',subdir='') # Note the delimiter is added here
     print('get output names')
-    errf, finalf, cyclef, metaf, mergedf = cmp._fetchOutputFilenames()
-    print('output files '+errf+' '+finalf+' '+cyclef+' '+metaf+' '+mergedf)
+    errf, finalf, cyclef, metaf, mergedf, jsonf = cmp._fetchOutputFilenames()
+    print('output files '+errf+' '+finalf+' '+cyclef+' '+metaf+' '+mergedf+' '+jsonf)
 
 if __name__ == '__main__':
     parser = ArgumentParser(description=main.__doc__)
