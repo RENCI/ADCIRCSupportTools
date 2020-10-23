@@ -4,11 +4,6 @@
 #
 
 ##########
-##
-## first approach
-##
-
-
 # 1) Install conda on your system
 
 export PATH=~/.local/bin:$PATH
@@ -17,8 +12,6 @@ export PATH=~/.local/bin:$PATH
 git clone https://github.com/jtilson/ADCIRCSupportTools.git
 
 # 2) Build conda env
-# conda create -n test4 basemap rasterio scikit-learn xarray matplotlib numpy pandas matplotlib netCDF4 pyyaml scipy cartopy gdal geopandas
-
 conda create -n test4 basemap rasteriocikit-learn xarray matplotlib numpy pandas matplotlib netCDF4 pyyaml scipy cartopy gdal geopandas
 
 # 3) Pip install the known requirements
