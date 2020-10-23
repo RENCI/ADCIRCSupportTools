@@ -1,5 +1,7 @@
 # Simple invocation to test code. Will dump contents under the directory TEST
 
+conda activate myenv
+
 export RUNTIMEDIR=./TEST
 python ADCIRC2Geotiff.py --showInterpolatedPlot
 
