@@ -9,6 +9,7 @@
 import os, sys
 import numpy as np
 import pandas as pd
+import json
 from argparse import ArgumentParser
 from utilities.utilities import utilities
 from scipy import stats
@@ -260,20 +261,69 @@ class computeErrorField(object):
         df_merged = pd.concat([adc,obs,err])
         return df_merged
 
+    def _combineDataFramesNewversion(self,adc,obs,err):
+        """Combines the three diurnal corrected data frames into a single better dict-able object
+        """
+        # Add a new column for building index
+        adc['SRC']='ADC'
+        obs['SRC']='OBS'
+        err['SRC']='ERR'
+        # Specify current index name
+        adc.index.name='TIME'
+        obs.index.name='TIME'
+        err.index.name='TIME'
+        # Do the work
+        adc.reset_index(inplace=True)
+        obs.reset_index(inplace=True)
+        err.reset_index(inplace=True)
+        adc.set_index(['TIME','SRC'], inplace=True)
+        obs.set_index(['TIME','SRC'], inplace=True)
+        err.set_index(['TIME','SRC'], inplace=True)
+        df_merged = pd.concat([adc,obs,err])
+        return df_merged
+
+    def _generateJSONdata(self, product='WL'):
+        """
+        Reformat the df_merged data into a dict with Stations as the main key
+        Create the dict: self.df_merged_dict
+        For this class we can expect ADS/OBS/ERR data to all be available.
+        Must cionvert timestamp index to Strings YYYYMMDD HH:MM:SS
+        """
+# adc.T2.strftime('%Y%m%d%H%M')
+        utilities.log.info('Begin processing DICT data format')
+        variables = ['ADC','OBS','ERR']
+        df = self.df_merged
+        df.reset_index(inplace=True) # Remove SRC from the multiindex
+        df.set_index(['TIME'], inplace=True)
+        df.index = df.index.strftime('%Y-%m-%d %H:%M:%S')
+        dictdata = {}
+        for variable in variables: 
+            df_all = df[df['SRC']==variable]
+            dataall = df_all.drop('SRC',axis=1).T
+            stations = dataall.index
+            cols = dataall.columns.to_list()
+            for station in stations:
+                val = dataall.loc[station].to_list()
+                if station in dictdata.keys():
+                    dictdata[station].update({variable: {'TIME': cols, product:val}})
+                else:
+                    dictdata[station]={variable: {'TIME': cols, product:val}}
+        self.merged_dict = dictdata
+        utilities.log.info('Constructed JSON time series data')
+        return 
+
     def _outputDataToFiles(self, metadata='_test',subdir='errorfield'):
         """Dump the averages to disk for posterity
         """
         #print(self.df_final)
         #print(self.df_cycle_avgs)
-        print('writing the files')
         df_metadata = pd.DataFrame([self._constructMetaData()])
         self.finalfilename=utilities.writeCsv(self.df_final,rootdir=self.rootdir,subdir=subdir,fileroot='stationSummaryAves',iometadata=metadata)
         self.cyclefilename=utilities.writeCsv(self.df_cycle_avgs,rootdir=self.rootdir,subdir=subdir,fileroot='stationPeriodAves',iometadata=metadata)
         self.metafilename=utilities.writeCsv(df_metadata,rootdir=self.rootdir,subdir=subdir,fileroot='stationMetaData',iometadata=metadata)
         self.mergedname=utilities.writeCsv(self.df_merged,rootdir=self.rootdir,subdir=subdir,fileroot='adc_obs_error_merged',iometadata=metadata)
         self.errorfilename=utilities.writePickle(self.diff,rootdir=self.rootdir,subdir=subdir,fileroot='tideTimeErrors',iometadata=metadata)
-        self.jsonfilename=utilities.writeJson(self.df_merged.reset_index(),rootdir=self.rootdir,subdir=subdir,fileroot='adc_obs_error_merged',iometadata=metadata)
-        #self.df_merged.reset_index().to_json(self.jsonfilename)
+        self.jsonfilename=utilities.writeJson(self.merged_dict,rootdir=self.rootdir,subdir=subdir,fileroot='adc_obs_error_merged',iometadata=metadata)
         utilities.log.info('save averaging files ' + self.finalfilename +' and '+ self.cyclefilename +' and '+self.metafilename +' and '+self.errorfilename +' and '+ self.mergedname +' and '+ self.jsonfilename) 
 
     def _fetchOutputFilenames(self):
@@ -285,6 +335,7 @@ class computeErrorField(object):
         dummy = self._tidalCorrectData()
         dummy = self._applyTimeBounds()
         dummy = self._computeAndAverageErrors()
+        dummy = self._generateJSONdata()
         dummy = self._outputDataToFiles(metadata=metadata,subdir=subdir)
         errf, finalf, cyclef, metaf, mergedf, jsonf = self._fetchOutputFilenames()
         ##dummy = self._generatePerStationPlot(metadata='Nometadata')
@@ -296,6 +347,7 @@ class computeErrorField(object):
         #dummy = self._tidalCorrectData()
         dummy = self._applyTimeBounds()
         dummy = self._computeAndAverageErrors()
+        dummy = self._generateJSONdata()
         dummy = self._outputDataToFiles(metadata=metadata,subdir=subdir)
         errf, finalf, cyclef, metaf, mergedf, jsonf = self._fetchOutputFilenames()
         return errf, finalf, cyclef, metaf, mergedf, jsonf
@@ -332,6 +384,7 @@ def main(args):
     #dummy = cmp._tidalCorrectData()
     dummy = cmp._applyTimeBounds()
     dummy = cmp._computeAndAverageErrors()
+    dummy = cmp._generateJSONdata()
     dummy = cmp._outputDataToFiles(metadata='_maintest',subdir='') # Note the delimiter is added here
     print('get output names')
     errf, finalf, cyclef, metaf, mergedf, jsonf = cmp._fetchOutputFilenames()
