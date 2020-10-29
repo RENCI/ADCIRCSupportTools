@@ -45,7 +45,7 @@ def main(args):
     #dummy = cmp._tidalCorrectData()
     dummy = cmp._applyTimeBounds()
     dummy = cmp._computeAndAverageErrors()
-    dummy = cmp._generateJSONdata()
+    dummy = cmp._generateDICTdata()
     dummy = cmp._outputDataToFiles(metadata='_manualtest',subdir=testSubdir) # Note the delimiter is added here
     errf, finalf, cyclef, metaf, mergedf, jsonf = cmp._fetchOutputFilenames()
     print('output files '+errf+' '+finalf+' '+cyclef+' '+metaf+' '+mergedf+' '+jsonf)
