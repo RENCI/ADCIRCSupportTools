@@ -36,6 +36,7 @@ class computeErrorField(object):
         utilities.log.debug("ADCF filename "+adcf)
         utilities.log.debug("OBSF filename "+obsf)
         self.rootdir = rootdir
+        self.merged_dict = None
         if self.rootdir == None:
             utilities.log.error('No rootdir was specified')
         try:
@@ -287,7 +288,7 @@ class computeErrorField(object):
         Reformat the df_merged data into a dict with Stations as the main key
         Create the dict: self.df_merged_dict
         For this class we can expect ADS/OBS/ERR data to all be available.
-        Must cionvert timestamp index to Strings YYYYMMDD HH:MM:SS
+        Must convert timestamp index to Strings YYYYMMDD HH:MM:SS
         """
 # adc.T2.strftime('%Y%m%d%H%M')
         utilities.log.info('Begin processing DICT data format')
@@ -335,8 +336,8 @@ class computeErrorField(object):
         dummy = self._tidalCorrectData()
         dummy = self._applyTimeBounds()
         dummy = self._computeAndAverageErrors()
-        dummy = self._generateDICTdata()
-        ##merged_dict = utilities.convertTimeseriesToDICTdata(self.df_merged,['ADC','OBS','ERR'])
+        ##dummy = self._generateDICTdata()
+        self.merged_dict = utilities.convertTimeseriesToDICTdata(self.df_merged, variables=['ADC','OBS','ERR'])
         dummy = self._outputDataToFiles(metadata=metadata,subdir=subdir)
         errf, finalf, cyclef, metaf, mergedf, jsonf = self._fetchOutputFilenames()
         ##dummy = self._generatePerStationPlot(metadata='Nometadata')
@@ -348,7 +349,8 @@ class computeErrorField(object):
         #dummy = self._tidalCorrectData()
         dummy = self._applyTimeBounds()
         dummy = self._computeAndAverageErrors()
-        dummy = self._generateDICTdata()
+        ##dummy = self._generateDICTdata()
+        self.merged_dict = utilities.convertTimeseriesToDICTdata(self.df_merged, variables=['ADC','OBS','ERR'])
         dummy = self._outputDataToFiles(metadata=metadata,subdir=subdir)
         errf, finalf, cyclef, metaf, mergedf, jsonf = self._fetchOutputFilenames()
         return errf, finalf, cyclef, metaf, mergedf, jsonf
@@ -385,9 +387,9 @@ def main(args):
     #dummy = cmp._tidalCorrectData()
     dummy = cmp._applyTimeBounds()
     dummy = cmp._computeAndAverageErrors()
-    dummy = cmp._generateDICTdata()
+    ##dummy = cmp._generateDICTdata()
+    cmp.merged_dict = utilities.convertTimeseriesToDICTdata(cmp.df_merged, variables=['ADC','OBS','ERR'])
     dummy = cmp._outputDataToFiles(metadata='_maintest',subdir='') # Note the delimiter is added here
-    print('get output names')
     errf, finalf, cyclef, metaf, mergedf, jsonf = cmp._fetchOutputFilenames()
     print('output files '+errf+' '+finalf+' '+cyclef+' '+metaf+' '+mergedf+' '+jsonf)
 

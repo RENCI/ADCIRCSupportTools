@@ -185,7 +185,7 @@ class Utilities:
             raise IOerror("Failed to write file %s" % (newfilename))
         return newfilename
 
-    def writeJson(self, dictdata, rootdir='.',subdir='errorfile',fileroot='filename',iometadata='Nometadata'):
+    def writeDictToJson(self, dictdata, rootdir='.',subdir='errorfile',fileroot='filename',iometadata='Nometadata'):
         """
         Write out current self.merged_dict as a Json. Must not use a datetime  as keys
         """
@@ -261,6 +261,46 @@ class Utilities:
                 if not isinstance(t, list):
                     self.print_dict(t[key], s + 1)
 
+    def convertTimeseriesToDICTdata(self, df, variables=None, product='WL'):
+        """
+        Reformat the df data into an APSVIZ dict with Stations as the main key
+        Create the dict: self.df_merged_dict
+        For this class we can anticipate either ADS/OBS/ERR data  or none 
+        Must convert timestamp index to Strings YYYYMMDD HH:MM:SS
+        """
+        utilities.log.info('Begin processing DICT data format')
+        #variables = ['ADC','OBS','ERR']
+        df.reset_index(inplace=True) # Remove SRC from the multiindex
+        df.set_index(['TIME'], inplace=True)
+        df.index = df.index.strftime('%Y-%m-%d %H:%M:%S')
+        dictdata = {}
+        if variables != None: # SO a computeError multi variable data set
+            for variable in variables:
+                df_all = df[df['SRC']==variable]
+                dataall = df_all.drop('SRC',axis=1).T
+                stations = dataall.index
+                cols = dataall.columns.to_list()
+                for station in stations:
+                    val = dataall.loc[station].to_list()
+                    if station in dictdata.keys():
+                        dictdata[station].update({variable: {'TIME': cols, product:val}})
+                    else:
+                        dictdata[station]={variable: {'TIME': cols, product:val}}
+        else:
+            variable='ADCForecast'
+            df_all = df
+            dataall = df_all.T
+            stations = dataall.index
+            cols = dataall.columns.to_list()
+            for station in stations:
+                val = dataall.loc[station].to_list()
+                if station in dictdata.keys():
+                    dictdata[station].update({variable: {'TIME': cols, product:val}})
+                else:
+                    dictdata[station]={variable: {'TIME': cols, product:val}}
+        merged_dict = dictdata
+        utilities.log.info('Constructed DICT time series data')
+        return merged_dict
 
 #############################################################
 
