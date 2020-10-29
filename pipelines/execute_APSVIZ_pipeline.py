@@ -40,6 +40,7 @@ def exec_adcirc(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids):
         df = pd.read_pickle(ADCfile)
         adc.T1 = df.index[0]
         adc.T2 = df.index[-1]
+        df.to_json(ADCjson)
         utilities.log.info('read times from existing pkl {}, {}'.format( adc.T1,adc.T2))
     #timestart = adc.T1.strftime('%Y%m%d%H%M')
     #timeend = adc.T2.strftime('%Y%m%d%H%M')
@@ -62,8 +63,8 @@ def exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata):
 def exec_error(obsf, adcf, meta, err_yamlname, rootdir, iometadata): 
     cmp = computeErrorField(obsf, adcf, meta, yamlname=err_yamlname, rootdir=rootdir)
     cmp.executePipelineNoTidalTransform(metadata=iometadata,subdir='')
-    errf, finalf, cyclef, metaf, mergedf = cmp._fetchOutputFilenames()
-    return errf, finalf, cyclef, metaf, mergedf
+    errf, finalf, cyclef, metaf, mergedf,jsonf = cmp._fetchOutputFilenames()
+    return errf, finalf, cyclef, metaf, mergedf, jsonf
 
 # noinspection PyPep8Naming,DuplicatedCode
 def main(args):
@@ -128,7 +129,7 @@ def main(args):
     obsf = outfiles['OBS_SMOOTHED_PKL']
     adcf = outfiles['ADCIRC_WL_PKL']
 
-    errf, finalf, cyclef, metaf, mergedf = exec_error(obsf, adcf, meta, err_yamlname, rootdir, iometadata)
+    errf, finalf, cyclef, metaf, mergedf, jsonf = exec_error(obsf, adcf, meta, err_yamlname, rootdir, iometadata)
     
     outfiles['ERR_TIME_PKL']=errf
     outfiles['ERR_STATION_AVES_CSV']=errf  # THis would pass to interpolator
