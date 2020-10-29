@@ -282,7 +282,7 @@ class computeErrorField(object):
         df_merged = pd.concat([adc,obs,err])
         return df_merged
 
-    def _generateJSONdata(self, product='WL'):
+    def _generateDICTdata(self, product='WL'):
         """
         Reformat the df_merged data into a dict with Stations as the main key
         Create the dict: self.df_merged_dict
@@ -290,7 +290,6 @@ class computeErrorField(object):
         Must cionvert timestamp index to Strings YYYYMMDD HH:MM:SS
         """
 # adc.T2.strftime('%Y%m%d%H%M')
-        print('POOP {}'.format(self.df_merged))
         utilities.log.info('Begin processing DICT data format')
         variables = ['ADC','OBS','ERR']
         df = self.df_merged
@@ -310,7 +309,7 @@ class computeErrorField(object):
                 else:
                     dictdata[station]={variable: {'TIME': cols, product:val}}
         self.merged_dict = dictdata
-        utilities.log.info('Constructed JSON time series data')
+        utilities.log.info('Constructed DICT time series data')
         return 
 
     def _outputDataToFiles(self, metadata='_test',subdir='errorfield'):
@@ -336,7 +335,8 @@ class computeErrorField(object):
         dummy = self._tidalCorrectData()
         dummy = self._applyTimeBounds()
         dummy = self._computeAndAverageErrors()
-        dummy = self._generateJSONdata()
+        dummy = self._generateDICTdata()
+        ##merged_dict = utilities.convertTimeseriesToDICTdata(self.df_merged,['ADC','OBS','ERR'])
         dummy = self._outputDataToFiles(metadata=metadata,subdir=subdir)
         errf, finalf, cyclef, metaf, mergedf, jsonf = self._fetchOutputFilenames()
         ##dummy = self._generatePerStationPlot(metadata='Nometadata')
@@ -348,7 +348,7 @@ class computeErrorField(object):
         #dummy = self._tidalCorrectData()
         dummy = self._applyTimeBounds()
         dummy = self._computeAndAverageErrors()
-        dummy = self._generateJSONdata()
+        dummy = self._generateDICTdata()
         dummy = self._outputDataToFiles(metadata=metadata,subdir=subdir)
         errf, finalf, cyclef, metaf, mergedf, jsonf = self._fetchOutputFilenames()
         return errf, finalf, cyclef, metaf, mergedf, jsonf
@@ -385,7 +385,7 @@ def main(args):
     #dummy = cmp._tidalCorrectData()
     dummy = cmp._applyTimeBounds()
     dummy = cmp._computeAndAverageErrors()
-    dummy = cmp._generateJSONdata()
+    dummy = cmp._generateDICTdata()
     dummy = cmp._outputDataToFiles(metadata='_maintest',subdir='') # Note the delimiter is added here
     print('get output names')
     errf, finalf, cyclef, metaf, mergedf, jsonf = cmp._fetchOutputFilenames()
