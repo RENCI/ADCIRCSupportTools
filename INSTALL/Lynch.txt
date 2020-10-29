@@ -12,11 +12,11 @@ export PATH=~/.local/bin:$PATH
 git clone https://github.com/jtilson/ADCIRCSupportTools.git
 
 # 2) Build conda env
-conda create -n apsenv basemap rasterio scikit-learn xarray matplotlib numpy pandas matplotlib netCDF4 pyyaml scipy cartopy gdal geopandas
+conda create -n myenv basemap rasterio scikit-learn xarray matplotlib numpy pandas matplotlib netCDF4 pyyaml scipy cartopy gdal geopandas
 
 # 3) Pip install the known requirements
 
-conda activate apsenv
+conda activate myenv
 pip install --force rasterio # Needs to be upgraded
 
 git clone https://github.com/GClunies/noaa_coops.git
