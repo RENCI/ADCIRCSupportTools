@@ -213,8 +213,8 @@ def main(args):
     err_yamlname = err_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'err.yml')
     utilities.log.info('Override aveper flag set to '+str(aveper))
     compError = computeErrorField(obsf, adcf, meta, yamlname = err_yamlname, rootdir=rootdir, aveper=aveper)
-    errf, finalf, cyclef, metaf, mergedf = compError.executePipeline( metadata = iometadata, subdir='errorfield' )
-    utilities.log.info('output files '+errf+' '+finalf+' '+cyclef+' '+metaf+' '+mergedf)
+    errf, finalf, cyclef, metaf, mergedf, jsonf = compError.executePipeline( metadata = iometadata, subdir='errorfield' )
+    utilities.log.info('output files '+errf+' '+finalf+' '+cyclef+' '+metaf+' '+mergedf+' '+jsonf)
     
     ###########################################################################
     # Interpolate adcirc node data using the previously generated error matrix
