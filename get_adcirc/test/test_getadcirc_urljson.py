@@ -38,12 +38,10 @@ utilities.log.info("List of available urls input specification:")
 config = utilities.load_config()
 ADCdir = rootdir
 ADCfile = ADCdir+'/adc_wl'+iometadata+'.pkl'
-ADCjson = ADCdir+'/adc_wl'+iometadata+'.json'
 
 if not os.path.exists(ADCfile):
     df = get_water_levels63(adc.urls, node_idx, station_ids) # Gets ADCIRC water levels
     df.to_pickle(ADCfile)
-    df.to_json(ADCjson)
     adc.T1 = df.index[0]
     adc.T2 = df.index[-1]
 else:
