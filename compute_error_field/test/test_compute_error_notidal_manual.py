@@ -46,8 +46,8 @@ def main(args):
     dummy = cmp._applyTimeBounds()
     dummy = cmp._computeAndAverageErrors()
     dummy = cmp._outputDataToFiles(metadata='_manualtest',subdir=testSubdir) # Note the delimiter is added here
-    errf, finalf, cyclef, metaf, mergedf = cmp._fetchOutputFilenames()
-    print('output files '+errf+' '+finalf+' '+cyclef+' '+metaf+' '+mergedf)
+    errf, finalf, cyclef, metaf, mergedf, jsonf = cmp._fetchOutputFilenames()
+    print('output files '+errf+' '+finalf+' '+cyclef+' '+metaf+' '+mergedf+' '+jsonf)
 
 if __name__ == '__main__':
     parser = ArgumentParser(description=main.__doc__)
