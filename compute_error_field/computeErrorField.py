@@ -290,6 +290,7 @@ class computeErrorField(object):
         Must cionvert timestamp index to Strings YYYYMMDD HH:MM:SS
         """
 # adc.T2.strftime('%Y%m%d%H%M')
+        print('POOP {}'.format(self.df_merged))
         utilities.log.info('Begin processing DICT data format')
         variables = ['ADC','OBS','ERR']
         df = self.df_merged
@@ -323,7 +324,7 @@ class computeErrorField(object):
         self.metafilename=utilities.writeCsv(df_metadata,rootdir=self.rootdir,subdir=subdir,fileroot='stationMetaData',iometadata=metadata)
         self.mergedname=utilities.writeCsv(self.df_merged,rootdir=self.rootdir,subdir=subdir,fileroot='adc_obs_error_merged',iometadata=metadata)
         self.errorfilename=utilities.writePickle(self.diff,rootdir=self.rootdir,subdir=subdir,fileroot='tideTimeErrors',iometadata=metadata)
-        self.jsonfilename=utilities.writeJson(self.merged_dict,rootdir=self.rootdir,subdir=subdir,fileroot='adc_obs_error_merged',iometadata=metadata)
+        self.jsonfilename=utilities.writeDictToJson(self.merged_dict,rootdir=self.rootdir,subdir=subdir,fileroot='adc_obs_error_merged',iometadata=metadata)
         utilities.log.info('save averaging files ' + self.finalfilename +' and '+ self.cyclefilename +' and '+self.metafilename +' and '+self.errorfilename +' and '+ self.mergedname +' and '+ self.jsonfilename) 
 
     def _fetchOutputFilenames(self):
