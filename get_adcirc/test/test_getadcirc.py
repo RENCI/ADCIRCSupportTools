@@ -37,7 +37,6 @@ ADCfilejson = ADCdir+'/adc_wl'+iometadata+'.json'
 if not os.path.exists(ADCfile):
     df = get_water_levels63(adc.urls, node_idx, station_ids) # Gets ADCIRC water levels
     df.to_pickle(ADCfile)
-    df.to_json(ADCfilejson)
 else:
     utilities.log.info('adc_wl'+iometadata+'.pkl exists.  Using that...')
     utilities.log.info(ADCfile)
