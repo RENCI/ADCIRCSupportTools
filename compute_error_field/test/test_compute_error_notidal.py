@@ -42,8 +42,8 @@ def main(args):
     cmp = computeErrorField(obsf, adcf, meta, yamlname=yamlname,rootdir=rootdir, aveper=4)
     testSubdir='testDir'
     cmp.executePipelineNoTidalTransform(metadata = '',subdir=testSubdir)
-    errf, finalf, cyclef, metaf, mergedf = cmp._fetchOutputFilenames()
-    print('output files '+errf+' '+finalf+' '+cyclef+' '+metaf+' '+mergedf)
+    errf, finalf, cyclef, metaf, mergedf, jsonf = cmp._fetchOutputFilenames()
+    print('output files '+errf+' '+finalf+' '+cyclef+' '+metaf+' '+mergedf+' '+jsonf)
 
 if __name__ == '__main__':
     parser = ArgumentParser(description=main.__doc__)
