@@ -1,6 +1,6 @@
 import os,sys
 import pandas as pd
-from get_adcirc.GetADCIRC import Adcirc, get_water_levels63
+from get_adcirc.GetADCIRC import Adcirc, writeToJSON, get_water_levels63
 from utilities.utilities import utilities as utilities
 import json
 
@@ -50,6 +50,9 @@ else:
     df = pd.read_pickle(ADCfile)
     adc.T1 = df.index[0]
     adc.T2 = df.index[-1]
+
+jsonfilename=writeToJSON(df, rootdir, iometadata)
+utilities.log.info('Wrote ADC WL as a JSON {}'.format(jsonfilename))
 
 utilities.log.info('Done ADCIRC Reads')
 

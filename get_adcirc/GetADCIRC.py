@@ -31,6 +31,7 @@ def main(args):
     iometadata = args.iometadata
     iosubdir = args.iosubdir if args.iosubdir!=None else 'ADCIRC'
     iometadata = args.iometadata if args.iometadata!=None else ''
+    writeJson = args.writeJson
 
     print('verbose {} type {} '.format(args.verbose, type(args.verbose)))
     config = utilities.load_config() # Get main comnfig. RUNTIMEDIR, etc
@@ -98,6 +99,10 @@ def main(args):
         print("Currently, only fort.63.ncs can be processed.")
         sys.exit(1)
 
+    if writeJson:
+        jsonfilename=writeToJSON(df, rootdir, iometadata)
+        utilities.log.info('Wrote ADC WL as a JSON {}'.format(jsonfilename))
+
     # df.drop_duplicates(inplace=True)
     # if adc.config["DEFAULT"]["GRAPHICS"]:
     #     ax = df.iloc[:, 0:1].plot(marker='.', grid=True)
@@ -136,6 +141,7 @@ class Adcirc:
         self.iometadata = metadata
         self.set_times(dtime1=self.dtime1, dtime2=self.dtime2, doffset=self.doffset)
         self.config = utilities.load_config(yamlname)
+
 
     def set_times(self, dtime1=None, dtime2=None, doffset=None):
         """
@@ -215,6 +221,14 @@ class Adcirc:
                 url2add = None
             urls[d] = url2add
         self.urls = urls
+
+def writeToJSON(df, rootdir, iometadata):
+    utilities.log.info('User requests write data also as a JSON format')
+    df.index.name='TIME' # Need to adjust this for how the underlying DICT is generated
+    merged_dict = utilities.convertTimeseriesToDICTdata(df)
+    jsonfilename=utilities.writeDictToJson(merged_dict,rootdir=rootdir,subdir='',fileroot='adc_forecast',iometadata=iometadata)
+    utilities.log.info('Wrote ADC Json as {}'.format(jsonfilename))
+    return jsonfilename
 
 def get_water_levels63(urls, nodes, stationids):
     """
@@ -361,6 +375,7 @@ if __name__ == '__main__':
     # parser.add_argument('--clobber', action='store_false', help='Clobber existing output files ... ')
     parser.add_argument('--urljson', action='store', dest='urljson', default=None,
                         help='String: Filename with a json of urls to loop over.')
+    parser.add_argument('--writeJson', action='store_true',help='Additionally stores resulting PKL data to a dict as a json')
     args = parser.parse_args()
 
     sys.exit(main(args))

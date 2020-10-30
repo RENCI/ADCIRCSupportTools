@@ -1,6 +1,6 @@
 import os,sys
 import pandas as pd
-from get_adcirc.GetADCIRC import Adcirc, get_water_levels63
+from get_adcirc.GetADCIRC import Adcirc, writeToJSON, get_water_levels63
 from utilities.utilities import utilities as utilities
 
 config = utilities.load_config() # Get main comnfig. RUNTIMEDIR, etc
@@ -52,6 +52,9 @@ else:
     utilities.log.info('adc_wl'+iometadata+'.pkl exists.  Using that...')
     utilities.log.info(ADCfile)
     df = pd.read_pickle(ADCfile)
+
+jsonfilename=writeToJSON(df, rootdir, iometadata)
+utilities.log.info('Wrote ADC WL as a JSON {}'.format(jsonfilename))
 
 utilities.log.info('Done ADCIRC Reads')
 
