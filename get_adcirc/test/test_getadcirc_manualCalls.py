@@ -9,8 +9,8 @@ iometadata=''
 rootdir = utilities.fetchBasedir(config['DEFAULT']['RDIR'], basedirExtra='ADCIRC')
 print('rootdir {}'.format(rootdir))
 
-dtime1='2020-09-17 12'
-dtime2='2020-09-21 18'
+dtime1='2020-09-17 12:00'
+dtime2='2020-09-21 18:00'
 
 # get station-to-node indices for grid
 obsyamlname=os.path.join(os.path.dirname(__file__), '../../config', 'obs.yml')
@@ -23,9 +23,9 @@ adcyamlfile = os.path.join(os.path.dirname(__file__), '../../config', 'adc.yml')
 adc = Adcirc(yamlname=adcyamlfile)
 
 # Possible choices fore setting times
-#adc.set_times(dtime1='2020-09-17 12', dtime2='2020-09-21 18')
+#adc.set_times(dtime1='2020-09-17 12:00', dtime2='2020-09-21 18:00')
 #adc.set_times()
-adc.set_times(dtime2='2020-09-21 18', doffset=-2)
+adc.set_times(dtime2='2020-09-21 18:00', doffset=-2)
 
 utilities.log.info("T1 (start) = {}".format(adc.T1))
 utilities.log.info("T2 (end)   = {}".format(adc.T2))

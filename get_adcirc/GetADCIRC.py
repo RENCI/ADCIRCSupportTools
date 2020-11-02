@@ -143,7 +143,7 @@ class Adcirc:
         self.config = utilities.load_config(yamlname)
 
 
-    def set_times(self, dtime1=None, dtime2=None, doffset=None):
+    def orig_set_times(self, dtime1=None, dtime2=None, doffset=None):
         """
         """
         tim = self.config["TIME"]
@@ -155,15 +155,54 @@ class Adcirc:
             self.T2 = self.datecycle + dt.timedelta(days=tT2) # Now + lag on t2
         if dtime1 is not None:
             self.T1 = dt.datetime.strptime(dtime1, '%Y-%m-%d %H')
+
         else:
             if doffset is not None:
                 if int(doffset >0):
-                    utilities.log.error('Input doffset must be negative: Abort {}'.format(doffset))
-                    sys.exit('Doffset must be <=')
-                self.T1 = self.T2 + dt.timedelta(days=int(doffset))
+                    utilities.log.info('Input doffset was specifed as > 0: {}'.format(doffset))
+                    #sys.exit('Doffset must be <=')
+                    self.T2 = self.T1 + dt.timedelta(days=int(doffset))
+                    print('POOP {}, {}, {}'.format(doffset, self.T1, self.T2)) 
+                else:
+                    self.T1 = self.T2 + dt.timedelta(days=int(doffset))
             else:
                 self.T1 = self.T2 + dt.timedelta(days=tT1)
         return self
+
+    def set_times(self, dtime1=None, dtime2=None, doffset=None):
+        """
+        Modified to allow more complex time conditions.
+        doffset is the number of days (+ or -) from the input time pivot 
+        """
+        # These are for backup defauilt seetings and may not be used
+        # Both entries are offsets one for T1 asnd one for T2. T2 is generally zero
+        tim = self.config["TIME"] # These are for backup defauilt seetings and may not be used
+        tT2=tim["T2"]
+        tT1=tim["T1"]
+        if dtime2 is not None and dtime1 is not None : # Set times and return
+            self.T2 = dt.datetime.strptime(dtime2, '%Y-%m-%d %H:%M')
+            self.T1 = dt.datetime.strptime(dtime1, '%Y-%m-%d %H:%M')
+            return self             
+        if dtime2 is not None and dtime1 is None: # Step back doffset days to find dtime1 
+            self.T2 = dt.datetime.strptime(dtime2, '%Y-%m-%d %H:%M')
+            doff = doffset if doffset is not None else tT1 # doff must be < 0
+            if doff > 0:
+                utilities.log.error(' doffset must be < 0 when specifying timeout: Got {}'.format(doff))
+            self.T1 = self.T2 + dt.timedelta(days=doff) 
+            return self 
+        if dtime2 is None and dtime1 is not None: # Step forward doffset days to find dtime2
+            self.T1 = dt.datetime.strptime(dtime1, '%Y-%m-%d %H:%M')
+            doff = doffset if doffset is not None else tT1 # doff must be > 0
+            if doff < 0:
+                utilities.log.error(' doffset must be > 0 when specifying timein: Got {}'.format(doff))
+            self.T2 = self.T1 + dt.timedelta(days=doff) # doffset must be > 0
+            return self  # Now consider edge cases
+        # The following should be orig ADDA behavior
+        if dtime2 is None and dtime1 is None : # Set dtime2 as NOW+tT2 and back off doffsets for dtime1
+            self.T2 = self.datecycle + dt.timedelta(days=tT2)
+            doff = doffset if doffset is not None else tT1 # 
+            self.T1 = self.T2 + dt.timedelta(days=doff)
+            return self 
 
     def get_grid_coords(self):
         """
