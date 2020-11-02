@@ -6,12 +6,15 @@
 ## with other jsons to create station level plots
 ##
 
+##
+## This is not a special generator of ADC data. You could call GetADCIRC directly.
+
 import os,sys
 import numpy as np
 import pandas as pd
 import json
 from utilities.utilities import utilities as utilities
-from get_adcirc.GetADCIRC import Adcirc, get_water_levels63
+from get_adcirc.GetADCIRC import Adcirc, writeToJSON, get_water_levels63
 
 def exec_adcirc(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids):
     # Start the fetch of ADCIRC data
@@ -68,13 +71,10 @@ def main(args):
     utilities.log.info('Completed ADCIRC Reads')
     df_adcirc=pd.read_pickle(ADCfile)
     
-    # Convert to a DICT
-    df_adcirc.index.name='TIME'
-    merged_dict = utilities.convertTimeseriesToDICTdata(df_adcirc)
-
     # Store as a JSON
-    jsonfilename=utilities.writeDictToJson(merged_dict,rootdir=rootdir,subdir=iosubdir,fileroot='adc_forecast',iometadata=iometadata)
-    utilities.log.info('Wrote ADC Json as {}'.format(jsonfilename))
+    jsonfilename=writeToJSON(df_adcirc, rootdir, iometadata)
+    utilities.log.info('Wrote ADC WL as a JSON {}'.format(jsonfilename))
+
     utilities.log.info('Finished')
 
 if __name__ == '__main__':
