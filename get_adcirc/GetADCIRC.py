@@ -31,6 +31,7 @@ def main(args):
     iometadata = args.iometadata
     iosubdir = args.iosubdir if args.iosubdir!=None else 'ADCIRC'
     iometadata = args.iometadata if args.iometadata!=None else ''
+    variableName = args.variableName
     writeJson = args.writeJson
 
     print('verbose {} type {} '.format(args.verbose, type(args.verbose)))
@@ -100,7 +101,7 @@ def main(args):
         sys.exit(1)
 
     if writeJson:
-        jsonfilename=writeToJSON(df, rootdir, iometadata)
+        jsonfilename=writeToJSON(df, rootdir, iometadata, variableName=variableName)
         utilities.log.info('Wrote ADC WL as a JSON {}'.format(jsonfilename))
 
     # df.drop_duplicates(inplace=True)
@@ -261,10 +262,10 @@ class Adcirc:
             urls[d] = url2add
         self.urls = urls
 
-def writeToJSON(df, rootdir, iometadata):
+def writeToJSON(df, rootdir, iometadata, variableName=None):
     utilities.log.info('User requests write data also as a JSON format')
     df.index.name='TIME' # Need to adjust this for how the underlying DICT is generated
-    merged_dict = utilities.convertTimeseriesToDICTdata(df)
+    merged_dict = utilities.convertTimeseriesToDICTdata(df, variables=variableName)
     jsonfilename=utilities.writeDictToJson(merged_dict,rootdir=rootdir,subdir='',fileroot='adc_forecast',iometadata=iometadata)
     utilities.log.info('Wrote ADC Json as {}'.format(jsonfilename))
     return jsonfilename
@@ -415,6 +416,9 @@ if __name__ == '__main__':
     parser.add_argument('--urljson', action='store', dest='urljson', default=None,
                         help='String: Filename with a json of urls to loop over.')
     parser.add_argument('--writeJson', action='store_true',help='Additionally stores resulting PKL data to a dict as a json')
+    parser.add_argument('--variableName', action='store', dest='variableName', default=None,
+                        help='String: Name used in DICT/JSon to identify ADCIRC type (eg nowcast,forecast)')
+
     args = parser.parse_args()
 
     sys.exit(main(args))

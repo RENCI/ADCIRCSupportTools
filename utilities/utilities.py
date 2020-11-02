@@ -274,7 +274,9 @@ class Utilities:
         df.set_index(['TIME'], inplace=True)
         df.index = df.index.strftime('%Y-%m-%d %H:%M:%S')
         dictdata = {}
-        if variables != None: # SO a computeError multi variable data set
+        
+        #if variables != None: # SO a computeError multi variable data set
+        if isinstance(variables, list):
             for variable in variables:
                 df_all = df[df['SRC']==variable]
                 dataall = df_all.drop('SRC',axis=1).T
@@ -287,7 +289,8 @@ class Utilities:
                     else:
                         dictdata[station]={variable: {'TIME': cols, product:val}}
         else:
-            variable='ADCForecast'
+            if variables == None:
+                variables='ADCForecast'
             df_all = df
             dataall = df_all.T
             stations = dataall.index
@@ -295,9 +298,9 @@ class Utilities:
             for station in stations:
                 val = dataall.loc[station].to_list()
                 if station in dictdata.keys():
-                    dictdata[station].update({variable: {'TIME': cols, product:val}})
+                    dictdata[station].update({variables: {'TIME': cols, product:val}})
                 else:
-                    dictdata[station]={variable: {'TIME': cols, product:val}}
+                    dictdata[station]={variables: {'TIME': cols, product:val}}
         merged_dict = dictdata
         utilities.log.info('Constructed DICT time series data')
         return merged_dict
