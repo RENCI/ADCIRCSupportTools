@@ -18,7 +18,7 @@ from get_adcirc.GetADCIRC import Adcirc, writeToJSON, get_water_levels63
 
 def exec_adcirc(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids):
     # Start the fetch of ADCIRC data
-    adc = Adcirc(adc_yamlname)
+    adc = Adcirc(yamlname=adc_yamlname)
     adc.urls = urls
     utilities.log.info("List of available urls input specification:")
     ADCfile = rootdir+'/adc_wl'+iometadata+'.pkl'
@@ -38,6 +38,8 @@ def main(args):
     iometadata = args.iometadata if args.iometadata!=None else ''
     urljson = args.urljson
     adcirc_url= args.urljson
+    variableName = args.variableName
+    adcyamlfile=args.adcYamlname
 
     # Get rootdir in the usiual way
     config = utilities.load_config() # Get main comnfig. RUNTIMEDIR, etc
@@ -65,14 +67,16 @@ def main(args):
 
     # Third get the ADCIRC data (presumably a forecast)
     utilities.log.info('Fetch ADCIRC')
-    adc_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'adc.yml')
-    adc_config = utilities.load_config(adc_yamlname)
-    ADCfile, timestart, timeend = exec_adcirc(urls, rootdir, iometadata, adc_yamlname, node_idx, station_id)
+    if adcyamlfile==None:
+        adcyamlfile = os.path.join(os.path.dirname(__file__), '../config', 'adc.yml')
+    #adc_config = utilities.load_config(adcyamlfile)
+    utilities.log.info('Pass YML name to ADCIRC {}'.format(adcyamlfile))
+    ADCfile, timestart, timeend = exec_adcirc(urls, rootdir, iometadata, adcyamlfile, node_idx, station_id)
     utilities.log.info('Completed ADCIRC Reads')
     df_adcirc=pd.read_pickle(ADCfile)
     
     # Store as a JSON
-    jsonfilename=writeToJSON(df_adcirc, rootdir, iometadata)
+    jsonfilename=writeToJSON(df_adcirc, rootdir, iometadata, variableName=variableName)
     utilities.log.info('Wrote ADC WL as a JSON {}'.format(jsonfilename))
 
     utilities.log.info('Finished')
@@ -88,6 +92,10 @@ if __name__ == '__main__':
     parser.add_argument('--iosubdir', action='store', dest='iosubdir',default=None, help='Used to locate output files into subdir', type=str)
     parser.add_argument('--urljson', action='store', dest='urljson', default=None,
                         help='String: Filename with a json of urls to loop over.')
+    parser.add_argument('--variableName', action='store', dest='variableName', default=None,
+                        help='String: Name used in DICT/JSon to identify ADCIRC type (eg nowcast,forecast)')
+    parser.add_argument('--adcYamlname', action='store', dest='adcYamlname', default=None,
+                        help='String: FQFN  of alternative config to adc.yml')
     args = parser.parse_args()
 
     sys.exit(main(args))
