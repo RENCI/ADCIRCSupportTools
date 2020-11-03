@@ -29,8 +29,11 @@ def addSubplot(fig, station, df_meta, df_adc_all, df_obs_all, df_err_all, index)
     ax.set_title(stationName, fontdict={'fontsize': 8, 'fontweight': 'medium'})
 
 ## Test data
-fl='/projects/sequence_analysis/vol1/prediction_work/ADDA_202005011200_202005051200/errorfield/adc_obs_error_merged_202005011200_202005051200.csv'
-meta = '/projects/sequence_analysis/vol1/prediction_work/ADDA_202005011200_202005051200/obspkl/obs_wl_metadata_202005011200_202005051200.pkl'
+##fl='/projects/sequence_analysis/vol1/prediction_work/ADDA_202005011200_202005051200/errorfield/adc_obs_error_merged_202005011200_202005051200.csv'
+##meta = '/projects/sequence_analysis/vol1/prediction_work/ADDA_202005011200_202005051200/obspkl/obs_wl_metadata_202005011200_202005051200.pkl'
+
+fl='/projects/sequence_analysis/vol1/prediction_work/ADDA_Prediction_merges/ADDA_202010221800_202010261800/errorfield/adc_obs_error_merged_202010221800_202010261800.csv'
+meta='/projects/sequence_analysis/vol1/prediction_work/ADDA_Prediction_merges/ADDA_202010221800_202010261800/obspkl/obs_wl_metadata_202010221800_202010261800.pkl'
 
 ## Start the work
 
@@ -42,7 +45,7 @@ df_adc_all = df[df['SRC']=='ADC']
 df_obs_all = df[df['SRC']=='OBS']
 df_err_all = df[df['SRC']=='ERR']
 
-stations = [8651370,8656483,8658163,8775241]
+stations = [8651370,8656483,8658163,8779748]
 fig = plt.figure()
 fig.subplots_adjust(hspace=0.4, wspace=0.4)
 
@@ -51,6 +54,6 @@ for index,station in zip(range(1,5),stations):
 
 fig.suptitle('Time range {} to {}'.format( df_adc_all.index.min(),df_adc_all.index.max()))
 fig.set_size_inches(8, 8)
-plt.savefig('ADSOBSERR_fourStations.png')
+#plt.savefig('ADSOBSERR_fourStations.png')
 plt.show()
 
