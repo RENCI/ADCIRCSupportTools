@@ -33,6 +33,7 @@ def main(args):
     iometadata = args.iometadata if args.iometadata!=None else ''
     variableName = args.variableName
     writeJson = args.writeJson
+    adcyamlfile=args.adcYamlname
 
     print('verbose {} type {} '.format(args.verbose, type(args.verbose)))
     config = utilities.load_config() # Get main comnfig. RUNTIMEDIR, etc
@@ -56,7 +57,11 @@ def main(args):
 
     # get class instance
     #adc = Adcirc(dtime1=indtime1, dtime2=indtime2, doffset=indoffset, metadata=iometadata)
-    adcyamlfile = os.path.join(os.path.dirname(__file__), '../config', 'adc.yml')
+    
+    if adcyamlfile==None:
+        adcyamlfile = os.path.join(os.path.dirname(__file__), '../config', 'adc.yml')
+        print('shit {}'.format(adcyamlfile))
+    utilities.log.info('Choose a config file of the name {}'.format(adcyamlfile))
     adc = Adcirc(dtime1=indtime1, dtime2=indtime2, doffset=indoffset, metadata=iometadata,yamlname=adcyamlfile)
 
     if urljson is None:
@@ -418,6 +423,8 @@ if __name__ == '__main__':
     parser.add_argument('--writeJson', action='store_true',help='Additionally stores resulting PKL data to a dict as a json')
     parser.add_argument('--variableName', action='store', dest='variableName', default=None,
                         help='String: Name used in DICT/JSon to identify ADCIRC type (eg nowcast,forecast)')
+    parser.add_argument('--adcYamlname', action='store', dest='adcYamlname', default=None,
+                        help='String: FQFN  of alternative config to adc.yml')
 
     args = parser.parse_args()
 
