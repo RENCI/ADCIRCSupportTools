@@ -46,9 +46,10 @@ def IsNewJob(iometadata, rootdir):
 def str2datetime(s):
     from datetime import datetime
     try:
-        d = datetime.strptime(s, "%Y%m%d-%H:%M:%S")
+        #d = datetime.strptime(s, "%Y%m%d-%H:%M:%S")
+        d = datetime.strptime(s, "%Y-%m-%d %H:%M")
     except:
-        utilities.log.error("Override time2 has bad format: Should be %Y%m%d-%H:%M:%S".format(s))
+        utilities.log.error("Override time2 has bad format: Should be %Y-%m-%d %H:%M".format(s))
         sys.exit('Exit over bad input time format')
     utilities.log.info("Overriding NOW as time2 specification: {}".format(d))
     return d
@@ -98,7 +99,7 @@ def main(args):
     if overridetimeout is None:
         adc.set_times()  # Get current ADC now and chosen starting time
     else:
-        adc.set_times(dtime2=overridetimeout.strftime('%Y-%m-%d %H'))
+        adc.set_times(dtime2=overridetimeout.strftime('%Y-%m-%d %H:%M'))
 
     iometadata = '_'+adc.T1.strftime('%Y%m%d%H%M')+'_'+adc.T2.strftime('%Y%m%d%H%M') # Used for all classes downstream
 
@@ -201,7 +202,7 @@ def main(args):
     # Join merged and excluded stations into a single set of URLs for subsequent interrogation
 
     dummy = water_object.writeURLsForStationPlotting(stationList, timein, timeout) # Need this to build urlcsv
-    obs_wl_detailed, obs_wl_smoothed, metadata, urlcsv, exccsv = water_object.fetchOutputNames()
+    obs_wl_detailed, obs_wl_smoothed, metadata, urlcsv, exccsv, metaJ, detailedJ, smoothedJ = water_object.fetchOutputNames()
 
     ###########################################################################
     # Construct error file based on the existing station data and time

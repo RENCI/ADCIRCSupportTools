@@ -26,6 +26,8 @@ from get_adcirc.GetADCIRC import Adcirc, get_water_levels63
 from get_obs_stations.GetObsStations import GetObsStations
 from compute_error_field.computeErrorField import computeErrorField
 from compute_error_field.interpolateScalerField import interpolateScalerField
+import visualization.diagnostics as diag
+
 
 #from mpl_toolkits.basemap import Basemap
 #import SRC.MakeFigs as mf
@@ -58,9 +60,11 @@ def main(args):
     #experimentTag = 'CycleTest' # Build a directory UNDER RUNTIMEDIR Then we can iterate over progress steps
     #We anticipate lots of run swith the metaname timein-timeout (eg ADDA_202002231200_202002271200) to
     #BE found underneath 
-
     experimentTag = args.experiment_name
-
+    visualiseErrorField = args.vis_error
+    displayStationURLs = args.station_webpages
+    vizScatterPlot = args.vis_scatter
+    vizHistograms = args.error_histograms
     cvKriging = args.cv_kriging
     percentStationMissing = args.station_missing_threshold
     adcdataformat = args.adc_fortran_61
@@ -73,12 +77,7 @@ def main(args):
     # 
 
     # 1) Setup main config data
-    config = utilities.load_config()
-    main_config = utilities.load_config() # Get main comnfig. RUNTIMEDIR, etc
-
-    ###iosubdir='_JUNK'
-    ###rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'], basedirExtra=iosubdir)
-    ####utilities.log.info('Specified rootdir underwhich all files wil; be stored. Rootdir is {}'.format(rootdir))
+    ##config = utilities.load_config()
 
     # 2) Read the OBS yml to get station data
     # Such as node_idx data
@@ -101,19 +100,13 @@ def main(args):
     else:
         adc.set_times(dtime2=overridetimeout.strftime('%Y-%m-%d %H'))
 
-    adc.get_urls()
-    adc.get_grid_coords()  # populates the gridx,gridy terms
-    adcirc_gridx = adc.gridx[:]
-    adcirc_gridy = adc.gridy[:]
-
-    # fetch RUNTIMEDIR directory: Build metadata string used by all subsequent methods
-
     iometadata = '_'+adc.T1.strftime('%Y%m%d%H%M')+'_'+adc.T2.strftime('%Y%m%d%H%M') # Used for all classes downstream
 
+    main_config = utilities.load_config() # Get main comnfig. RUNTIMEDIR, etc
     if experimentTag is None:
-        rootdir = utilities.fetchBasedir(config['DEFAULT']['RDIR'], basedirExtra='ADDA'+iometadata)
+        rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'], basedirExtra='ADDA'+iometadata)
     else:
-        rootdir = utilities.fetchBasedir(config['DEFAULT']['RDIR'], basedirExtra='ADDA'+experimentTag+iometadata)
+        rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'], basedirExtra='ADDA'+experimentTag+iometadata)
 
     ##############################################################################
     # See if job was already computed. If so skip (unless CLI override)
@@ -135,9 +128,13 @@ def main(args):
         utilities.log.error('IsNewJob identified this run as being previously completed time data are {}.'.format(iometadata))
         sys.exit('IsNewJob identified this run as being previously completed time data are {}.'.format(iometadata))
 
-    ##############################################################################
+    adc.get_urls()
+    adc.get_grid_coords()  # populates the gridx,gridy terms
+    adcirc_gridx = adc.gridx[:]
+    adcirc_gridy = adc.gridy[:]
 
-    config = utilities.load_config()
+    ##############################################################################
+    #config = utilities.load_config()
     ADCdir = rootdir
     ADCfile = ADCdir+'/adc_wl'+iometadata+'.pkl'
 
@@ -148,13 +145,15 @@ def main(args):
             sys.exit('ADC: Format 61 is not implemented yet')
         else:
             df = get_water_levels63(adc.urls, node_idx, station_id) # Gets ADCIRC water levels
+            #adc.T1 = df.index[0]
+            #adc.T2 = df.index[-1]
             df.to_pickle(ADCfile)
     else:
         utilities.log.info("adc_wl.pkl exists.  Using that...")
         utilities.log.info(ADCfile)
         df = pd.read_pickle(ADCfile)
-        adc.T1 = df.index[0]
-        adc.T2 = df.index[-1]
+        #adc.T1 = df.index[0]  # DO not reset here simply to ensure being the same as the old ADDA. 
+        #adc.T2 = df.index[-1]
         utilities.log.info('read times from existing pkl {}, {}'.format(adc.T1,adc.T2))
 
     utilities.log.info('Done ADCIRC Reads')
@@ -214,7 +213,7 @@ def main(args):
     err_yamlname = err_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'err.yml')
     utilities.log.info('Override aveper flag set to '+str(aveper))
     compError = computeErrorField(obsf, adcf, meta, yamlname = err_yamlname, rootdir=rootdir, aveper=aveper)
-    errf, finalf, cyclef, metaf, mergedf, jsonf = compError.executePipeline( metadata = iometadata, subdir='errorfield' )
+    errf, finalf, cyclef, metaf, mergedf, jsonf = compError.executePipelineNoTidalTransform( metadata = iometadata, subdir='errorfield' )
     utilities.log.info('output files '+errf+' '+finalf+' '+cyclef+' '+metaf+' '+mergedf+' '+jsonf)
     
     ###########################################################################
@@ -223,76 +222,6 @@ def main(args):
 
     # Remove outliers before coming here
 
-    inerrorfile = finalf
-
-    int_yamlname=os.path.join(os.path.dirname(__file__), '../config', 'int.yml')
-    #clampfile = os.path.join(os.path.dirname(__file__), "../config", config['DEFAULT']['ClampList'])
-    #clampfile='/home/jtilson/ADCIRCSupportTools/config/clamp_list_hsofs.dat'
-    krig_object = interpolateScalerField(datafile=inerrorfile, yamlname=int_yamlname, metadata=iometadata, rootdir=rootdir)
-
-    vparams=None
-    param_dict=None
-
-    if cvKriging:
-        extraFilebit='_CV'
-    else:
-        extraFilebit=''
-
-    vparams=None    # If these are none then singleStep would simply read the yaml
-    param_dict=None
-
-    if cvKriging:
-        utilities.log.info('Building kriging model using CV procedure')
-        param_dict, vparams, best_score, full_scores = krig_object.optimize_kriging(krig_object) # , param_dict_list, vparams_dict_list)
-        utilities.log.info('Kriging best score is {}'.format(best_score))
-        print('List of all scores {}'.format(full_scores))
-        fullScoreDict = {'best_score':best_score,'scores': full_scores, 'params':param_dict,'vparams':vparams}
-        ##jsonfilename = '_'.join(['','fullScores.json']) 
-        jsonfilename = 'fullCVScores.json'
-        with open(jsonfilename, 'w') as fp:
-            json.dump(fullScoreDict, fp)
-    #if cvKriging:
-    #    utilities.log.info('Building kriging model using CV procedure')
-    #    status = krig_object.CVKrigingFit(filename='interpolate_model'+iometadata+'.h5' )
-    #else:
-    #    status = krig_object.singleStepKrigingFit(filename = 'interpolate_model'+iometadata+'.h5')
-
-    utilities.log.info('doing a single krige using current best parameters')
-    utilities.log.info('param_dict: {}'.format(param_dict))
-    utilities.log.info('vparams: {}'.format(vparams))
-
-    model_filename = 'interpolate_model'+extraFilebit+iometadata+'.h5' if cvKriging else 'interpolate_model'+iometadata+'.h5'
-
-    status = krig_object.singleStepKrigingFit( param_dict, vparams, filename = model_filename)
-
-    # Use a simple grid for generating visualization work
-    gridx, gridy = krig_object.input_grid() # Grab from the config file
-
-    df_grid = krig_object.krigingTransform(gridx, gridy,style='grid',filename = model_filename)
-
-    # Pass dataframe for the plotter
-    gridz = df_grid['value'].values
-    n=gridx.shape[0]
-    gridz = gridz.reshape(-1, n)
-    krig_object.plot_model(gridx, gridy, gridz, keepfile=True, filename='image'+iometadata+'.png', metadata=iometadata)
-
-    # Repeat now using the real adcirc data adcirc_gridx, and adcirc_gridy 
-    df_adcirc_grid = krig_object.krigingTransform(adcirc_gridx, adcirc_gridy, style='points', filename = model_filename)
-
-    krig_adcircfilename = krig_object.writeADCIRCFormattedTransformedDataToDisk(df_adcirc_grid)
-    krig_interfilename = krig_object.writeTransformedDataToDisk(df_grid)
-
-    utilities.log.info('Transformed interpolated data are in '+krig_interfilename)
-    utilities.log.info('Transformed interpolated ADCIRC formatteddata are in '+krig_adcircfilename)
-
-    # Fetch non clamped input (station-level) data for scatter plotting
-    newx, newy, newz = krig_object.fetchRawInputData()  # Returns the unclamped input data for use by the scatter method
-
-    ########################################################################
-    # Perform some possible diagnostics
-
-    krig_object.plot_scatter_discrete(newx,newy,newz,showfile=False, keepfile=True, filename='image_Discrete'+iometadata+'.png', metadata='testmetadataDiscrete')
-
     ############################################################################
 
 if __name__ == '__main__':
@@ -300,7 +229,6 @@ if __name__ == '__main__':
     import sys
 
     parser = ArgumentParser()
-
     parser.add_argument('--experiment_name', action='store', dest='experiment_name', default=None,
                         help='Names highlevel Experiment-tag value')
     parser.add_argument('--cv_kriging', action='store_true',
@@ -308,12 +236,20 @@ if __name__ == '__main__':
     parser.add_argument('--station_missing_threshold', action='store', dest='station_missing_threshold', default=100,
                         help='Float: maximum percent missing station data')
     parser.add_argument('--adc_fortran_61', action='store_true',
-                        help='Boolean: Choose Fortran.61 method instead Fortran.63 method')
+                        help='Boolean: Choose Fortran.61 method instead of Fortran.63')
     parser.add_argument('--override_repeats',action='store_true',
                         help='Boolean: Force rerunning a pipeline even if timein-timeout flank is already done')
     parser.add_argument('--time2', action='store', dest='time2', default=None,
                         help='String: YYYYmmdd-hh:mm:ss : Force a value for timeout else code will use NOW')
     parser.add_argument('--aveper', action='store', dest='aveper', default=None, type=int,
                         help='int: 4 : Override number of periods for averaging')
+    parser.add_argument('--vis_error', action='store_true', 
+                        help='Boolean: plot on visual grid the error field')
+    parser.add_argument('--vis_scatter', action='store_true', 
+                        help='Boolean: plot scatterplot of station level errors')
+    parser.add_argument('--station_webpages', action='store_true', 
+                        help='Boolean: Fetch URLs for NOAA station levels')
+    parser.add_argument('--error_histograms', action='store_true', 
+                        help='Boolean: Display 3 histograms: station only, vis grid errors, and adcirc nodes')
     args = parser.parse_args()
     sys.exit(main(args))
