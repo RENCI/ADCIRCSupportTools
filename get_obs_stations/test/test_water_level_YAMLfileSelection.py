@@ -15,7 +15,7 @@ timeout = '2020-01-10 00:06'
 timein = '2020-10-01 18:00'
 timeout = '2020-10-06 18:00'
 
-iometadata = '_'+timein+'_'+timeout
+iometadata = ('_'+timein+'_'+timeout).replace(' ','_')
 
 config = utilities.load_config() # Defaults to main.yml as sapecified in the config
 rootdir=utilities.fetchBasedir(config['DEFAULT']['RDIR'], basedirExtra='StationTest')

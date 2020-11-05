@@ -13,7 +13,7 @@ stations = [8652587, 8654467, 8656483, 8658120, 8658163, 8775241, 8775870, 87797
 timein = '2020-01-01 00:00'
 timeout = '2020-01-10 00:06'
 
-iometadata = '_'+timein+'_'+timeout
+iometadata = ('_'+timein+'_'+timeout).replace(' ','_')
 
 config = utilities.load_config() # Defaults to main.yml as sapecified in the config
 rootdir=utilities.fetchBasedir(config['DEFAULT']['RDIR'], basedirExtra='StationTest')
