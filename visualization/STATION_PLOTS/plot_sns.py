@@ -10,11 +10,11 @@ import numpy as np
 import pandas as pd
 import json
 import math
-
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates 
 import seaborn as sns
+from utilities.utilities import utilities
 
 def getBounds(df):
     """
@@ -27,19 +27,6 @@ def getBounds(df):
     ymin = -math.ceil(ymin)
     ymax = -ymin
     return ymin, ymax
-
-## Some attempt at controlling colors.
-
-
-## Now a string manipulator to help fiund the proper color
-## Uses a greedy approach
-def varToColor(var):
-    testvar = var.lower()
-    listtests = list(colordict.keys())
-    for test in listtests:
-        if test in testvar:
-            return colordict[test]
-    return colordict['misc']
 
 def addPlot(fig, station, stationid, df_concat, variables):
     #formatter = matplotlib.dates.DateFormatter('%H-%M-%S')
@@ -62,24 +49,6 @@ def addPlot(fig, station, stationid, df_concat, variables):
     plt.setp(ax.get_xticklabels(), rotation = 15)
     fig.suptitle('Station Name={}'.format(station))
 
-
-def OldaddPlot(fig, station, df_concat, variables):
-    formatter = matplotlib.dates.DateFormatter('%H-%M-%S')
-    #colors=['r','b','g','b','black','orange','yellow'] # hard limit of four
-    nCols = len(variables)
-    ax = fig.add_subplot(1, 1, 1) 
-    for index,variable in zip(range(0,nCols),variables):
-        df = df_concat[variable]
-        df.plot(color=varToStyle(variable), label=variable, linestyle="-")
-    ax.legend(loc ='lower left',ncol=nCols, fontsize = 8)
-    ax.set_ylabel(r'$\Delta$ WL (m) versus MSL')
-    #ax.set_ylim([-1.5, 1.5])
-    ax.get_xaxis().set_visible(True)
-    ax.set_title(station, fontdict={'fontsize': 12, 'fontweight': 'medium'})
-    #ax.xaxis.set_major_formatter(formatter) 
-    ax.grid(linestyle='-', linewidth='0.5', color='gray')
-    plt.setp(ax.get_xticklabels(), rotation = 45)
-
 def convertToDF(compDict,var):
     df=pd.DataFrame(compDict[var])
     df.set_index('TIME',inplace=True)
@@ -87,10 +56,15 @@ def convertToDF(compDict,var):
     df.columns=[''.join([var,'WL'])]
     return df
 
-##
-## Some attempt at managing colors.
+def makeDict( station, df_meta, pngfile):
+    lon = df_meta.loc[int(station)]['lon']
+    lat = df_meta.loc[int(station)]['lat']
+    node = df_meta.loc[int(station)]['Node']
+    return {'LAT':str(lat), 'LON':str(lon), 'NODE':str(node), 'FILENAME':pngfile}
 
-## FOr now do not change the order of these
+## Some attempt at managing colors.
+## For now do not change the order of these
+
 colordict=dict()
 colordict['forecast']='b'
 colordict['nowcast']='gray'
@@ -135,13 +109,12 @@ def varToStyle(varlist):
 ## Aligned nowcast data and observations
 ## NOTE METADATA IS MANDATORY BUT NOT CHECKED
 
-# Build a Dict inplace
-
-files=dict()
-
 # NOTIDAL
 computeJson='/projects/sequence_analysis/vol1/prediction_work/ADDA_Prediction_merges/ADDA_202010221800_202010261800_NOTIDAL/errorfield/adc_obs_error_merged_202010221800_202010261800.json'
-meta='/projects/sequence_analysis/vol1/prediction_work/ADDA_Prediction_merges/ADDA_202010221800_202010261800_NOTIDAL/obspkl/obs_wl_metadata_202010221800_202010261800.pkl'
+
+#meta='/projects/sequence_analysis/vol1/prediction_work/ADDA_Prediction_merges/ADDA_202010221800_202010261800_NOTIDAL/obspkl/obs_wl_metadata_202010221800_202010261800.pkl'
+#
+meta='/projects/sequence_analysis/vol1/prediction_work/ADDA_Prediction_merges/ADDA_202010221800_202010261800_NOTIDAL/obspkl/obs_wl_metadata_202010221800_202010261800.json'
 
 ## Added ADCIRC forecast data 
 adcircJson='/projects/sequence_analysis/vol1/prediction_work/ADDA_Prediction_merges/Forecast/adc_forecast.json'
@@ -153,13 +126,16 @@ adcircJson='/projects/sequence_analysis/vol1/prediction_work/ADDA_Prediction_mer
 #adcircJsonpre='/projects/sequence_analysis/vol1/prediction_work/ADDA_Prediction_merges/ForecastPrepend/adc_forecast.json'
 
 ## Prepend the NOWCAST that overlaps the prepend forecast
-adcircJsonNow='/projects/sequence_analysis/vol1/prediction_work/ADDA_Prediction_merges/PreviousNowcastPrepend/adc_forecast.json'
+#adcircJsonNow='/projects/sequence_analysis/vol1/prediction_work/ADDA_Prediction_merges/PreviousNowcastPrepend/adc_forecast.json'
 
+# Buld a dict to mimic a user inputting the data
+
+files=dict()
 files['META']=meta
 files['DIFFS']=computeJson
 files['FORECAST']=adcircJson
 #files['PREPEND']=adcircJsonpre
-files['NOWPREPEND']=adcircJsonNow
+#files['NOWPREPEND']=adcircJsonNow
 
 # TIMEs will not be in datetime format because of how jsons must get saved
 ## Start the work
@@ -168,15 +144,15 @@ listDicts = list()
 for key,val in files.items():
     print(key)
     if key=='META':
-       df_meta=pd.read_pickle(val)
-       df_meta.set_index('stationid',inplace=True)
+        #df_meta=pd.read_pickle(val)
+        #df_meta.set_index('stationid',inplace=True)
+        with open(val, 'r') as fp:
+            metaDict = json.load(fp) 
+            df_meta=pd.DataFrame(metaDict)
+            df_meta.set_index('stationid',inplace=True)
     else:
         with open(val, 'r') as fp1:
             listDicts.append(json.load(fp1))
-
-# Want some metadata for plot information
-#df_meta=pd.read_pickle(meta)
-#df_meta.set_index('stationid',inplace=True)
 
 # Double check station concordance
 print('check station lists')
@@ -186,12 +162,6 @@ for i in range(0,len(listDicts)):
 
 print('Total intersected stations {}'.format(len(stations)))
 
-# Merge Jsons and remove superfluous stations
-# Need to check if variables are all nans.
-# if np.isnan(compDict[station]['ADC']['WL']).all
-
-# integrate the variables for all dicts for each intersected station
-# 
 newDict = {}
 for station in stations:
     newDict[station]=listDicts[0][station]
@@ -225,6 +195,8 @@ print('Total number of non nan-empty  stations is {}'.format(len(stations)))
 #TODO correct this station as either a str or an int
 #stations=['8764314']
 
+    
+runProps = dict()
 for station in stations:
     print('start station {}'.format(station))
     plt.close()
@@ -237,6 +209,11 @@ for station in stations:
     # A per-station plot
     fig = plt.figure()
     addPlot(fig, stationName, station, df_concat, new_variables)
-    plt.savefig('_'.join([station,'WL.png']))
+    pngfile='_'.join([station,'WL.png'])
+    plt.savefig(pngfile)
+    # Create a dict of lons,lats,nodes,filenames 
+    runProps[station]=makeDict(station, df_meta, pngfile)
     #plt.show()
 
+dictfile='test.json'
+utilities.write_json_file(runProps, dictfile)
