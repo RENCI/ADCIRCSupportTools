@@ -142,7 +142,7 @@ def main(args):
         utilities.log.info('Construct new list of times removing smoothing artifacts')
         retained_times = df_pruned.index # some got wacked during the smoothing and nan checking
         dummy = water_object.writeURLsForStationPlotting(stationList, timein, timeout) # Need this to build urlcsv
-        obs_wl_detailed, obs_wl_smoothed, metadata, urlcsv, exccsv = water_object.fetchOutputNames()
+        obs_wl_detailed, obs_wl_smoothed, metadata, urlcsv, exccsv, metaJ, detailedJ, smoothedJ = water_object.fetchOutputNames()
     
         adcf = ADCfile
         obsf = obs_wl_smoothed

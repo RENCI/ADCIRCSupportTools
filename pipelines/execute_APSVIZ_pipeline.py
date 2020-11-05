@@ -57,8 +57,8 @@ def exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata):
     df_pruned, count_nan, newstationlist, excludelist = rpl.fetchStationSmoothedHourlyProductFromIDlist(timein, timeout)
     retained_times = df_pruned.index.to_list() # some may have gotten wacked during the smoothing`
     listSuspectStations = rpl.writeURLsForStationPlotting(newstationlist, timein, timeout)
-    detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv = rpl.fetchOutputNames()
-    return detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv
+    detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ = rpl.fetchOutputNames()
+    return detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ 
 
 def exec_error(obsf, adcf, meta, err_yamlname, rootdir, iometadata): 
     cmp = computeErrorField(obsf, adcf, meta, yamlname=err_yamlname, rootdir=rootdir)
@@ -114,13 +114,16 @@ def main(args):
     utilities.log.info('ADC provided times are {} and {}'.format(timein, timeout))
 
     # Could also set stations to None
-    detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv = exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata)
+    detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ = exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata)
     outfiles['OBS_DETAILED_PKL']=detailedpkl
     outfiles['OBS_SMOOTHED_PKL']=smoothedpkl
     outfiles['OBS_METADATA_PKL']=metapkl
     outfiles['OBS_NOAA_COOPS_URLS_CSV']=urlcsv
     outfiles['OBS_EXCLUDED_CSV']=exccsv
-    utilities.log.info('Completed OBS: Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {}'.format(detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv))
+    outfiles['OBS_DETAILED_JSON']=detailedJ
+    outfiles['OBS_SMOOTHED_JSON']=smoothedJ
+    outfiles['OBS_METADATA_JSON']=metaJ
+    utilities.log.info('Completed OBS: Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {} MetaJ {}, DetailedJ {}, SmoothedJ {}'.format(detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv,metaJ, detailedJ, smoothedJ))
 
     # 4) Setup ERR specific YML-resident values
     utilities.log.info('Error computation')
