@@ -277,8 +277,10 @@ class GetObsStations(object):
                 ['stationid', 'stationname', 'lat', 'lon', 'Node']]
         except FileNotFoundError:
             raise IOerror("Failed to read %s" % (config['StationFile']))
-        utilities.log.info("Final Metadata product")
+        utilities.log.info("Final Metadata products")
         self.metapkl = utilities.writePickle(df_stationData,rootdir=self.rootdir,subdir=self.iosubdir,fileroot='obs_wl_metadata',iometadata=self.iometadata)
+        self.metajsonname = utilities.getSubdirectoryFileName(self.rootdir, self.iosubdir, 'obs_wl_metadata'+self.iometadata+'.json')
+        df_stationData.to_json(self.metajsonname)
         return df_stationData, self.stationlist
 
     def fetchStationProductFromIDlist(self, timein, timeout):
@@ -361,14 +363,18 @@ class GetObsStations(object):
         print('Final detailed data product: Number of times %i, Number of stations %i' % df_final.shape)
         utilities.log.info("Writing PKL for detailed 6min data")
         self.detailedpkl = utilities.writePickle(df_final, rootdir=self.rootdir,subdir=self.iosubdir,fileroot='obs_wl_detailed',iometadata=self.iometadata)
+        self.detailedjsonname = utilities.getSubdirectoryFileName(self.rootdir, self.iosubdir, 'obs_wl_detailed'+self.iometadata+'.json')
+        dfjson=df_final.copy()
+        dfjson.index = dfjson.index.strftime('%Y-%m-%d %H:%M:%S')
+        dfjson.to_json(self.detailedjsonname)
         return df_final, count_nan, self.stationlist, self.excludeStationID.index.tolist()
 
     def fetchOutputNames(self):
         """
         Results:
-            detailedpkl, smoothpkl, metapkl, urlcsv, excludecsv.
+            detailedpkl, smoothpkl, metapkl, urlcsv, excludecsv meta-json, detailed-json, smoothed-json
         """
-        return self.detailedpkl, self.smoothpkl, self.metapkl, self.urlcsv, self.excludecsv
+        return self.detailedpkl, self.smoothpkl, self.metapkl, self.urlcsv, self.excludecsv, self.metajsonname, self.detailedjsonname, self.smoothedjsonname
 
 # On input, the caller should have self.removeMissingProducts() already
 # As this method will interpolate through the nans
@@ -413,6 +419,10 @@ class GetObsStations(object):
         self.smoothpkl = utilities.writePickle(df_smoothed, rootdir=self.rootdir,subdir=self.iosubdir,fileroot='obs_wl_smoothed',iometadata=self.iometadata)
         self.excludecsv = utilities.writeCsv(self.excludeStationID, rootdir=self.rootdir,subdir=self.iosubdir,fileroot='obs_wl_exclude',iometadata=self.iometadata)
         self.stationlist = newstationlist
+        self.smoothedjsonname = utilities.getSubdirectoryFileName(self.rootdir, self.iosubdir, 'obs_wl_smoothed'+self.iometadata+'.json')
+        dfjson=df_smoothed.copy()
+        dfjson.index = dfjson.index.strftime('%Y-%m-%d %H:%M:%S')
+        dfjson.to_json(self.smoothedjsonname)
         return df_smoothed, count_nan, stationlist, excludelist
 
     def smoothVectorProducts( self,  df_in, window=21, degree=3 ):
@@ -555,9 +565,9 @@ class GetObsStations(object):
         listSuspectStations = rpl.writeURLsForStationPlotting(newstationlist, timein, timeout)
     
         # Dump some information
-        detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv = rpl.fetchOutputNames()
-        utilities.log.info('Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {}'.format(detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv))
-        return detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv
+        detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJson, detailedJson, smoothedJson = rpl.fetchOutputNames()
+        utilities.log.info('Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {} META Json {}, Detailed Json {}, Smoothed Json {}'.format(detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJson, detailedJson, smoothedJson))
+        return detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJson, detailedJson, smoothedJson
 
 def executeBasicPipeline(rootdir, timein, timeout, metadata=''):
     """
@@ -587,10 +597,10 @@ def executeBasicPipeline(rootdir, timein, timeout, metadata=''):
     listSuspectStations = rpl.writeURLsForStationPlotting(newstationlist, timein, timeout)
 
 # Dump some information
-    detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv = rpl.fetchOutputNames()
-    utilities.log.info('Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {}'.format(detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv))
-    return detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv
+    detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJson, detailedJson, smoothedJson = rpl.fetchOutputNames()
+    utilities.log.info('Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {} META Json {}, Detailed Json {}, Smoothed Json {}'.format(detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJson, detailedJson, smoothedJson))
     print('Finished with OBS pipeline')
+    return detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJson, detailedJson, smoothedJson
 
 def main(args):
     """
@@ -609,7 +619,7 @@ def main(args):
     iometadata = '_'+timein.strftime('%Y%m%d%H%M')+'_'+timeout.strftime('%Y%m%d%H%M')
     iometadata=''
 
-    detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv = executeBasicPipeline(rootdir, timein, timeout, metadata=iometadata)
+    detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metajson,detailedjson,smoothedjson = executeBasicPipeline(rootdir, timein, timeout, metadata=iometadata)
     utilities.log.info('Finished')
 
 if __name__ == '__main__':

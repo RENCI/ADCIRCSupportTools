@@ -27,7 +27,7 @@ df_pruned, count_nan, newstationlist, excludelist = rpl.fetchStationSmoothedHour
 retained_times = df_pruned.index.to_list() # some may have gotten wacked during the smoothing`
 listSuspectStations = rpl.writeURLsForStationPlotting(newstationlist, timein, timeout)
 
-detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv = rpl.fetchOutputNames()
-utilities.log.info('Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {}'.format(detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv))
+detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ = rpl.fetchOutputNames()
+utilities.log.info('Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {} MetaJ {} detailedJ {}, smoothedJ {}'.format(detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv,metaJ, detailedJ, smoothedJ ))
 print('Finished with OBS pipeline')
 
