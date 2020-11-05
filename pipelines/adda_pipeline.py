@@ -48,9 +48,9 @@ def IsNewJob(iometadata, rootdir):
 def str2datetime(s):
     from datetime import datetime
     try:
-        d = datetime.strptime(s, "%Y%m%d-%H:%M:%S")
+        d = datetime.strptime(s, "%Y-%m-%d %H:%M")
     except:
-        utilities.log.error("Override time2 has bad format: Should be %Y%m%d-%H:%M:%S".format(s))
+        utilities.log.error("Override time2 has bad format: Should be %Y-%m-%d %H:%M".format(s))
         sys.exit('Exit over bad input time format')
     utilities.log.info("Overriding NOW as time2 specification: {}".format(d))
     return d
@@ -205,7 +205,7 @@ if __name__ == '__main__':
     parser.add_argument('--override_repeats',action='store_true',
                         help='Boolean: Force rerunning a pipeline even if timein-timeout flank is already done')
     parser.add_argument('--time2', action='store', dest='time2', default=None,
-                        help='String: YYYYmmdd-hh:mm:ss : Force a value for timeout else code will use NOW')
+                        help='String: YYYY-mm-dd hh:mm : Force a value for timeout else code will use NOW')
     parser.add_argument('--aveper', action='store', dest='aveper', default=None, type=int,
                         help='int: 4 : Override number of periods for averaging')
     parser.add_argument('--vis_error', action='store_true', 
