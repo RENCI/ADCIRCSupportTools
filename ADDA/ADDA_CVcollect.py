@@ -99,7 +99,7 @@ def main(args):
     if overridetimeout is None:
         adc.set_times()  # Get current ADC now and chosen starting time
     else:
-        adc.set_times(dtime2=overridetimeout.strftime('%Y-%m-%d %H'))
+        adc.set_times(dtime2=overridetimeout.strftime('%Y-%m-%d %H:%M'))
 
     adc.get_urls()
     adc.get_grid_coords()  # populates the gridx,gridy terms
