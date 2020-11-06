@@ -168,7 +168,6 @@ class Adcirc:
                     utilities.log.info('Input doffset was specifed as > 0: {}'.format(doffset))
                     #sys.exit('Doffset must be <=')
                     self.T2 = self.T1 + dt.timedelta(days=int(doffset))
-                    print('POOP {}, {}, {}'.format(doffset, self.T1, self.T2)) 
                 else:
                     self.T1 = self.T2 + dt.timedelta(days=int(doffset))
             else:
