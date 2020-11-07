@@ -112,6 +112,8 @@ def main(args):
     t0 = tm.time()
     outfiles = dict()
 
+    # rootdir = args.rootdir
+
     # Get input adcirc url and check for existance
     if args.urljson != None:
         urljson = args.urljson
@@ -148,7 +150,11 @@ def main(args):
     iosubdir = args.iosubdir
     iometadata = args.iometadata
     main_config = utilities.load_config() # Get main comnfig. RUNTIMEDIR, etc
-    rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'], basedirExtra=iosubdir)
+
+    if args.rootdir is None:
+        rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'], basedirExtra=iosubdir)
+    else:
+        rootdir = args.rootdir
     utilities.log.info('Specified rootdir underwhich all files wil; be stored. Rootdir is {}'.format(rootdir))
 
     outfiles['RUNDATE']=dt.datetime.now().strftime('%Y%m%d%H%M')
@@ -244,6 +250,8 @@ if __name__ == '__main__':
 
     parser.add_argument('--experiment_name', action='store', dest='experiment_name', default=None,
                         help='Names highlevel Experiment-tag value')
+    parser.add_argument('--rootdir', action='store', dest='rootdir', default=None,
+                        help='Available high leverl directory')
     parser.add_argument('--ignore_pkl', help="Ignore existing pickle files.", action='store_true')
     parser.add_argument('--doffset', default=None, help='Day lag or datetime string for analysis: def to YML -4', type=int)
     parser.add_argument('--iometadata', action='store', dest='iometadata',default='', help='Used to further annotate output files', type=str)
