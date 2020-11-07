@@ -56,7 +56,7 @@ class stationPlotter(object):
         ymin = abs(df.min().min())
         ymax = abs(df.max().max())
         val = ymax if ymax > ymin else ymin
-        ymin = -math.ceil(ymin)
+        ymin = -math.ceil(val)
         ymax = -ymin
         return ymin, ymax
 
