@@ -49,7 +49,6 @@ def exec_adcirc(dtime2, rootdir, iometadata, adc_yamlname, node_idx, station_ids
     adc.get_urls()
     if not any(adc.urls):
         utilities.log.error('No URL entries. Aborting {}'.format(adc.urls))
-    utilities.log.info("List of available urls input specification:{} ".format(adc.urls))
     ADCfile = rootdir+'/adc_wl'+iometadata+'.pkl'
     ADCjson = rootdir+'/adc_wl'+iometadata+'.json'
     df = get_water_levels63(adc.urls, node_idx, station_ids) # Gets ADCIRC water levels

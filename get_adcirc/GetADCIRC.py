@@ -35,7 +35,6 @@ def main(args):
     writeJson = args.writeJson
     adcyamlfile=args.adcYamlname
 
-    print('verbose {} type {} '.format(args.verbose, type(args.verbose)))
     config = utilities.load_config() # Get main comnfig. RUNTIMEDIR, etc
     rootdir = utilities.fetchBasedir(config['DEFAULT']['RDIR'], basedirExtra=iosubdir)
     utilities.log.info("Working in {}.".format(os.getcwd()))
@@ -60,7 +59,6 @@ def main(args):
     
     if adcyamlfile==None:
         adcyamlfile = os.path.join(os.path.dirname(__file__), '../config', 'adc.yml')
-        print('shit {}'.format(adcyamlfile))
     utilities.log.info('Choose a config file of the name {}'.format(adcyamlfile))
     adc = Adcirc(dtime1=indtime1, dtime2=indtime2, doffset=indoffset, metadata=iometadata,yamlname=adcyamlfile)
 
@@ -88,7 +86,6 @@ def main(args):
     ADCdir = rootdir
     ADCfile = ADCdir+'/adc_wl'+iometadata+'.pkl'
     ADCfilecords = ADCdir+'/adc_coord'+iometadata+'.json'
-    print('ADCFILE '+ADCfile)
     if adc.config["ADCIRC"]["fortNumber"] == "63":
         if args.ignore_pkl or not os.path.exists(ADCfile):
             utilities.log.info("Building model matrix from fort.63.nc files...")
