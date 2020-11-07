@@ -114,14 +114,23 @@ def main(args):
     outfiles = dict()
 
     # Get input adcirc url and check for existance
-    urljson = args.urljson
-    if not os.path.exists(urljson):
-        utilities.log.error('urljson file not found.')
-        sys.exit(1)
-    urls = utilities.read_json_file(urljson) # Can we have more than one ?
-    if len(urls) !=1:
-        utilities.log.error('JSON file can only contain a single URL. It has {}'.format(len(urls)))
-    utilities.log.info('Explicit JSON URLs provided {}'.format(urls))
+    if args.urljson != None:
+        urljson = args.urljson
+        if not os.path.exists(urljson):
+            utilities.log.error('urljson file not found.')
+            sys.exit(1)
+        urls = utilities.read_json_file(urljson) # Can we have more than one ?
+        if len(urls) !=1:
+            utilities.log.error('JSON file can only contain a single URL. It has {}'.format(len(urls)))
+        utilities.log.info('Explicit JSON URLs provided {}'.format(urls))
+    elif args.url != None:
+        # If here we still need to build a dict for ADCIRC
+        url = args.url
+        dte = extractDateFromURL(url)
+        urls={dte:url}
+        utilities.log.info('Explicit URL provided {}'.format(urls))
+    else:
+        utilities.log.error('No Proper URL specified')
 
     # 0) Read the ASGS Forecast URL and create a nowcast timeout from it
     # NOTE the dict key (datecycle) is not actually used in this code as it is yet to be defined to me
@@ -143,6 +152,11 @@ def main(args):
     rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'], basedirExtra=iosubdir)
     utilities.log.info('Specified rootdir underwhich all files wil; be stored. Rootdir is {}'.format(rootdir))
 
+    outfiles['RUNDATE']=dt.datetime.now().strftime('%Y%m%d%H%M')
+    outfiles['ROOTDIR']=rootdir
+    outfiles['IOSUBDIR']=iosubdir
+    outfiles['IOMETADATA']=iometadata
+   
     # 2) Setup ADCIRC specific YML-resident inputs
     # Such as node_idx data
     utilities.log.info('Fetch OBS station data')
@@ -237,6 +251,8 @@ if __name__ == '__main__':
     parser.add_argument('--iosubdir', action='store', dest='iosubdir',default='', help='Used to locate output files into subdir', type=str)
     parser.add_argument('--urljson', action='store', dest='urljson', default=None,
                         help='String: Filename with a json of urls to loop over.')
+    parser.add_argument('--url', action='store', dest='url', default=None,
+                        help='String: url.')
     args = parser.parse_args()
     sys.exit(main(args))
 
