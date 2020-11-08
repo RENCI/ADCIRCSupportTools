@@ -144,7 +144,10 @@ class Utilities:
         """
         # print(basedir)
         if not os.path.exists(basedir):
-            sys.exit("Basepath for dumping files non existent "+str(basedir))
+            try:
+                os.mkdir(basedir)
+            except OSError:
+                sys.exit("Creation of the basedir %s failed" % basedir)
         fulldir = os.path.join(basedir, subdir)
         if not os.path.exists(fulldir):
             #print("Create datastation dir space at "+fulldir)

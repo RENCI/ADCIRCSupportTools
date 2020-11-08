@@ -52,8 +52,10 @@ def exec_adcirc(dtime2, rootdir, iometadata, adc_yamlname, node_idx, station_ids
     ADCfile = rootdir+'/adc_wl'+iometadata+'.pkl'
     ADCjson = rootdir+'/adc_wl'+iometadata+'.json'
     df = get_water_levels63(adc.urls, node_idx, station_ids) # Gets ADCIRC water levels
-    df.to_pickle(ADCfile)
-    df.to_json(ADCjson)
+    ADCfile = utilities.writePickle(df, rootdir=rootdir,subdir='',fileroot='adc_wl',iometadata=iometadata)
+    ##df.to_pickle(ADCfile)
+    ADCjson=writeToJSON(df, rootdir, iometadata,fileroot='adc_wl')
+    ##df.to_json(ADCjson)
     utilities.log.info(ADCfile)
     utilities.log.info('times {}, {}'.format( adc.T1,adc.T2))
     timestart = adc.T1
@@ -70,11 +72,11 @@ def exec_adcirc_forecast(urls, rootdir, iometadata, adc_yamlname, node_idx, stat
     df = get_water_levels63(adc.urls, node_idx, station_ids) # Gets ADCIRC water levels
     adc.T1 = df.index[0] # Optional update to actual times fetched form ADC
     adc.T2 = df.index[-1]
-    df.to_pickle(ADCfile)
+    ADCfile = utilities.writePickle(df, rootdir=rootdir,subdir='',fileroot='adc_wl_forecast',iometadata=iometadata)
+    ##df.to_pickle(ADCfile)
     ####df.to_json(ADCjson)
     print('write new json')
-    ADCjson=writeToJSON(df, rootdir, iometadata)
-
+    ADCjson=writeToJSON(df, rootdir, iometadata,fileroot='adc_wl_forecast')
     #timestart = adc.T1.strftime('%Y%m%d%H%M')
     #timeend = adc.T2.strftime('%Y%m%d%H%M')
     timestart = adc.T1
@@ -219,7 +221,7 @@ def main(args):
     # Not any need to specify a diff yml since we pass in the url directly
     # This will be appended to the DIFF plots in the final PNGs
 
-    ADCfileFore, ADCjsonFore, timestart, timeend = exec_adcirc_forecast(urls, rootdir, '_forecast'+iometadata, adc_yamlname, node_idx, station_ids)
+    ADCfileFore, ADCjsonFore, timestart, timeend = exec_adcirc_forecast(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids)
     utilities.log.info('Completed ADCIRC Forecast Read')
     outfiles['ADCIRC_WL_FORECAST_PKL']=ADCfileFore
     outfiles['ADCIRC_WL_FORECAST_JSON']=ADCjsonFore

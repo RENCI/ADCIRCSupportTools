@@ -224,14 +224,11 @@ class Adcirc:
 
         :return: dict of datecycles ("YYYYMMDDHH") entries and corresponding url.
         """
-
         cfg = self.config["ADCIRC"]
         urls = {}   # dict of datecycles and corresponding urls
         maincat = cfg["baseurl"] + cfg["catPart"]
-
         cat = TDSCatalog(maincat)
         available_dates = cat.catalog_refs
-        
         # filter available dates between T1 and T2, inclusive
         dates_in_range = np.array([])
         for i, d in enumerate(available_dates):
@@ -240,7 +237,6 @@ class Adcirc:
                 utilities.log.debug("%02d : %s in range." % (i, date_time_obj))
                 dates_in_range = np.append(dates_in_range, date_time_obj)
         dates_in_range = np.flip(dates_in_range, 0)
-
         # get THREDDS urls for dates in time range
         for i, d in enumerate(dates_in_range):
             dstr = dt.datetime.strftime(d, "%Y%m%d%H")
@@ -256,18 +252,17 @@ class Adcirc:
                 # test access
                 z = nc['zeta'][:, 0]
                 url2add = url
-
             except:
                 utilities.log.info("Could not access {}. It will be skipped.".format(url))
                 url2add = None
             urls[d] = url2add
         self.urls = urls
 
-def writeToJSON(df, rootdir, iometadata, variableName=None):
+def writeToJSON(df, rootdir, iometadata, fileroot='adc_wl', variableName=None):
     utilities.log.info('User requests write data also as a JSON format')
     df.index.name='TIME' # Need to adjust this for how the underlying DICT is generated
     merged_dict = utilities.convertTimeseriesToDICTdata(df, variables=variableName)
-    jsonfilename=utilities.writeDictToJson(merged_dict,rootdir=rootdir,subdir='',fileroot='adc_forecast',iometadata=iometadata)
+    jsonfilename=utilities.writeDictToJson(merged_dict,rootdir=rootdir,subdir='',fileroot=fileroot,iometadata=iometadata)
     utilities.log.info('Wrote ADC Json as {}'.format(jsonfilename))
     return jsonfilename
 
@@ -350,7 +345,7 @@ def get_water_levels61(urls, stationids):
         else:
             print("{} not in fort.61.nc station_name list".format(s))
             sys.exit(1)
-    print(idx.values())
+    #print(idx.values())
     exit(0)
     for datecyc, url in urls.items():
         if url is None:
