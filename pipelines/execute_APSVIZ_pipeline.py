@@ -37,13 +37,13 @@ def fetchNOW():
     tdt = dt.datetime.now()
     return tdt
 
-def exec_adcirc(dtime2, rootdir, iometadata, adc_yamlname, node_idx, station_ids):
+def exec_adcirc(dtime2, rootdir, iometadata, adc_yamlname, node_idx, station_ids, doffset=-4):
     """
     dtime2 arrives as a string in the format YYYY-mm-dd MM:SS 
     """
     # Start the fetch of ADCIRC data
     adc = Adcirc(adc_yamlname)
-    adc.set_times(dtime2=dtime2, doffset=-4)
+    adc.set_times(dtime2=dtime2, doffset=doffset)
     utilities.log.info("T1 (start) = {}".format(adc.T1))
     utilities.log.info("T2 (end)   = {}".format(adc.T2))
     adc.get_urls()
@@ -114,7 +114,7 @@ def main(args):
     t0 = tm.time()
     outfiles = dict()
 
-    # rootdir = args.rootdir
+    doffset = args.doffset
 
     # Get input adcirc url and check for existance
     if args.urljson != None:
@@ -176,7 +176,7 @@ def main(args):
     utilities.log.info('Fetch ADCIRC')
     adc_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'adc.yml')
     #adc_config = utilities.load_config(adc_yamlname)
-    ADCfile, ADCjson, timestart, timeend = exec_adcirc(timeout.strftime('%Y-%m-%d %H:%M'), rootdir, '_nowcast'+iometadata, adc_yamlname, node_idx, station_ids)
+    ADCfile, ADCjson, timestart, timeend = exec_adcirc(timeout.strftime('%Y-%m-%d %H:%M'), rootdir, '_nowcast'+iometadata, adc_yamlname, node_idx, station_ids, doffset=doffset)
     utilities.log.info('Completed ADCIRC nowcast Reads')
     outfiles['ADCIRC_WL_PKL']=ADCfile
     outfiles['ADCIRC_WL_JSON']=ADCjson
@@ -255,7 +255,7 @@ if __name__ == '__main__':
     parser.add_argument('--rootdir', action='store', dest='rootdir', default=None,
                         help='Available high leverl directory')
     parser.add_argument('--ignore_pkl', help="Ignore existing pickle files.", action='store_true')
-    parser.add_argument('--doffset', default=None, help='Day lag or datetime string for analysis: def to YML -4', type=int)
+    parser.add_argument('--doffset', default=-4, help='Day lag or datetime string for analysis: def to YML -4', type=int)
     parser.add_argument('--iometadata', action='store', dest='iometadata',default='', help='Used to further annotate output files', type=str)
     parser.add_argument('--iosubdir', action='store', dest='iosubdir',default='', help='Used to locate output files into subdir', type=str)
     parser.add_argument('--urljson', action='store', dest='urljson', default=None,
