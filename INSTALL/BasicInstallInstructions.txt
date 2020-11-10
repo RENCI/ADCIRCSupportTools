@@ -5,39 +5,48 @@
 
 ##########
 # 1) Install conda on your system
-
 export PATH=~/.local/bin:$PATH
 
-# 1) Get the code
-git clone https://github.com/jtilson/ADCIRCSupportTools.git
+# 1) Build the environment
+conda create --name myenv -y python=3.7.3
+conda activate myenv
 
-# 2) Build conda env
-conda create -n apsenv basemap rasterio scikit-learn xarray matplotlib numpy pandas matplotlib netCDF4 pyyaml scipy cartopy gdal geopandas
+conda install -y cartopy=0.17.0
+conda install -y basemap=1.2.0
+conda install -y netCDF4=1.4.2
+conda install -y matplotlib=3.0.3
+conda install -y numpy
+conda install -y pandas
+conda install -y scipy
+conda install -y xarray
+conda install -y geopandas
+conda install -y pyyaml
+conda install -y seaborn
 
-# 3) Pip install the known requirements
+# PIP stuff # Some stuff cannot be found using conda
+pip install rasterio==1.1.8 # Needs to be upgraded
+pip install cdsapi==0.3.0
+pip install PyKrige==1.4.0
+pip install datedelta==1.3
+pip install siphon
 
-conda activate apsenv
-pip install --force rasterio # Needs to be upgraded
+# 2) Install the local noaa-coops
 
 git clone https://github.com/GClunies/noaa_coops.git
 cd noaa_coops
 python setup.py install --user
 
-pip install cdsapi
-pip install datedelta
-pip install siphon
-pip install seaborn 
-pip install pyyaml
-pip install netCDF4
-pip install PyKrige # needs scikit-learn
-pip install --force rasterio
+# 3) Get the ADCSupportTools code code
+git clone https://github.com/jtilson/ADCIRCSupportTools.git
+
+# 4) Runs some examples manually
 
 #####
 export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/CRAP/ADCIRCSupportTools
 export RUNTIMEDIR=./TEST
 
 # 4) Test runs
-scikit-learn xarray basemap matplotlib numpy pandas matplotlib netCDF4 pyyaml scipy cartopy gdal rasterio geopandas
+##scikit-learn xarray basemap matplotlib numpy pandas matplotlib netCDF4 pyyaml scipy cartopy gdal rasterio geopandas
 export PYTHONPATH=./ADCIRCSupportTools
 export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/HATTERAS/ADCIRCSupportTools
 export RUNTIMEDIR="."
@@ -49,9 +58,8 @@ python ../GetObsStations.py --timein='2020-10-17 12:00' --timeout='2020-10-21 18
 # 4b) get_adcirc test
 
 # 4c) computeError
-export dir="/home/jtilson/ADCIRCSupportTools/TEST_DATA/ADCIRC"
+export dir="../TEST_DATA/ADCIRC/"
 python ../computeErrorField.py --obsmeta "$dir/obs_wl_metadata.pkl" --obsdata "$dir/obs_wl_smoothed.pkl" --adcdata "$dir/adc_wl.pkl"
-
 
 # 4d) Kriging test
 python test_CVkriging.py --errorfile '/projects/sequence_analysis/vol1/prediction_work/HATTERAS/ADCIRCSupportTools/TEST_DATA/ADCIRC/stationSummaryAves_manualtest.csv' --gridjsonfile '/projects/sequence_analysis/vol1/prediction_work/HATTERAS/ADCIRCSupportTools/TEST_DATA/ADCIRC/adc_coord.json' --clampfile '/projects/sequence_analysis/vol1/prediction_work/HATTERAS/ADCIRCSupportTools/config/clamp_list_hsofs.dat' --subdir_name 'TESTINT' --iometadata 'IOMETA'
@@ -77,4 +85,4 @@ python -u ./ADDA_withCLI.py --override_repeats
 # 6b) AN ADDA run with CV optimizastion of the kriging params (lengthy execution time)
 python -u ADDA_CVcollect.py --cv_kriging  --override_repeats --time2 20200811-00:00:00
 
-conda deactivate
+conda deactivat
