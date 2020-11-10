@@ -42,18 +42,18 @@ class computeErrorField(object):
         try:
             self.df_obs_wl = pd.read_pickle(self.obs_filename)
         except FileNotFoundError:
-            raise IOerror("Failed to read %s" % self.obs_filename)
+            raise IOError("Failed to read %s" % self.obs_filename)
             utilities.log.error("Failed to read %s" % self.obs_filename)
         try:
             self.df_adc_wl = pd.read_pickle(self.adc_filename)
         except:
-            raise IOerror("Failed to read %s" % self.adc_filename)
+            raise IOError("Failed to read %s" % self.adc_filename)
             utilities.log.error("Failed to read %s" % self.adc_filename)
         try:
             self.df_meta = pd.read_pickle(self.meta_filename)
             self.df_meta.set_index('stationid', inplace=True)
         except:
-            raise IOerror("Failed to read %s" % self.meta_filename)
+            raise IOError("Failed to read %s" % self.meta_filename)
             utilities.log.error("Failed to read %s" % self.meta_filename)
         utilities.log.debug('input ADC wl data are {}'.format(str(self.df_adc_wl)))
         utilities.log.debug('input OBS wl data are {}'.format(str(self.df_obs_wl)))
