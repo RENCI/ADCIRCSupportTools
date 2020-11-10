@@ -1,6 +1,20 @@
+# AN ionstall procedure on your local machine inside a venv
 
 # 1) Install conda on your system
-export PATH=~/.local/bin:$PATH
+# a) download the installer
+
+wget http://repo.continuum.io/archive/Anaconda3-4.0.0-Linux-x86_64.sh
+# run the install script
+bash Anaconda3-4.0.0-Linux-x86_64.sh
+# update the now installed conda to the latest version
+conda update
+# add the conda-forge package install channel
+conda config --add channels conda-forge
+# Install package requirements
+conda install --yes --file requirements.txt
+
+
+# export PATH=~/.local/bin:$PATH
 
 # 2) Build the environment
 conda create --name myenv -y python=3.7.3
@@ -35,4 +49,4 @@ cd ..
 # 4) Get the ADCSupportTools code code
 git clone https://github.com/jtilson/ADCIRCSupportTools.git
 
-conda deactivat
+conda deactivate
