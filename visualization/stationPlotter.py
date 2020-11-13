@@ -11,6 +11,7 @@ import pandas as pd
 import json
 import math
 import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates 
 import seaborn as sns
