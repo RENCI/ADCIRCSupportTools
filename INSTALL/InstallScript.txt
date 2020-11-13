@@ -1,20 +1,6 @@
 # AN ionstall procedure on your local machine inside a venv
 
 # 1) Install conda on your system
-# a) download the installer
-
-wget http://repo.continuum.io/archive/Anaconda3-4.0.0-Linux-x86_64.sh
-# run the install script
-bash Anaconda3-4.0.0-Linux-x86_64.sh
-# update the now installed conda to the latest version
-conda update
-# add the conda-forge package install channel
-conda config --add channels conda-forge
-# Install package requirements
-conda install --yes --file requirements.txt
-
-
-# export PATH=~/.local/bin:$PATH
 
 # 2) Build the environment
 conda create --name myenv -y python=3.7.3
@@ -22,13 +8,13 @@ conda activate myenv
 
 conda install -y cartopy=0.17.0
 conda install -y basemap=1.2.0
+conda install -y cftime=1.0.3.4
 conda install -y netCDF4=1.4.2
 conda install -y matplotlib=3.0.3
-conda install -y numpy
-conda install -y pandas
-conda install -y scipy
-conda install -y xarray
-conda install -y geopandas
+conda install -y pandas=1.1.3
+conda install -y numpy=1.19.4
+conda install -y scipy=1.5.2
+conda install -y xarray=0.14.1
 conda install -y pyyaml
 conda install -y seaborn
 

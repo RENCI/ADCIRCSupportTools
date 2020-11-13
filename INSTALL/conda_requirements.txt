@@ -1,78 +1,60 @@
-affine             2.3.0
-appdirs            1.4.3
-attrs              20.3.0
-beautifulsoup4     4.9.3
-brotlipy           0.7.0
-cached-property    1.5.2
-Cartopy            0.17.0
-cdsapi             0.3.0
-certifi            2020.11.8
-cffi               1.14.0
-cftime             1.2.1
-chardet            3.0.4
-click              7.1.2
-click-plugins      1.1.1
-cligj              0.7.0
-cryptography       3.1.1
-cycler             0.10.0
-datedelta          1.3
-defusedxml         0.7.0rc1
-distlib            0.3.0
-Fiona              1.8.4
-GDAL               2.3.3
-geopandas          0.6.1
-idna               2.10
-importlib-metadata 1.5.0
-isodate            0.6.0
-joblib             0.17.0
-kiwisolver         1.3.0
-lxml               4.6.1
-matplotlib         3.3.2
-mkl-fft            1.2.0
-mkl-random         1.1.1
-mkl-service        2.3.0
-munch              2.5.0
-netCDF4            1.4.2
-noaa-coops         0.1.9
-numpy              1.19.2
-olefile            0.46
-OWSLib             0.18.0
-pandas             1.1.3
-Pillow             8.0.1
-pip                20.2.4
-protobuf           3.14.0rc1
-pycparser          2.20
-pyepsg             0.4.0
-pykdtree           1.3.1
-PyKrige            1.4.0
-pyOpenSSL          19.1.0
-pyparsing          2.4.7
-pyproj             1.9.6
-pyshp              2.1.2
-PySocks            1.7.1
-python-dateutil    2.8.1
-pytz               2020.1
-PyYAML             5.3.1
-rasterio           1.1.8
-requests           2.24.0
-requests-file      1.5.1
-requests-toolbelt  0.9.1
-Rtree              0.9.4
-scikit-learn       0.23.2
-scipy              1.5.2
-seaborn            0.11.0
-setuptools         50.3.1.post20201107
-Shapely            1.6.4.post1
-siphon             0.8.0
-six                1.15.0
-snuggs             1.4.7
-soupsieve          2.0.1
-threadpoolctl      2.1.0
-tornado            6.0.4
-tqdm               4.51.0
-urllib3            1.25.11
-virtualenv         20.0.5
-wheel              0.35.1
-xarray             0.16.1
-zeep               4.0.0
-zipp               3.0.0
+appdirs==1.4.3
+attrs==20.3.0
+beautifulsoup4==4.9.3
+brotlipy==0.7.0
+cached-property==1.5.2
+Cartopy==0.17.0
+cffi==1.14.0
+cftime==1.2.1
+chardet==3.0.4
+click==7.1.2
+click-plugins==1.1.1
+cligj==0.7.0
+cryptography==3.1.1
+cycler==0.10.0
+distlib==0.3.0
+Fiona==1.8.4
+GDAL==2.3.3
+geopandas==0.6.1
+idna==2.10
+importlib-metadata==1.5.0
+isodate==0.6.0
+joblib==0.17.0
+kiwisolver==1.3.0
+lxml==4.6.1
+matplotlib==3.3.2
+mkl-service==2.3.0
+munch==2.5.0
+netCDF4==1.4.2
+numpy==1.19.2
+olefile==0.46
+OWSLib==0.18.0
+pandas==1.1.3
+Pillow==8.0.1
+pip==20.2.4
+pycparser==2.20
+pyepsg==0.4.0
+pykdtree==1.3.1
+pyOpenSSL==19.1.0
+pyparsing==2.4.7
+pyproj==1.9.6
+pyshp==2.1.2
+PySocks==1.7.1
+python-dateutil==2.8.1
+PyYAML==5.3.1
+requests==2.24.0
+requests-file==1.5.1
+requests-toolbelt==0.9.1
+Rtree==0.9.4
+scikit-learn==0.23.2
+scipy==1.5.2
+seaborn==0.11.0
+six==1.15.0
+snuggs==1.4.7
+soupsieve==2.0.1
+threadpoolctl==2.1.0
+tornado==6.0.4
+tqdm==4.51.0
+urllib3==1.25.11
+wheel==0.35.1
+xarray==0.16.1
