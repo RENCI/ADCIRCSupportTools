@@ -8,6 +8,10 @@ conda update
 # add the conda-forge package install channel
 conda config --add channels conda-forge
 
+# 2) Get the ADCSupportTools code code
+git clone https://github.com/jtilson/ADCIRCSupportTools.git
+cd ADCIRCSupportTools/INSTALL
+
 # Install package requirements
 ##conda install --yes --file conda_requirements.txt
 while read requirement; do conda install --yes $requirement; done < conda_requirements.txt
@@ -17,11 +21,9 @@ pip install -r    pip_requirements.txt
 
 # 3) Install the local noaa-coops
 
+cd ../../
 git clone https://github.com/GClunies/noaa_coops.git
 cd noaa_coops
 python setup.py install --user
 cd ..
-
-# 4) Get the ADCSupportTools code code
-git clone https://github.com/jtilson/ADCIRCSupportTools.git
 
