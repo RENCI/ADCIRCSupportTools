@@ -8,13 +8,17 @@ conda update
 # add the conda-forge package install channel
 conda config --add channels conda-forge
 
+# 1) Set right basic env
+conda create --name myenv -y python=3.7.3
+conda activate myenv
+
 # 2) Get the ADCSupportTools code code
 git clone https://github.com/jtilson/ADCIRCSupportTools.git
 cd ADCIRCSupportTools/INSTALL
 
 # Install package requirements
-##conda install --yes --file conda_requirements.txt
-while read requirement; do conda install --yes $requirement; done < conda_requirements.txt
+conda install --yes --file conda_requirements.txt
+##while read requirement; do conda install --yes $requirement; done < conda_requirements.txt
 
 # Now get the rest of the reqs
 pip install -r    pip_requirements.txt
