@@ -1,0 +1,12 @@
+version: "3"
+services:
+  jeff:
+    build:
+      context: ./
+
+    container_name: jeff
+
+    image: test:latest
+
+    stdin_open: true
+    tty: true
