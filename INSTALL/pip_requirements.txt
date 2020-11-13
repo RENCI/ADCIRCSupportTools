@@ -1,5 +1,5 @@
-cdsapi==0.3.0
-datedelta==1.3
-PyKrige==1.4.0
 rasterio==1.1.8
-siphon==0.8.0
+cdsapi==0.3.0
+PyKrige==1.4.0
+datedelta==1.3
+siphon
