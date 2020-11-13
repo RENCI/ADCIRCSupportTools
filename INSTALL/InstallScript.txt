@@ -1,4 +1,4 @@
-# AN ionstall procedure on your local machine inside a venv
+# An install procedure on your local machine inside a venv
 
 # 1) Install conda on your system
 
