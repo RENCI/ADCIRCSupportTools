@@ -17,15 +17,20 @@ RUN mkdir /repo
 WORKDIR /repo
 
 # commented out for now. this repo should be made public or pass credentials into the container.
-#RUN git clone https://github.com/jtilson/ADCIRCSupportTools.git
-#WORKDIR ADCIRCSupportTools/INSTALL
-#RUN conda install --yes --file conda_requirements.txt
-#run pip install -r pip_requirements.txt
+RUN git clone https://github.com/jtilson/ADCIRCSupportTools.git
 
-# 3) Install the local noaa-coops
+WORKDIR ADCIRCSupportTools/INSTALL
+
+RUN conda install --yes --file conda_requirements.txt
+
+RUN pip install -r pip_requirements.txt
+
 
 WORKDIR /repo
 
 RUN git clone https://github.com/GClunies/noaa_coops.git
+
 WORKDIR noaa_coops
+
+RUN python setup.py install --user
 
