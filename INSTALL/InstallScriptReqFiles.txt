@@ -1,0 +1,27 @@
+# An install procedure for a blank container install
+
+wget http://repo.continuum.io/archive/Anaconda3-4.0.0-Linux-x86_64.sh
+# run the install script
+bash Anaconda3-4.0.0-Linux-x86_64.sh
+# update the now installed conda to the latest version
+conda update
+# add the conda-forge package install channel
+conda config --add channels conda-forge
+
+# Install package requirements
+##conda install --yes --file conda_requirements.txt
+while read requirement; do conda install --yes $requirement; done < conda_requirements.txt
+
+# Now get the rest of the reqs
+pip install -r    pip_requirements.txt
+
+# 3) Install the local noaa-coops
+
+git clone https://github.com/GClunies/noaa_coops.git
+cd noaa_coops
+python setup.py install --user
+cd ..
+
+# 4) Get the ADCSupportTools code code
+git clone https://github.com/jtilson/ADCIRCSupportTools.git
+
