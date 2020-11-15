@@ -151,6 +151,7 @@ ax.plot(dfs_monthly_mean.loc[start:end, 'ERR'],
 color='black',linewidth=0.5, linestyle='-', label='Monthly Mean')
 ax.set_ylabel(r'$\Delta$ WL (m) versus MSL')
 ax.set_title(stationName, fontdict={'fontsize': 12, 'fontweight': 'medium'})
+
 ax.legend();
 #plt.savefig(station+'.png')
 plt.show()
@@ -190,6 +191,7 @@ color='black',linewidth=0.5, linestyle='-', label='Monthly Mean')
 ax.set_ylabel(r'$\Delta$ WL (m) versus MSL')
 ax.set_title(stationName, fontdict={'fontsize': 12, 'fontweight': 'medium'})
 ax.legend();
+plt.xticks(rotation=45)
 plt.savefig(station+'.png')
 #plt.show()
 
