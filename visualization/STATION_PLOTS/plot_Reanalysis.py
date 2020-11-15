@@ -192,6 +192,7 @@ ax.set_ylabel(r'$\Delta$ WL (m) versus MSL')
 ax.set_title(stationName, fontdict={'fontsize': 12, 'fontweight': 'medium'})
 ax.legend();
 plt.xticks(rotation=45)
+plt.tight_layout()
 plt.savefig(station+'.png')
 #plt.show()
 
