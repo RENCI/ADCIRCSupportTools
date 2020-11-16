@@ -30,7 +30,7 @@ def station_level_means(df_obs, df_adc, df_err, station):
     # dfs_monthly_mean = dfs[data_columns].resample('MS',loffset=pd.Timedelta(15,'d')).mean() #MS restarts meaning from the start not the end
     # dfs_weekly_mean = dfs[data_columns].resample('W',loffset=pd.Timedelta(84,'h')).mean()
     dfs_monthly_mean = dfs[data_columns].resample('MS').mean() #MS restarts meaning from the start not the end
-    dfs_monthly_mean.index = dfs_monthly_mean.index - to_offset("15d")
+    dfs_monthly_mean.index = dfs_monthly_mean.index + to_offset("15d")
     dfs_weekly_mean = dfs[data_columns].resample('W').mean()
     # No need for this...dfs_weekly_mean.index = dfs_weekly_mean.index+to_offset("84h")
     # Get rolling
