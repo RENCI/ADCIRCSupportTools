@@ -46,9 +46,9 @@ df = pd.read_csv(f,header=0, index_col=0)
 df.index = pd.to_datetime(df.index)
 df_meta=pd.read_pickle(meta)
 df_meta.set_index('stationid',inplace=True)
-df_adc_all = df[df['SRC']=='ADC']
-df_obs_all = df[df['SRC']=='OBS']
-df_err_all = df[df['SRC']=='ERR']
+df_adc_all = df[df['SRC']=='ADC'].copy()
+df_obs_all = df[df['SRC']=='OBS'].copy()
+df_err_all = df[df['SRC']=='ERR'].copy()
 df_adc_all.drop('SRC',inplace=True,axis=1)
 df_obs_all.drop('SRC',inplace=True,axis=1)
 df_err_all.drop('SRC',inplace=True,axis=1)
