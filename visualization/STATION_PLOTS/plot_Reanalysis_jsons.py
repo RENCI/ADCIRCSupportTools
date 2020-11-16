@@ -51,6 +51,29 @@ def dictToDataFrame(dataDict, src):
     df.index = pd.to_datetime(df.index)
     return df
 
+def makePlot(start, end, station, src, stationName, dfs, dfs_7d, dfs_weekly_mean, dfs_monthly_mean): 
+    sns.set(rc={'figure.figsize':(11, 4)}) # Setr gray background and white gird
+    # Plot daily, weekly resampled, and 7-day rolling mean time series together
+    fig, ax = plt.subplots()
+    ax.plot(dfs.loc[start:end, src],
+    marker='.', markersize=1, linewidth=0.1,color='gray',label='Hourly')
+    ax.plot(dfs_7d.loc[start:end, src],
+    color='red', alpha=0.3, linewidth=.5, linestyle='-', label='7-d Rolling Mean')
+    ax.plot(dfs_weekly_mean.loc[start:end, src],
+    marker='o', color='green',markersize=6, linestyle='-', label='Weekly Mean')
+    ax.plot(dfs_monthly_mean.loc[start:end, src],
+    color='black',linewidth=0.5, linestyle='-', label='Monthly Mean')
+    ax.set_ylabel(r'$\Delta$ WL (m) versus MSL')
+    ax.set_title(stationName, fontdict={'fontsize': 12, 'fontweight': 'medium'})
+    ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=None))
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'));
+    ax.legend(fontsize=10);
+    plt.xticks(rotation=0, fontsize=10)
+    plt.yticks(fontsize=10)
+    plt.tight_layout()
+    plt.savefig(station+'.png')
+    #plt.show()
+
 f='/projects/sequence_analysis/vol1/prediction_work/Reanalysis/ADCIRCSupportTools/pipelines/NEWTEST-ALLSTATIONS/adc_obs_error_merged.json'
 meta='/projects/sequence_analysis/vol1/prediction_work/Reanalysis/ADCIRCSupportTools/pipelines/NEWTEST-ALLSTATIONS/obs_wl_metadata.json'
 
@@ -73,14 +96,11 @@ with open(f, 'r') as fp1:
         sys.exit()
 
 #
-columns = list(dataDict.keys()) # For subsequent naming - are we sure order is maintained?
+stations = list(dataDict.keys()) # For subsequent naming - are we sure order is maintained?
 # Metadata
 df_meta=pd.DataFrame(metaDict)
 df_meta.set_index('stationid',inplace=True)
 # Time series data. This ONLY works on compError generated jsons
-
-dtype=['OBS','ADC','ERR']
-stations = list(dataDict.keys())
 
 df_obs_all = dictToDataFrame(dataDict, 'OBS')
 df_adc_all = dictToDataFrame(dataDict, 'ADC')
@@ -95,32 +115,16 @@ sns.set(rc={'figure.figsize':(11, 4)}) # Setr gray background and white gird
 #station='8410140'
 #station='8534720'
 #station='8658163'
-station='8768094'
+#station='8768094'
 
-dfs, dfs_weekly_mean, dfs_monthly_mean, dfs_7d = station_level_means(df_obs_all, df_adc_all, df_err_all, station)
+for station in stations:
+    dfs, dfs_weekly_mean, dfs_monthly_mean, dfs_7d = station_level_means(df_obs_all, df_adc_all, df_err_all, station)
+    #start=dfs.index.min().strftime('%Y-%m')
+    #end=dfs.index.max().strftime('%Y-%m')
+    start, end = '2018-01', '2019-01'
+    stationName = df_meta.loc[int(station)]['stationname']
+    makePlot(start, end, station, 'ERR', stationName, dfs, dfs_7d, dfs_weekly_mean, dfs_monthly_mean) 
 
-stationName = df_meta.loc[int(station)]['stationname']
-start, end = '2018-01', '2018-12'
-# Plot daily, weekly resampled, and 7-day rolling mean time series together
-fig, ax = plt.subplots()
-ax.plot(dfs.loc[start:end, 'ERR'],
-marker='.', markersize=1, linewidth=0.1,color='gray',label='Hourly')
-ax.plot(dfs_7d.loc[start:end, 'ERR'],
-color='red', alpha=0.3, linewidth=.5, linestyle='-', label='7-d Rolling Mean')
-ax.plot(dfs_weekly_mean.loc[start:end, 'ERR'],
-marker='o', color='green',markersize=6, linestyle='-', label='Weekly Mean')
-ax.plot(dfs_monthly_mean.loc[start:end, 'ERR'],
-color='black',linewidth=0.5, linestyle='-', label='Monthly Mean')
-ax.set_ylabel(r'$\Delta$ WL (m) versus MSL')
-ax.set_title(stationName, fontdict={'fontsize': 12, 'fontweight': 'medium'})
-ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=None))
-ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'));
-ax.legend(fontsize=10);
-plt.xticks(rotation=0, fontsize=10)
-plt.yticks(fontsize=10)
-plt.tight_layout()
-#plt.savefig(station+'.png')
-plt.show()
 
 
 
