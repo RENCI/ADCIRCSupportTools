@@ -158,6 +158,10 @@ plt.show()
 
 
 # Full pipeline testing
+
+sns.set(rc={'figure.figsize':(11, 4)}) # Setr gray background and white gird
+
+
 #station='8410140'
 #station='8534720'
 #station='8658163'
@@ -190,11 +194,14 @@ ax.plot(dfs_monthly_mean.loc[start:end, 'ERR'],
 color='black',linewidth=0.5, linestyle='-', label='Monthly Mean')
 ax.set_ylabel(r'$\Delta$ WL (m) versus MSL')
 ax.set_title(stationName, fontdict={'fontsize': 12, 'fontweight': 'medium'})
-ax.legend();
-plt.xticks(rotation=45)
+ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=None))
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'));
+ax.legend(fontsize=10);
+plt.xticks(rotation=0, fontsize=10)
+plt.yticks(fontsize=10)
 plt.tight_layout()
-plt.savefig(station+'.png')
-#plt.show()
+#plt.savefig(station+'.png')
+plt.show()
 
 
 
