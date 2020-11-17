@@ -59,10 +59,18 @@ from requests.exceptions import ConnectionError,Timeout,HTTPError
 # globals: Note for now we will only tested MSL .
 # https://tidesandcurrents.noaa.gov/api/#products
 datums = ('CRD', 'IGLD', 'LWD', 'MHHW', 'MTL', 'MSL', 'MLW', 'MLLW', 'NAVD', 'STND')
-products = ('water_level', 'air_temperature', 'water_temperature', 'wind', 'air_pressure',
-            'air_gap', 'conductivity', 'visibility', 'humidity', 'salinity', 'hourly_height',
-            'high_low', 'daily_mean', 'monthly_mean', 'one_minute_water_level', 'predictions',
-            'datums', 'currents')
+
+#products = ('water_level', 'air_temperature', 'water_temperature', 'wind', 'air_pressure',
+#            'air_gap', 'conductivity', 'visibility', 'humidity', 'salinity', 'hourly_height',
+#            'high_low', 'daily_mean', 'monthly_mean', 'one_minute_water_level', 'predictions',
+#            'datums', 'currents')
+
+products={ 'water_level':'water_level', 
+           'predictions': 'predicted_wl',
+           'air_pressure': 'air_press',
+           'hourly_height':'water_level',
+           'wind':'spd'}
+
 timezones = ('gmt', 'lst', 'lst_ldt')
 units = ('metric', 'english')
 
@@ -150,6 +158,7 @@ class GetObsStations(object):
         self.datum = datum.upper() if datum.upper() in datums else 'None'
         self.unit = unit.lower() if unit.lower() in units else 'None'
         self.product = product.lower() if product.lower() in products else 'None'
+        self.productName = products[self.product]
         self.timezone = timezone.lower() if timezone.lower() in timezone else 'None'
         self.iometadata = metadata 
         self.rootdir = rootdir
@@ -318,7 +327,7 @@ class GetObsStations(object):
                                                 product=self.product,
                                                 datum=self.datum,
                                                 units=self.unit,
-                                                time_zone=self.timezone)[self.product].to_frame()
+                                                time_zone=self.timezone)[self.productName].to_frame()
                 stationdata, multivalue = self.checkDuplicateTimeEntries(station, stationdata)
                 if self.ex_multivalue and multivalue:
                     utilities.log.info('Multivalued station '+str(station))
