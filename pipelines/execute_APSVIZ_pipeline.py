@@ -240,7 +240,8 @@ def main(args):
     outfilesjson = utilities.writeDictToJson(outfiles, rootdir=rootdir,subdir=iosubdir,fileroot='runProps',iometadata='') # Never change fname
     utilities.log.info('Wrote pipeline Dict data to {}'.format(outfilesjson)) 
     utilities.log.info('Finished pipeline in {} s'.format(tm.time()-t0))
-    return outfiles
+    print(outfiles)
+    return 0
 
     # Setup for computing the station diffs (aka adcirc - obs errors)
 
