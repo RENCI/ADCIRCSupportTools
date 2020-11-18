@@ -173,6 +173,7 @@ class GetObsStations(object):
         self.nanthresh = float(self.config['OBSERVATIONS']['THRESH'])
         if not self.ex_coops_nans:
             utilities.log.error('EX_COOPS must be True for all nontrivial work')
+        utilities.log.info('PRODUCT to fetch is {}'.format(self.product))
 
     def fetchStationListIncludeAndExclude(self):
         """
