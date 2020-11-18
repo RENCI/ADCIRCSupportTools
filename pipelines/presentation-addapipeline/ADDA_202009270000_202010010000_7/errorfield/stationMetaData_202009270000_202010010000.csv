@@ -1,2 +1,0 @@
-,ADC_filename,Ave periods,Bounds hi,Bounds lo,OBS_filename,Tidal period ,Tide padding,Time steps per period
-0,./ADDA_202009270000_202010010000_7/adc_wl_202009270000_202010010000.pkl,4,2020-10-01 00:15:18,2020-09-28 23:36:36,./ADDA_202009270000_202010010000_7/obspkl/obs_wl_smoothed_202009270000_202010010000.pkl,12.42,1,12
