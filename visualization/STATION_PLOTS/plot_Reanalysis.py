@@ -94,9 +94,27 @@ for name, ax in zip(['OBS', 'ADC', 'ERR'], axes):
     sns.boxplot(data=dfs, x='Month', y=name, ax=ax)
     ax.set_ylabel('m')
     ax.set_title(name)
+    ax.set_ylabel(r'$\Delta$ WL (m) versus MSL')
+    ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=None))
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'));
     # Remove the automatic x-axis label from all but the bottom subplot
     if ax != axes[-1]:
         ax.set_xlabel('')
+
+ax.set_ylabel(r'$\Delta$ WL (m) versus MSL')
+ax.set_title(stationName, fontdict={'fontsize': 12, 'fontweight': 'medium'})
+ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=None))
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'));
+#
+#df_box=dfs[start:end]['ERR']
+#ax.boxplot(df_box.dropna())
+ax.legend(fontsize=10);
+plt.xticks(rotation=0, fontsize=10)
+plt.yticks(fontsize=10)
+plt.tight_layout()
+
+
+
 
 #5
 # Subsampling and means
@@ -196,12 +214,19 @@ ax.set_ylabel(r'$\Delta$ WL (m) versus MSL')
 ax.set_title(stationName, fontdict={'fontsize': 12, 'fontweight': 'medium'})
 ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=None))
 ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'));
+#
+#df_box=dfs[start:end]['ERR']
+#ax.boxplot(df_box.dropna())
 ax.legend(fontsize=10);
 plt.xticks(rotation=0, fontsize=10)
 plt.yticks(fontsize=10)
 plt.tight_layout()
 #plt.savefig(station+'.png')
 plt.show()
+
+
+#df_wrightsville = df_err_all[start:end]['8658163']
+#plt.boxplot(df_wrightsville.dropna())
 
 
 
