@@ -1,8 +1,0 @@
-# Using default filenames
-# location from /home/jtilson/ADCIRCSupportTools/ADCIRC
-python  computeErrorField.py
-
-# Input filenames from the same location
-export dir="/home/jtilson/ADCIRCSupportTools/ADCIRC"
-python ../computeErrorField.py --obsmeta "$dir/obs_wl_metadata.pkl" --obsdata "$dir/obs_wl_smoothed.pkl" --adcdata "$dir/adc_wl.pkl"
-

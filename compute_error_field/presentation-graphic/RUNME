@@ -1,8 +1,0 @@
-#
-# Need a different environment for this to work
-#
-source activate myenv2
-gdalinfo --version
-
-
-
