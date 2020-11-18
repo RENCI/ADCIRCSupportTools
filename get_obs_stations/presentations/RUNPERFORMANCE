@@ -1,7 +1,0 @@
-export PYTHONPATH=/home/jtilson/ADCIRCSupportTools
-export RUNTIMEDIR="."
-
-python test_water_level_performance.py 
-
-# Average total volume written is 
-
