@@ -30,22 +30,18 @@ def makePlot(start, end, station, stationName, df):
     plt.xticks(rotation=0, fontsize=10)
     plt.yticks(fontsize=10)
     plt.tight_layout()
-    plt.savefig(str(station)+'_detided.png')
-    plt.close()
-    #plt.show()
+    #plt.savefig(str(station)+'_detided.png')
+    #plt.close()
+    plt.show()
 
 
 # Get the basic data 
 
 meta='/projects/sequence_analysis/vol1/prediction_work/ADDA_202010191800_202010231800/obspkl/obs_wl_metadata_202010191800_202010231800.pkl'
 
-fwl='/home/jtilson/ADCIRCSupportTools/get_obs_stations/test/2018/NEWTEST-WL/StationTest/obspkl/obs_wl_detailed_2018-01-01_00:00_2018-12-31_18:00.pkl'
 fhh='/home/jtilson/ADCIRCSupportTools/get_obs_stations/test/2018/NEWTEST-HH/StationTest/obspkl/obs_wl_detailed_2018-01-01_00:00_2018-12-31_18:00.pkl'
 
-dwl=pd.read_pickle(fwl)
 dhh=pd.read_pickle(fhh)
-ddiff = dwl-dhh
-
 df_meta=pd.read_pickle(meta)
 df_meta.set_index('stationid',inplace=True)
 
@@ -55,13 +51,13 @@ stations = df_meta.index.to_list()
 #############
 ## Specify the lowpass filter
 #############
-# This is for 6 min data
+# This is for hourly data
 
-fs = 1/10/360 # Convert samples to Hz: 1pt/6min-bl * 1 6min-bl/360 sec -> 1/10/360 pt/sec (Hz)
+fs = 1/3600 # Convert samples to Hz: 1pt/6min-bl * 1 6min-bl/360 sec -> 1/10/360 pt/sec (Hz)
 nyquist = fs/2 # Standard shift: Hz
 #cutoff=0.005 # 10 measurements - seems pretty good
-cutoff=0.002
-print('cutoff= {} measurements'.format(1/cutoff*nyquist*10*360))
+cutoff=0.012
+print('cutoff= {} hours'.format(1/cutoff*nyquist*1*3600))q # 41.7 hours
 filterOrder=5
 b, a = signal.butter(filterOrder, cutoff, btype='lowpass') # Could use fs=None #low pass filter
 
@@ -71,10 +67,11 @@ b, a = signal.butter(filterOrder, cutoff, btype='lowpass') # Could use fs=None #
 sns.set(rc={'figure.figsize':(11, 4)}) # Setr gray background and white gird
 
 # Full pipeline testing
-#station='8410140'
-#station='8534720'
-#station='8658163'
-#station='8768094'
+#station=8410140
+#station=8534720
+#station=8658163
+#station=8768094
+#stations=[8534720]
 
 for station in stations:
     dhh_test = dhh[station] # Make it as series
