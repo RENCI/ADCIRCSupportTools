@@ -1,0 +1,21 @@
+version: "3"
+services:
+  apsvis-app:
+    build:
+      context: ./
+
+    container_name: adcirc_supp
+
+    volumes:
+      - /d/dvols/apzviz:/data
+
+    entrypoint:
+      - /bin/bash
+      - -c
+      - "python execute_APSVIZ_pipeline.py --urljson data1.json"
+
+    image: adcirc_supp:latest
+
+    stdin_open: true
+    tty: true
+

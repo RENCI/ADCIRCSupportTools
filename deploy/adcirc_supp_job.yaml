@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: adcirc-supp
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      volumes:
+      - name: adcirc-supp-data-volume
+        persistentVolumeClaim:
+          claimName: powen-pvc
+      containers:
+      - name: adcirc-supp
+        image: phillipsowen/adcirc_supp
+        command: ["python", "execute_APSVIZ_pipeline.py", "--urljson", "data1.json"]
+        volumeMounts:
+        - name: adcirc-supp-data-volume
+          mountPath: /data
+      restartPolicy: Never
+
