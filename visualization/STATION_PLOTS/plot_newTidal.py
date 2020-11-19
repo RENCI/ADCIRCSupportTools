@@ -31,6 +31,7 @@ def makePlot(start, end, station, stationName, df):
     plt.yticks(fontsize=10)
     plt.tight_layout()
     plt.savefig(str(station)+'_detided.png')
+    plt.close()
     #plt.show()
 
 
@@ -48,7 +49,8 @@ ddiff = dwl-dhh
 df_meta=pd.read_pickle(meta)
 df_meta.set_index('stationid',inplace=True)
 
-stations=[8534720, 8658163, 8768094]
+stations = df_meta.index.to_list()
+#stations=[8534720, 8658163, 8768094]
 
 #############
 ## Specify the lowpass filter
