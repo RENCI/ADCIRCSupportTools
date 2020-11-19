@@ -30,9 +30,9 @@ def makePlot(start, end, station, stationName, df):
     plt.xticks(rotation=0, fontsize=10)
     plt.yticks(fontsize=10)
     plt.tight_layout()
-    #plt.savefig(str(station)+'_detided.png')
-    #plt.close()
-    plt.show()
+    plt.savefig(str(station)+'_detided.png')
+    plt.close()
+    #plt.show()
 
 
 # Get the basic data 
@@ -56,8 +56,8 @@ stations = df_meta.index.to_list()
 fs = 1/3600 # Convert samples to Hz: 1pt/6min-bl * 1 6min-bl/360 sec -> 1/10/360 pt/sec (Hz)
 nyquist = fs/2 # Standard shift: Hz
 #cutoff=0.005 # 10 measurements - seems pretty good
-cutoff=0.012
-print('cutoff= {} hours'.format(1/cutoff*nyquist*1*3600))q # 41.7 hours
+cutoff=0.012 # Keep everything less than a 41.7 hours cutoff
+print('cutoff= {} hours'.format(1/cutoff*nyquist*1*3600)) # 41.7 hours
 filterOrder=5
 b, a = signal.butter(filterOrder, cutoff, btype='lowpass') # Could use fs=None #low pass filter
 
