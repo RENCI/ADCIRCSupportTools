@@ -65,10 +65,10 @@ datums = ('CRD', 'IGLD', 'LWD', 'MHHW', 'MTL', 'MSL', 'MLW', 'MLLW', 'NAVD', 'ST
 #            'high_low', 'daily_mean', 'monthly_mean', 'one_minute_water_level', 'predictions',
 #            'datums', 'currents')
 
-products={ 'water_level':'water_level', 
-           'predictions': 'predicted_wl',
+products={ 'water_level':'water_level',  # 6 min
+           'predictions': 'predicted_wl', # 6 min
            'air_pressure': 'air_press',
-           'hourly_height':'water_level',
+           'hourly_height':'water_level', # hourly
            'wind':'spd'}
 
 timezones = ('gmt', 'lst', 'lst_ldt')
@@ -386,7 +386,7 @@ class GetObsStations(object):
         """
         return self.detailedpkl, self.smoothpkl, self.metapkl, self.urlcsv, self.excludecsv, self.metajsonname, self.detailedjsonname, self.smoothedjsonname
 
-# On input, the caller should have self.removeMissingProducts() already
+# On input, the caller should self.removeMissingProducts() 
 # As this method will interpolate through the nans
 #
     def fetchStationSmoothedHourlyProductFromIDlist(self, timein, timeout, percentage_cutoff=None):
@@ -416,6 +416,57 @@ class GetObsStations(object):
         df_det_filter, newstationlist, excludelist = self.removeMissingProducts(df_detailed, count_nan, percentage_cutoff=percentage_cutoff) # If none then read from yaml;
         #df_smoothed = self.smoothVectorProducts( df_detailed, window=11, degree=3 )
         df_smoothed = self.smoothRollingAveProducts( df_det_filter, window=11)
+        df_smoothed = df_smoothed.loc[df_smoothed.index.strftime('%M:%S')=='00:00'] # Is this sufficient ?
+        total_elems = len(df_smoothed)
+        num_nans = total_elems - df_smoothed.count()
+        count_nan = num_nans.to_frame()
+        count_nan['Number'] = total_elems
+        count_nan['PercentNans']=num_nans*100.0/total_elems
+        count_nan.columns=['NumNans','Total','Percent']
+        count_nan.index.name='stationid'
+        utilities.log.info("Smoothed hourly data product: Number of times {}. Num Stations {}".format(df_smoothed.shape[0],df_smoothed.shape[1]))
+        utilities.log.info("Writing PKL for Smoothed hourly data")
+        self.smoothpkl = utilities.writePickle(df_smoothed, rootdir=self.rootdir,subdir=self.iosubdir,fileroot='obs_wl_smoothed',iometadata=self.iometadata)
+        self.excludecsv = utilities.writeCsv(self.excludeStationID, rootdir=self.rootdir,subdir=self.iosubdir,fileroot='obs_wl_exclude',iometadata=self.iometadata)
+        self.stationlist = newstationlist
+        self.smoothedjsonname = utilities.getSubdirectoryFileName(self.rootdir, self.iosubdir, 'obs_wl_smoothed'+self.iometadata+'.json')
+        dfjson=df_smoothed.copy()
+        dfjson.index = dfjson.index.strftime('%Y-%m-%d %H:%M:%S')
+        dfjson.to_json(self.smoothedjsonname)
+        return df_smoothed, count_nan, stationlist, excludelist
+
+    def fetchStationSmoothedLowpassHourlyProductFromIDlist(self, timein, timeout, percentage_cutoff=None):
+        """ 
+        Fetch the selected data product 
+        return all values within the provided range.
+        The time input to noaa_coops is at yyyymmdd while the user inputs a range in the format yyyy-mm-dd hh:mm
+        Get the detailed product levels then perform a smooth and then find which indexes to keep.
+        For remaining hourly data their will still be nans because of finite window widths. Simply replace with 
+        actual values from df_detailed
+        Smoothing itself can introduce nans to a timeseries. For example in a rolling average. Filtering 
+        on those nans is not performed. Rather, those nans are replaced with actual values from the
+        detailed_list data set.
+        Once smoothed, a lowpass filter is applied to the dense data set (detailed) remove tidal variations
+        Smooth using the same parameters are for the regular smoothing approach
+
+        Parameters:
+            timein, timeout: str or timestamp. Hourly range to fetch product levels.
+        Results:
+            dataframe: smoothed Time x station matrix in df format within the timein,timeout range. Some stations may
+            be excluded depending on user selection for missingness (EX_MULTIVALUE and EX_THRESH).
+            count_nan: dataframe of num nans, %nans, total vals for each station (Used for subsequent filtering).
+            stationlist: List (str) of current set of validated stationIDs (also updates class list).
+
+            Write out smoothed and lowpass hourly filtered data to disk
+            Write out exluded list of stations to disk
+        """
+        df_detailed, count_nan, stationlist, excludelist = self.fetchStationProductFromIDlist(timein, timeout)
+        df_det_filter, newstationlist, excludelist = self.removeMissingProducts(df_detailed, count_nan, percentage_cutoff=percentage_cutoff) # If none then read from yaml;
+        df_smoothed = self.smoothRollingAveProducts( df_det_filter, window=11)
+        # Now build a lowpass filter 
+
+
+
         df_smoothed = df_smoothed.loc[df_smoothed.index.strftime('%M:%S')=='00:00'] # Is this sufficient ?
         total_elems = len(df_smoothed)
         num_nans = total_elems - df_smoothed.count()
