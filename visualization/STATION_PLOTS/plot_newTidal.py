@@ -74,7 +74,7 @@ sns.set(rc={'figure.figsize':(11, 4)}) # Setr gray background and white gird
 #stations=[8534720]
 
 for station in stations:
-    dhh_test = dhh[station] # Make it as series
+    dhh_test = dhh[station].dropna() # Make it as series
     datalow = signal.filtfilt(b, a, dhh_test)    
     dhh_combined = dhh_test.reset_index()
     dhh_combined['LOWPASS']=list(datalow)
