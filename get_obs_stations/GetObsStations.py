@@ -293,13 +293,14 @@ class GetObsStations(object):
         df_stationData.to_json(self.metajsonname)
         return df_stationData, self.stationlist
 
-    def fetchStationProductFromIDlist(self, timein, timeout):
+    def fetchStationProductFromIDlist(self, timein, timeout, interval=None):
         """ 
         Fetch the selected data products. a timeseries of values for each stationID.  
         (for now this is only tested for water_level)
         return all values within (inclusive) the provided range.
         the time input to noaa_coops is HOURLY yyyymmdd while the user inputs a range in the format 
         yyyy-mm-dd hh:mm. So noaa-coops may return more than needed for the DA process.
+        Can pass an interval='h' to fetch hourly data for some products
 
         Parameters:
             timein, timeout: in str or timestanp format. The detailed time range (inclusive).
@@ -319,6 +320,7 @@ class GetObsStations(object):
         timein, timeout = convertToTimeStamp(timein, timeout)
         station_timein, station_timeout = processToStationFormat(timein, timeout)
         utilities.log.info("station IDlist timein {} and timeout {}".format(timein, timeout))
+        utilities.log.info('User supplied INTERVAL is {} unit'.format(interval))
         for station in self.stationlist:
             try:
                 stationdata = pd.DataFrame()
