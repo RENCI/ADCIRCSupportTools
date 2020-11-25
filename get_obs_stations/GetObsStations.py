@@ -330,6 +330,7 @@ class GetObsStations(object):
                                                 product=self.product,
                                                 datum=self.datum,
                                                 units=self.unit,
+                                                interval=interval,
                                                 time_zone=self.timezone)[self.productName].to_frame()
                 stationdata, multivalue = self.checkDuplicateTimeEntries(station, stationdata)
                 if self.ex_multivalue and multivalue:
