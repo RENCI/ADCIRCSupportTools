@@ -14,19 +14,28 @@ from utilities.utilities import utilities as utilities
 import matplotlib.pyplot as plt
 import seaborn as sns
 import matplotlib.dates as mdates
+import scipy
 from scipy import signal
 from scipy.signal import butter, lfilter, savgol_filter
 
+print('pandas Version={}'.format(pd.__version__))
+print('seaborn Version={}'.format(sns.__version__))
+print('scipy Version={}'.format(scipy.__version__))
+print('numpy Version={}'.format(np.__version__))
+
 def butter_lowpass_filter(df_data,filterOrder=10, numHours=200):
+    """
+    Note. Need to drop nans from the data set
+    """
     numHoursCutoff=numHours
     cutoff = 2/numHoursCutoff #Includes nyquist adjustment
     #ddata=df[station]
     ddata = df_data
-    print('cutoff={} Equiv number of hours is {}'.format(cutoff, 2/cutoff)) 
+    print('cutoff={} Equiv number of hours is {}'.format(cutoff, 2/cutoff))
     filterOrder=10
     print('filterOrder is {}'.format(filterOrder))
     sos = signal.butter(filterOrder, cutoff, 'lp', output='sos',analog=False)
-    datalow = signal.sosfilt(sos, ddata)
+    datalow = signal.sosfiltfilt(sos, ddata)
     #print('ddata {}'.format(ddata))
     #print('LP data {}'.format(datalow))
     return datalow
@@ -64,7 +73,7 @@ def makeLowpassPlot(start, end, filterOrder, lowpassAllstations):
         marker='x', markersize=2, linewidth=0.1,label='_'.join(['Lowpass',cutoff]))
     #
     ax.set_ylabel('WL (m) versus MSL')
-    ax.set_title(stationName+'. Polynoimial Order='+str(filterOrder), fontdict={'fontsize': 12, 'fontweight': 'medium'})
+    ax.set_title(stationName+'. Polynomial Order='+str(filterOrder), fontdict={'fontsize': 12, 'fontweight': 'medium'})
     ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=None))
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'));
     ax.legend(fontsize=10);
@@ -116,6 +125,7 @@ def makeLPPlot(start, end, station, stationName, df1, df2):
 
 timein = '2018-01-01 00:00'
 timeout = '2018-12-31 18:00'
+#timeout = '2018-01-31 18:00'
 iometadata = ('_'+timein+'_'+timeout).replace(' ','_')
 
 config = utilities.load_config() # Defaults to main.yml as sapecified in the config
@@ -189,11 +199,16 @@ for station in newstationlistOBS:
     df_lowpass=pd.DataFrame()
     for cutoffflank,cutoff in zip(cutoffs,hourly_cutoffs):
         print('Process cutoff {} for station {}'.format(cutoff,station))
-        df_lowpass[str(cutoff)]=butter_lowpass_filter(df_hourlyOBS[station],filterOrder=10, numHours=cutoffflank)
-    df_lowpass.index = df_hourlyOBS[station].index
+        df_temp = df_hourlyOBS[station].dropna()
+        df_lowpass[str(cutoff)]=butter_lowpass_filter(df_temp,filterOrder=10, numHours=cutoffflank)
+    df_lowpass.index = df_temp.index
     lowpassdata['LP']=df_lowpass
     lowpassAllstations[station]=lowpassdata
     lowpassAllstations['station']=station
     lowpassAllstations['stationName']=stationName
     # For each station plot. OBS,explicit detided, cutoffs
     makeLowpassPlot(timein, timeout, filterOrder, lowpassAllstations)
+
+# Perform a sweep of filterOrder to test sensitivity. Keep cutoff at 48 hours.
+
+
