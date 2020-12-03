@@ -39,33 +39,10 @@ def butter_lowpass_filter(df_data,filterOrder=10, numHours=200):
     #print('LP data {}'.format(datalow))
     return datalow
 
-#
-# FFT lowpass provided via B.Blanton
-#
-#t = np.arange(500)  # Time in hours.
-#x = 2.5 * np.sin(2 * np.pi * t / 12.42)
-#x += 1.5 * np.sin(2 * np.pi * t / 12.0)
-#x += 0.3 * np.random.randn(len(t))
-#filtered = fft_lowpass(x, low=1/30, high=1/40)
-#fig, ax = plt.subplots()
-
 def fft_lowpass(signal, lowhrs):
     """
     Performs a low pass filer on the series.
     low and high specifies the boundary of the filter.
-    >>> from oceans.filters import fft_lowpass
-    >>> import matplotlib.pyplot as plt
-    >>> t = np.arange(500)  # Time in hours.
-    >>> x = 2.5 * np.sin(2 * np.pi * t / 12.42)
-    >>> x += 1.5 * np.sin(2 * np.pi * t / 12.0)
-    >>> x += 0.3 * np.random.randn(len(t))
-    >>> filtered = fft_lowpass(x, low=1/30, high=1/40)
-    >>> fig, ax = plt.subplots()
-    >>> l1, = ax.plot(t, x, label='original')
-    >>> l2, = ax.plot(t, filtered, label='filtered')
-    >>> legend = ax.legend()
-    NOTE for high freq we always take the highesyt possible
-    which is just the sampling freq
     """
     low = 1/lowhrs
     high = 1/signal.shape[0] # FFT method properly handles the nyquist reductions 
@@ -92,7 +69,6 @@ def fft_lowpass(signal, lowhrs):
     result = result * factor
     #Return reconstructed signal with freqs removed.
     return result, np.fft.irfft(result, len(signal))
-
 #
 # Various plating routines
 #
@@ -130,19 +106,69 @@ def makeLowpassPlot(start, end, lowpassAllstations, filterOrder='', metadata=['l
         ax.set_title(stationName+'. FFT', fontdict={'fontsize': 12, 'fontweight': 'medium'})
     else:
         ax.set_title(stationName+'. Polynomial Order='+str(filterOrder), fontdict={'fontsize': 12, 'fontweight': 'medium'})
-    #ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=None))
-    ax.xaxis.set_major_locator(mdates.HourLocator(interval=12))
-    #ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
-    ax.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d-%H'))
-    ax.legend(fontsize=10);
-    #plt.xticks(rotation=0, fontsize=10)
-    plt.xticks(rotation=30, fontsize=10)
+    ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=None))
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+    plt.xticks(rotation=0, fontsize=10)
+    #ax.xaxis.set_major_locator(mdates.HourLocator(interval=12))
+    #ax.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d-%H'))
+    #plt.xticks(rotation=30, fontsize=10)
+    #
+    ax.legend(fontsize=10)
     plt.yticks(fontsize=10)
     plt.tight_layout()
     fileMetaname = '_'.join([str(station),nameMetadata])
     fileName = fileMetaname+'.png' if filterOrder=='' else fileMetaname+'_'+str(filterOrder)+'.png'
-    plt.savefig(fileName)
-    #plt.show()
+    #plt.savefig(fileName)
+    plt.show()
+
+def makezscorePlot(start, end, lowpassAllstations, filterOrder='', metadata=['lowpass','LP']):
+    """
+    An entry the dict (lowpassAllStations) carries all ther OBS,DIFF,LP data sets
+    Plot the OBS and Diff data in a prominant way. Then layer on the cutoffs
+    """
+    colMetadata = metadata[1]
+    nameMetadata = metadata[0]
+    plotterDownmove=0.
+    station=lowpassAllstations['station']
+    stationName=lowpassAllstations['stationName']
+    print('station {} Name {}'.format(station, stationName))
+    #
+    plt.close()
+    sns.set(rc={'figure.figsize':(11, 4)}) # Set gray background and white gird
+    fig, ax = plt.subplots()
+    # OBS and DIFF
+    #ax.plot(lowpassAllstations[station]['OBS'][start:end],
+    #marker='.', markersize=1, linewidth=0.1,color='gray',label='Obs Hourly')
+    #ax.plot(lowpassAllstations[station]['DETIDE'][start:end],
+    #color='black', marker='o',markersize=2, linewidth=.5, linestyle='-', label='Detided Hourly')
+    # Now start with the lowpass filters
+    df_lp = lowpassAllstations[station][colMetadata]
+    cutoffs=df_lp.columns.to_list()
+    shiftDown=0.0
+    for cutoff in cutoffs:
+        shiftDown+=plotterDownmove
+        ax.plot(df_lp[cutoff][start:end]-shiftDown,
+        marker='x', markersize=2, linewidth=0.1,label='_'.join([nameMetadata,cutoff]))
+    #
+    ax.set_ylabel('WL (m) versus MSL')
+    if filterOrder=='':
+        ax.set_title(stationName+'. Zscore', fontdict={'fontsize': 12, 'fontweight': 'medium'})
+    else:
+        ax.set_title(stationName+'. Polynomial Order='+str(filterOrder), fontdict={'fontsize': 12, 'fontweight': 'medium'})
+    ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=None))
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+    plt.xticks(rotation=0, fontsize=10)
+    #ax.xaxis.set_major_locator(mdates.HourLocator(interval=12))
+    #ax.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d-%H'))
+    #plt.xticks(rotation=30, fontsize=10)
+    #
+    ax.legend(fontsize=10)
+    plt.yticks(fontsize=10)
+    plt.tight_layout()
+    fileMetaname = '_'.join([str(station),nameMetadata])
+    fileName = fileMetaname+'.png' if filterOrder=='' else fileMetaname+'_'+str(filterOrder)+'.png'
+    #plt.savefig(fileName)
+    plt.show()
 
 def makePlot(start, end, station, stationName, df1, df2, df3):
     plt.close()
@@ -162,8 +188,8 @@ def makePlot(start, end, station, stationName, df1, df2, df3):
     plt.xticks(rotation=0, fontsize=10)
     plt.yticks(fontsize=10)
     plt.tight_layout()
-    plt.savefig(str(station)+'_detided.png')
-    #plt.show()
+    #plt.savefig(str(station)+'_detided.png')
+    plt.show()
 
 def makeLowpassFOPlot(start, end, cutoff, lowpassAllstations):
     """
@@ -243,8 +269,8 @@ def makeLowpassHist(start, end, lowpassAllstations, filterOrder='', metadata=['l
     plt.tight_layout()
     fileMetaname = '_'.join([str(station),nameMetadata])
     fileName = fileMetaname+'.png' if filterOrder=='' else fileMetaname+'_'+str(filterOrder)+'.png'
-    plt.savefig(fileName)
-    #plt.show()
+    #plt.savefig(fileName)
+    plt.show()
 ##
 ## Do some work
 ##
@@ -252,29 +278,28 @@ def makeLowpassHist(start, end, lowpassAllstations, filterOrder='', metadata=['l
 timein = '2018-01-01 00:00'
 timeout = '2018-12-31 18:00'
 #timeout = '2018-01-31 18:00'
-
-timein = '2018-09-01 00:00'
-timeout = '2018-10-01 18:00'
-iometadata = ('_'+timein+'_'+timeout).replace(' ','_')
-
+#timein = '2018-09-01 00:00'
+#timeout = '2018-10-01 18:00'
 plot_timein=timein
 plot_timeout=timeout
+
+iometadata = ('_'+timein+'_'+timeout).replace(' ','_')
 
 config = utilities.load_config() # Defaults to main.yml as sapecified in the config
 rootdir=utilities.fetchBasedir(config['DEFAULT']['RDIR'], basedirExtra='StationTest')
 
-# Get HOUR  data. 3 stations are assembled in the obs.yml
+# Get HOUR data. 3 stations are assembled in the obs.yml
 
 #yamlname=os.path.join(os.path.dirname(__file__), '../config', 'obs.yml')
 yamlname='/home/jtilson/ADCIRCSupportTools/TideSIMULATION/obs.yml'
 #yamlname='/home/jtilson/ADCIRCSupportTools/config/obs.yml'
 
 rpl = GetObsStations(product='hourly_height', rootdir=rootdir, yamlname=yamlname, metadata=iometadata)
-stations = rpl.stationListFromYaml()
+###stations = rpl.stationListFromYaml()
+###df_stationData, stationNodelist = rpl.fetchStationMetaDataFromIDs(stations)
+df_stationNodelist = rpl.fetchStationNodeList()
+stations = df_stationNodelist['stationid'].to_list()
 df_stationData, stationNodelist = rpl.fetchStationMetaDataFromIDs(stations)
-##df_stationNodelist = rpl.fetchStationNodeList()
-##stations = df_stationNodelist['stationid'].to_list()
-##df_stationData, stationNodelist = rpl.fetchStationMetaDataFromIDs(stations)
 df_hourlyOBS, count_nanOBS, newstationlistOBS, excludelistOBS = rpl.fetchStationProductFromIDlist(timein, timeout,interval='h')
 retained_times = df_hourlyOBS.index.to_list() # some may have gotten wacked during the smoothing`
 #listSuspectStations = rpl.writeURLsForStationPlotting(newstationlistOBS, timein, timeout)
@@ -283,43 +308,84 @@ retained_times = df_hourlyOBS.index.to_list() # some may have gotten wacked duri
 
 # Get PRE data. 3 stations are assembled in the obs.yml
 rpl2 = GetObsStations(product='predictions', rootdir=rootdir, yamlname=yamlname, metadata=iometadata)
-stations = rpl2.stationListFromYaml()
-df_stationData, stationNodelist = rpl2.fetchStationMetaDataFromIDs(stations)
-##df_stationNodelist = rpl2.fetchStationNodeList()
-##stations = df_stationNodelist['stationid'].to_list()
+##stations = rpl2.stationListFromYaml()
 ##df_stationData, stationNodelist = rpl2.fetchStationMetaDataFromIDs(stations)
+df_stationNodelist = rpl2.fetchStationNodeList()
+stations = df_stationNodelist['stationid'].to_list()
+df_stationData, stationNodelist = rpl2.fetchStationMetaDataFromIDs(stations)
 df_hourlyPRE, count_nanPRE, newstationlistPRE, excludelistPRE = rpl2.fetchStationProductFromIDlist(timein, timeout,interval='h')
 retained_times = df_hourlyPRE.index.to_list() # some may have gotten wacked during the smoothing`
 #listSuspectStationsPRE = rpl2.writeURLsForStationPlotting(newstationlistPRE, timein, timeout)
 #detailedpklPRE, smoothedpklPRE, metapklPRE, urlcsvPRE, exccsvPRE, metaJPRE, detailedJPRE, smoothedJPRE = rpl2.fetchOutputNames()
-# Get the difference
-print('Compute diffs')
-df_diff = df_hourlyOBS-df_hourlyPRE
 
-# Get meta data
 df_stationData.set_index('stationid',inplace=True)
-
 intersectedStations = list(set(newstationlistPRE) & set(newstationlistOBS))
 print('Number of intersected stations {}'.format(len(intersectedStations)))
 
-#for station in intersectedStations:
-#    print('Plot station data {}'.format(station))
-#    stationName = df_stationData.loc[int(station)]['stationname']
-#    makePlot(timein, timeout, station, stationName, df_hourlyOBS[station], df_hourlyPRE[station], df_diff[station])
+###################################################################################################
+# Get the difference. THis will be considered "truth" in finding peaks that are caused by hurricanes
+print('Compute diffs')
+df_diff = df_hourlyOBS-df_hourlyPRE
 
-#plt.close()
+###################################################################################################
+# Now look at lowpass data and see if they can find the same peaks?
+
+for station in intersectedStations:
+    print('Plot station data {}'.format(station))
+    stationName = df_stationData.loc[int(station)]['stationname']
+    makePlot(timein, timeout, station, stationName, df_hourlyOBS[station], df_hourlyPRE[station], df_diff[station])
+
+plt.close()
 #df_diff.hist()
-#plt.show()
+df_diff.plot(kind='hist',alpha=0.5,bins=40)
+plt.show()
 
-# Perform a sweep of cutoffs (in hours) to test sensitivity to that
-# Nominally 1hr,24hr,48hr,1wk, 1month] plus 4 extra hours
+###################################################################################################
+# Now for each stations find peaks are outliers (t-test) for standard alpha = .05 and the time at the maximum value
 
-upshift=4
-#hourly_cutoffs=[12,24,48,168,720]
-hourly_cutoffs=[12,24,48,168]
+from scipy import stats
+thresh = 3 # 3 stds from the mean
+df_zscore=pd.DataFrame()
+station=8658163
+df_temp = df_diff[station].dropna()
+# Computing along a specified axis, using n-1 degrees of freedom (ddof=1) to calculate the standard deviation:
+df_zscore['_'.join([str(station),'Zscore'])]=stats.zscore(df_temp,ddof=1)
+df_zscore.index = df_temp.index
+
+intersectedStations=[8534720, 8658163, 8768094]
+
+threshlist=[3]
+#thresh = 3
+zscoreAllstations=dict()
+for station in intersectedStations:
+    print('Process station {}'.format(station))
+    stationName = df_stationData.loc[int(station)]['stationname']
+    zscoredata = dict() # Carry all stations in the order processed buty first add the OBS and detided
+    #zscoredata['OBS']=df_hourlyOBS[station] # Data to interpret
+    #zscoredata['DETIDE']=df_diff[station] # Actual detided data set
+    df_zscore=pd.DataFrame()
+    for thresh in threshlist:
+        print('Process threshold {} for station {}'.format(thresh,station))
+        df_temp = df_hourlyOBS[station].dropna()
+        df_zscore[str(thresh)] = stats.zscore(df_temp,ddof=1)
+    df_zscore.index = df_temp.index
+    zscoredata['ZSCORE']=df_zscore[abs(df_zscore> 3)].dropna()
+    zscoreAllstations[station]=zscoredata
+    zscoreAllstations['station']=station
+    zscoreAllstations['stationName']=stationName
+    # For each station plot. OBS,explicit detided, cutoffs
+    makezscorePlot(plot_timein, plot_timeout, zscoreAllstations, filterOrder='', metadata=['zscore','ZSCORE'])
+    #makeLowpassHist(plot_timein, plot_timeout, lowpassAllstations, filterOrder=filterOrder)
+
+# Try to merge the stations into a single data frame
+
+
+# Potentially use a  sweep of cutoffs (in hours) to test sensitivity to that
+# Nominally 1hr,24hr,48hr,1wk, 1month] plus 1 extra hours
+
+upshift=1
+hourly_cutoffs=[24]
 cutoffs = [x + upshift for x in hourly_cutoffs] 
-# Do we need to carry colors ?
-# Create a station df with columns of cutoffs
 
 filterOrder=10
 lowpassAllstations=dict()
