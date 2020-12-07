@@ -93,6 +93,7 @@ def exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdi
     retained_times = df_pruned.index.to_list() # some may have gotten wacked during the smoothing`
     listSuspectStations = rpl.writeURLsForStationPlotting(newstationlist, timein, timeout)
     detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ = rpl.fetchOutputNames()
+    utilities.log.info('Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {} MetaJ {} detailedJ {}, smoothedJ {}'.format(detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv,metaJ, detailedJ, smoothedJ ))
     return detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ 
 
 def exec_error(obsf, adcf, meta, err_yamlname, rootdir, iometadata, iosubdir): 
