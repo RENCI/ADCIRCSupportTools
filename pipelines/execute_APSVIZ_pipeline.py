@@ -91,8 +91,16 @@ def exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdi
     df_stationData, stationNodelist = rpl.fetchStationMetaDataFromIDs(stations)
     df_pruned, count_nan, newstationlist, excludelist = rpl.fetchStationSmoothedHourlyProductFromIDlist(timein, timeout)
     retained_times = df_pruned.index.to_list() # some may have gotten wacked during the smoothing`
-    listSuspectStations = rpl.writeURLsForStationPlotting(newstationlist, timein, timeout)
-    detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ = rpl.fetchOutputNames()
+    dummy = rpl.buildURLsForStationPlotting(newstationlist, timein, timeout) # Could also use newstationlist+excludelist
+    outputdict = rpl.writeFilesToDisk()
+    detailedpkl=outputdict['PKLdetailed']
+    detailedJ=outputdict['JSONdetailed']
+    smoothedpkl=outputdict['PKLsmoothed']
+    smoothedJ=outputdict['JSONsmoothed']
+    metapkl=outputdict['PKLmeta']
+    metaJ=outputdict['JSONmeta']
+    urlcsv=outputdict['CSVurl']
+    exccsv=outputdict['CSVexclude']
     return detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ 
 
 def exec_error(obsf, adcf, meta, err_yamlname, rootdir, iometadata, iosubdir): 
