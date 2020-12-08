@@ -225,14 +225,7 @@ def main(args):
     outfiles['ERR_ADCOBSERR_MERGED_CSV']=mergedf # This is useful for visualization insets of station bahavior
     utilities.log.info('Completed ERR')
 
-    # 5) Get actual ASGS Forecast data
-    # Not any need to specify a diff yml since we pass in the url directly
-    # This will be appended to the DIFF plots in the final PNGs
-
-    ADCfileFore, ADCjsonFore, timestart, timeend = exec_adcirc_forecast(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids)
-    utilities.log.info('Completed ADCIRC Forecast Read')
-    outfiles['ADCIRC_WL_FORECAST_PKL']=ADCfileFore
-    outfiles['ADCIRC_WL_FORECAST_JSON']=ADCjsonFore
+    # 5) SKIP for this data set.  Get actual ASGS Forecast data
 
     # 6) Build a series of station-PNGs.
     # Build input dict for the plotting
