@@ -1,0 +1,9 @@
+2020-12-09 08:42:13,102 : INFO : main : differenceTwoReanalyses : adda_services : Reanalysis URL provided {'reanalysis': 'http://tds.renci.org:8080/thredds//dodsC/Reanalysis/ADCIRC/hsofs/fort.63.nc'} 
+2020-12-09 08:42:13,102 : INFO : main : differenceTwoReanalyses : adda_services : CFSv2 URL provided {'reanalysis': 'http://tds.renci.org:8080/thredds//dodsC/Reanalysis/ADCIRC/hsofs/fort.63.nc'} 
+2020-12-09 08:42:13,105 : INFO : main : differenceTwoReanalyses : adda_services : Specified rootdir underwhich all files wil; be stored. Rootdir is ./TEST/ 
+2020-12-09 08:42:13,105 : INFO : main : differenceTwoReanalyses : adda_services : Fetch OBS station data 
+2020-12-09 08:42:13,130 : INFO : main : differenceTwoReanalyses : adda_services : Fetch ADCIRC 
+2020-12-09 08:42:13,141 : INFO : exec_adcirc_url : differenceTwoReanalyses : adda_services : List of available urls input specification: 
+2020-12-09 08:42:13,146 : INFO : get_water_levels63 : GetADCIRC : adda_services : reanalysis :  
+2020-12-09 08:42:13,146 : INFO : get_water_levels63 : GetADCIRC : adda_services :    Loading ...  
+2020-12-09 08:42:13,146 : DEBUG : get_water_levels63 : GetADCIRC : adda_services : http://tds.renci.org:8080/thredds//dodsC/Reanalysis/ADCIRC/hsofs/fort.63.nc 
