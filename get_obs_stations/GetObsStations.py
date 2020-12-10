@@ -58,7 +58,9 @@ import webbrowser
 import urllib.parse
 from utilities.utilities import utilities
 import noaa_coops as coops
-from requests.exceptions import ConnectionError,Timeout,HTTPError
+from requests.exceptions import ConnectionError
+from requests.exceptions import Timeout
+from requests.exceptions import HTTPError
 
 # globals: Note for now we will only tested MSL .
 # https://tidesandcurrents.noaa.gov/api/#products
@@ -167,7 +169,7 @@ class GetObsStations(object):
         self.iometadata = metadata 
         self.rootdir = rootdir
         self.iosubdir = iosubdir
-        if self.rootdir == None:
+        if self.rootdir is None:
             utilities.log.error("No rootdir specified on init {}".format(self.rootdir))
             sys.exit(1)
         self.config = utilities.load_config(yamlname) 
@@ -178,6 +180,8 @@ class GetObsStations(object):
         if not self.ex_coops_nans:
             utilities.log.error('EX_COOPS must be True for all nontrivial work')
         utilities.log.info('PRODUCT to fetch is {}'.format(self.product))
+        self.detailedjson='Empty'
+
         self.files = dict() # Collects the current set of files that could be (optionally) stored to disk.
 
     def writeFilesToDisk(self):
@@ -443,7 +447,6 @@ class GetObsStations(object):
                 print(message)
                 exclude_stations.append(station)
         if len(exclude_stations) > 0:
-            newlist = self.stationlist
             # print('Removing stations from list')
             utilities.log.info('Removing stations from stationlist: Number to remove is {}'.format(len(exclude_stations)))
             temp_excludeRepsStationID = pd.DataFrame(exclude_stations).set_index(0)
@@ -518,7 +521,8 @@ class GetObsStations(object):
         window=11
         utilities.log.info('Smoothing will be centered windows of width {}'.format(window))
         df_detailed, count_nan, stationlist, excludelist = self.fetchStationProductFromIDlist(timein, timeout, interval=interval)
-        df_det_filter, newstationlist, excludelist = self.removeMissingProducts(df_detailed, count_nan, percentage_cutoff=percentage_cutoff) # If none then read from yaml;
+        df_det_filter, newstationlist, excludelist = self.removeMissingProducts(df_detailed, count_nan, 
+            percentage_cutoff=percentage_cutoff) # If none then read from yaml;
         #df_smoothed = self.smoothVectorProducts( df_detailed, window=11, degree=3 )
         df_smoothed = self.smoothRollingAveProducts( df_det_filter, window=window)
         df_smoothed = df_smoothed.loc[df_smoothed.index.strftime('%M:%S')=='00:00'] # Is this sufficient ?
@@ -591,7 +595,8 @@ class GetObsStations(object):
         dfjson.to_json(self.smoothedjsonname)
         return df_smoothed, count_nan, stationlist, excludelist
 
-    def smoothVectorProducts( self,  df_in, window=21, degree=3 ):
+    @staticmethod
+    def smoothVectorProducts(df_in, window=21, degree=3 ):
         """
         Not used for now.
         Apply a Savitzky-Golay filter.
@@ -606,7 +611,8 @@ class GetObsStations(object):
         df_smooth = savgol_filter(df_in, window, degree)
         return df_smooth
 
-    def smoothRollingAveProducts( self, df_in, window=11):
+    @staticmethod
+    def smoothRollingAveProducts(df_in, window=11):
         """
         CENTERED window rolling average.
 
@@ -651,7 +657,7 @@ class GetObsStations(object):
             stationlist: list (str) of stationIDs.
         """
         # could be none
-        if percentage_cutoff == None:
+        if percentage_cutoff is None:
             percentage_cutoff = self.nanthresh # Grabs from config yaml
         if not self.ex_thresh:
             utilities.log.info('removeMissingness called by EX_THRESH set to False: Ignore')
@@ -681,22 +687,16 @@ class GetObsStations(object):
         Results:
             URLs: written to file: obs_wl_urls_iometadata.cvs' in rootdir/obspkl/.
         """
-        lens = len(liststations)
         station_timein = pd.Timestamp(timein).strftime('%Y%m%d')
         station_timeout = pd.Timestamp(timeout).strftime('%Y%m%d')
         d = []
         utilities.log.debug('Write URLs timein {} timeout {} station_timein {} station_timeout {}'.format(timein,
             timeout, station_timein, station_timeout))
         for station in liststations:
-            data = {}
-            data['id']=str(station)
-            data['units']=self.unit
-            data['bdate']=station_timein
-            data['edate']=station_timeout
-            data['timezone']=self.timezone
-            data['datum']=self.datum
-            data['interval']=6
-            data['action']=' '
+            data = {'id': str(station), 'units': self.unit,
+                    'bdate': station_timein, 'edate': station_timeout,
+                    'timezone': self.timezone, 'datum': self.datum,
+                    'interval': 6 ,'action': ' '}
             url_values=urllib.parse.urlencode(data)
             url = 'https://tidesandcurrents.noaa.gov/waterlevels.html'
             full_url = url +'?' +url_values
@@ -720,18 +720,17 @@ class GetObsStations(object):
         metadata = self.iometadata
         rootdir=self.rootdir
     
-        rpl = GetObsStations(rootdir=rootdir, yamlname=os.path.join(os.path.dirname(__file__), '../config', 'obs.yml'), metadata=metadata) 
-        df_stationNodelist = rpl.fetchStationNodeList() 
+        ##rpl = GetObsStations(rootdir=rootdir, yamlname=os.path.join(os.path.dirname(__file__), '../config', 'obs.yml'), metadata=metadata) 
+        df_stationNodelist = self.fetchStationNodeList() 
         stationNodelist = df_stationNodelist['stationid'].to_list()
         #Fetch metadata abnd remove stations from the list that did not exists in coops
-        df_stationData, stationNodelist = rpl.fetchStationMetaDataFromIDs(stationNodelist)
-    
+        df_stationData, stationNodelist = self.fetchStationMetaDataFromIDs(stationNodelist)
         # Fetch the smoothed hourly data    
-        df_pruned, count_nan, newstationlist, excludelist = rpl.fetchStationSmoothedHourlyProductFromIDlist(timein, timeout)
+        df_pruned, count_nan, newstationlist, excludelist = self.fetchStationSmoothedHourlyProductFromIDlist(timein, timeout)
         retained_times = df_pruned.index.to_list() # some may have gotten wacked during the smoothing`
         # For now these two functions MUST be performed and in this order
-        dummy = rpl.buildURLsForStationPlotting(newstationlist, timein, timeout)
-        outputdict = rpl.writeFilesToDisk()
+        dummy = self.buildURLsForStationPlotting(newstationlist, timein, timeout)
+        outputdict = self.writeFilesToDisk()
         detailedpkl=outputdict['PKLdetailed']
         detailedJ=outputdict['JSONdetailed']
         smoothedpkl=outputdict['PKLsmoothed']
@@ -744,7 +743,7 @@ class GetObsStations(object):
         utilities.log.info('Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {} META Json {}, Detailed Json {}, Smoothed Json {}'.format(detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ))
         return detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ
 
-def executeBasicPipeline(rootdir, timein, timeout, metadata=''):
+def TESTexecuteBasicPipeline(rootdir, timein, timeout, metadata=''):
     """
     Combine basic steps into a single call"
     """
@@ -780,9 +779,8 @@ def executeBasicPipeline(rootdir, timein, timeout, metadata=''):
     metaJ=outputdict['JSONmeta']
     urlcsv=outputdict['CSVurl']
     exccsv=outputdict['CSVexclude']
-
 # Dump some information
-    utilities.log.info('Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {} META Json {}, Detailed Json {}, Smoothed Json {}'.format(detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ))
+    utilities.log.info('Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {} META Json {}, Detailed Json {},Smoothed Json {}'.format(detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ)) 
     print('Finished with OBS pipeline')
     return detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ
 
@@ -793,16 +791,18 @@ def main(args):
     Some extra steps are included (such as adding/removing stations
     to demonstrate their use
     """
+    from get_obs_stations.GetObsStations import GetObsStations
+
     utilities.log.info("ProductLevel Working in {}.".format(os.getcwd()))
     timein = pd.Timestamp(args.timein)
     timeout = pd.Timestamp(args.timeout)
-
     config = utilities.load_config() # Defaults to main.yml as sapecified in the config
     rootdir=utilities.fetchBasedir(config['DEFAULT']['RDIR'], basedirExtra='StationTest')
     # NOTE: we add a presumtive delimited to our metadata. That way we can send a blank
     iometadata = '_'+timein.strftime('%Y%m%d%H%M')+'_'+timeout.strftime('%Y%m%d%H%M')
     iometadata=''
-    detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metajson,detailedjson,smoothedjson = executeBasicPipeline(rootdir, timein, timeout, metadata=iometadata)
+    rpl = GetObsStations(rootdir=rootdir, yamlname=os.path.join(os.path.dirname(__file__), '../config', 'obs.yml'), metadata=iometadata)
+    detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ = rpl.executeBasicPipeline(timein, timeout)
     utilities.log.info('Finished')
 
 if __name__ == '__main__':
