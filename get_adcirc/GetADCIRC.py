@@ -1,22 +1,18 @@
 #!/usr/bin/env python
 
-##
-## Bolt in the code for choosing directories setting subdir to ''
-## To mimic existing behavior
-## Folded get_water_levels63 and 61 into the class
-##
+#
+# Bolt in the code for choosing directories setting subdir to ''
+# To mimic existing behavior
+# Folded get_water_levels63 and 61 into the class
+#
 
 import os
 import datetime as dt
 from datetime import timedelta
-from datetime import datetime
 import netCDF4 as nc4
 import numpy as np
 import pandas as pd
 import xarray as xr
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-
 from utilities.utilities import utilities
 from utilities import CurrentDateCycle as cdc
 from siphon.catalog import TDSCatalog
@@ -209,7 +205,6 @@ class Adcirc:
     def get_grid_coords(self):
         """
         Gets the lon/lats of the ADCIRC grid
-        :param url: THREDDS url pointing to an ADCIRC grid
         :return: gridx, gridy as attributes to the class instance
         """
         firsturl = first_true(self.urls.values())
@@ -282,7 +277,6 @@ def get_water_levels63(urls, nodes, stationids):
     df = pd.DataFrame(columns=stationids)
     initialtime = None
     finaltime = None # Update class times to reflect actual data set fetched
-
     for datecyc, url in urls.items():
         utilities.log.info("{} : ".format(datecyc))
         if url is None:
@@ -291,7 +285,6 @@ def get_water_levels63(urls, nodes, stationids):
             utilities.log.info("   Loading ... ")
             utilities.log.debug(url)
             nc = nc4.Dataset(url)
-
             # we need to test access to the netCDF variables, due to infrequent issues with
             # netCDF files written with v1.8 of HDF5.
 
@@ -386,8 +379,6 @@ def first_true(iterable, default=False, pred=None):
     first_true([a,b], x, f) --> a if f(a) else b if f(b) else x
     """
     return next(filter(pred, iterable), default)
-    parser.add_argument('--timein', default="'2020-08-01 12:00'", help='Timein string', type=str)
-
 
 
 if __name__ == '__main__':
