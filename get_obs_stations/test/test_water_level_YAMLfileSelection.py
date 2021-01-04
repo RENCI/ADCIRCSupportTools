@@ -9,8 +9,8 @@ import pandas as pd
 from get_obs_stations.GetObsStations import GetObsStations
 from utilities.utilities import utilities as utilities
 
-timein = '2020-01-01 00:00'
-timeout = '2020-01-10 00:06'
+#timein = '2020-01-01 00:00'
+#timeout = '2020-01-10 00:06'
 
 timein = '2020-10-01 18:00'
 timeout = '2020-10-06 18:00'
