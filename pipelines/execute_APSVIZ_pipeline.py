@@ -137,7 +137,8 @@ def main(args):
     elif args.url != None:
         # If here we still need to build a dict for ADCIRC
         url = args.url
-        dte = extractDateFromURL(url)
+        #dte = extractDateFromURL(url)
+        dte='placeHolder' # The times will be determined from the real data
         urls={dte:url}
         utilities.log.info('Explicit URL provided {}'.format(urls))
     else:
