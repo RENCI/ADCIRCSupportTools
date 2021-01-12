@@ -5,7 +5,7 @@
 # To mimic existing behavior
 # Folded get_water_levels63 and 61 into the class
 #
-
+import sys
 import os
 import datetime as dt
 from datetime import timedelta
@@ -233,10 +233,14 @@ class Adcirc:
                 dates_in_range = np.append(dates_in_range, date_time_obj)
         dates_in_range = np.flip(dates_in_range, 0)
         # get THREDDS urls for dates in time range
+        if len(dates_in_range)==0:
+            utilities.log.error('dates_in_range is empty. No ADCIRC data within specified bounds')
+            sys.exit('dates_in_range is empty. exit')
         for i, d in enumerate(dates_in_range):
             dstr = dt.datetime.strftime(d, "%Y%m%d%H")
+            subdir=dt.datetime.strftime(d, "%Y")
             url = cfg["baseurl"] + \
-                  cfg["dodsCpart"] % ("2020",
+                  cfg["dodsCpart"] % (subdir,
                                       dstr,
                                       cfg["AdcircGrid"],
                                       cfg["Machine"],
