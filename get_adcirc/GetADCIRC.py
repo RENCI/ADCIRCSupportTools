@@ -6,6 +6,7 @@
 ## Folded get_water_levels63 and 61 into the class
 ##
 
+import sys
 import os
 import datetime as dt
 from datetime import timedelta
@@ -68,6 +69,7 @@ def main(args):
         adc.set_times( adc.dtime1, adc.dtime2, adc.doffset)
         utilities.log.info("T1 (start) = {}".format(adc.T1))
         utilities.log.info("T2 (end)   = {}".format(adc.T2))
+        print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
         adc.get_urls()
         utilities.log.info("List of available urls from time conditions:")
     else:
@@ -217,6 +219,7 @@ class Adcirc:
         self.gridx = nc.variables['x']
         self.gridy = nc.variables['y']
 
+# TODO put onm a catch if NO dates_in_range which implies a server problem
     def get_urls(self):
         """
         Gets a dict of URLs for the time range and other parameters from the specified
@@ -238,15 +241,20 @@ class Adcirc:
                 dates_in_range = np.append(dates_in_range, date_time_obj)
         dates_in_range = np.flip(dates_in_range, 0)
         # get THREDDS urls for dates in time range
+        if len(dates_in_range)==0:
+            utilities.log.error('dates_in_range is empty. No ADCIRC data within specified bounds')
+            sys.exit('dates_in_range is empty. No ADCIRC data within specified bounds') 
         for i, d in enumerate(dates_in_range):
             dstr = dt.datetime.strftime(d, "%Y%m%d%H")
+            subdir=dt.datetime.strftime(d, "%Y")
             url = cfg["baseurl"] + \
-                  cfg["dodsCpart"] % ("2020",
+                  cfg["dodsCpart"] % (subdir,
                                       dstr,
                                       cfg["AdcircGrid"],
                                       cfg["Machine"],
                                       cfg["Instance"],
                                       cfg["fortNumber"])
+            print('URL {}'.format(url))
             try:
                 nc = nc4.Dataset(url)
                 # test access
