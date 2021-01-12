@@ -26,7 +26,7 @@ RUN mkdir /repo
 WORKDIR /repo
 
 # get the repos
-RUN git clone https://github.com/jtilson/ADCIRCSupportTools.git
+RUN git clone https://github.com/RENCI/ADCIRCSupportTools.git
 RUN git clone https://github.com/GClunies/noaa_coops.git
                
 # move to the install directory
