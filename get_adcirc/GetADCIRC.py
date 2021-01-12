@@ -215,14 +215,14 @@ class Adcirc:
         self.gridy = nc.variables['y']
 
 # TODO put onm a catch if NO dates_in_range which implies a server problem
-    def get_urls(self):
+    def get_urls(self, inconfig=None):
         """
         Gets a dict of URLs for the time range and other parameters from the specified
         THREDDS server, using siphon. Parameters are specified in the adc.yml config file
 
         :return: dict of datecycles ("YYYYMMDDHH") entries and corresponding url.
         """
-        cfg = self.config["ADCIRC"]
+        cdg = self.config["ADCIRC"] if inconfig==None else inconfig
         urls = {}   # dict of datecycles and corresponding urls
         maincat = cfg["baseurl"] + cfg["catPart"]
         cat = TDSCatalog(maincat)
