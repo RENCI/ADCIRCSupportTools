@@ -1,2 +1,2 @@
-python -u adda_pipeline.py --time2 20201001-00:00:00
+python -u adda_pipeline.py --time2 2020-10-01 00:00
 

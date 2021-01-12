@@ -89,7 +89,7 @@ def main(args):
         if overridetimeout is None:
             adc.set_times()  # Get current ADC now and chosen starting time
         else:
-            adc.set_times(dtime2=overridetimeout.strftime('%Y-%m-%d %H'))
+            adc.set_times(dtime2=overridetimeout.strftime('%Y-%m-%d %H:%M'))
         iometadata = '_'+adc.T1.strftime('%Y%m%d%H%M')+'_'+adc.T2.strftime('%Y%m%d%H%M') # Used for all classes downstream
         main_config = utilities.load_config() # Get main comnfig. RUNTIMEDIR, etc
         if experimentTag is None:
@@ -141,9 +141,17 @@ def main(args):
         df_pruned, count_nan, newstationlist, excludelist = water_object.fetchStationSmoothedHourlyProductFromIDlist(timein, timeout)
         utilities.log.info('Construct new list of times removing smoothing artifacts')
         retained_times = df_pruned.index # some got wacked during the smoothing and nan checking
-        dummy = water_object.writeURLsForStationPlotting(stationList, timein, timeout) # Need this to build urlcsv
-        obs_wl_detailed, obs_wl_smoothed, metadata, urlcsv, exccsv, metaJ, detailedJ, smoothedJ = water_object.fetchOutputNames()
-    
+        dummy = water_object.buildURLsForStationPlotting(newstationlist, timein, timeout) # Could also use newstationlist+excludelist
+        outputdict = water_object.writeFilesToDisk()
+        obs_wl_detailed=outputdict['PKLdetailed']
+        detailedJ=outputdict['JSONdetailed']
+        obs_wl_smoothed=outputdict['PKLsmoothed']
+        smoothedJ=outputdict['JSONsmoothed']
+        metadata=outputdict['PKLmeta']
+        metaJ=outputdict['JSONmeta']
+        urlcsv=outputdict['CSVurl']
+        exccsv=outputdict['CSVexclude']
+        # 
         adcf = ADCfile
         obsf = obs_wl_smoothed
         meta = metadata

@@ -2,8 +2,8 @@
 
 ###################################################################
 ##
-## Pipeline that is useful in the APSVIZ context. Entry an adcirc URL and the nodelist
-## and generate the ADS,OBS,ERR data sets.
+## Compare the CFS from the earlier Reanlysis to see what their diffs are.
+## This version converted to new OBSrefactor API
 ##
 ###################################################################
 import os,sys
@@ -62,23 +62,18 @@ def exec_adcirc(dtime2, rootdir, iometadata, adc_yamlname, node_idx, station_ids
     timeend = adc.T2
     return ADCfile, ADCjson, timestart, timeend
 
-def exec_adcirc_forecast(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids):
+def exec_adcirc_url(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids):
     adc = Adcirc(adc_yamlname)
     adc.urls = urls
     utilities.log.info("List of available urls input specification:")
-    ## Meaningless utilities.log.info('Observed TIMES are T1 {}, T2 {}'.format(adc.T1.strftime('%Y%m%d%H%M'), adc.T2.strftime('%Y%m%d%H%M')))
     ADCfile = rootdir+'/adc_wl'+iometadata+'.pkl'
     ADCjson = rootdir+'/adc_wl'+iometadata+'.json'
     df = get_water_levels63(adc.urls, node_idx, station_ids) # Gets ADCIRC water levels
     adc.T1 = df.index[0] # Optional update to actual times fetched form ADC
     adc.T2 = df.index[-1]
     ADCfile = utilities.writePickle(df, rootdir=rootdir,subdir='',fileroot='adc_wl_forecast',iometadata=iometadata)
-    ##df.to_pickle(ADCfile)
-    ####df.to_json(ADCjson)
     print('write new json')
     ADCjson=writeToJSON(df, rootdir, iometadata,fileroot='adc_wl_forecast')
-    #timestart = adc.T1.strftime('%Y%m%d%H%M')
-    #timeend = adc.T2.strftime('%Y%m%d%H%M')
     timestart = adc.T1
     timeend = adc.T2
     return ADCfile, ADCjson, timestart, timeend
@@ -87,6 +82,9 @@ def exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdi
     rpl = GetObsStations(iosubdir=iosubdir, rootdir=rootdir, yamlname=obs_yamlname, metadata=iometadata)
     df_stationNodelist = rpl.fetchStationNodeList()
     stations = df_stationNodelist['stationid'].to_list()
+    #utilities.log.info('Choose a limited number of stations')
+    #stations = rpl.stationListFromYaml()
+    #
     utilities.log.info('Grabing station list from OBS YML')
     df_stationData, stationNodelist = rpl.fetchStationMetaDataFromIDs(stations)
     df_pruned, count_nan, newstationlist, excludelist = rpl.fetchStationSmoothedHourlyProductFromIDlist(timein, timeout)
@@ -124,38 +122,17 @@ def main(args):
 
     doffset = args.doffset
 
-    # Get input adcirc url and check for existance
-    if args.urljson != None:
-        urljson = args.urljson
-        if not os.path.exists(urljson):
-            utilities.log.error('urljson file not found.')
-            sys.exit(1)
-        urls = utilities.read_json_file(urljson) # Can we have more than one ?
-        if len(urls) !=1:
-            utilities.log.error('JSON file can only contain a single URL. It has {}'.format(len(urls)))
-        utilities.log.info('Explicit JSON URLs provided {}'.format(urls))
-    elif args.url != None:
-        # If here we still need to build a dict for ADCIRC
-        url = args.url
-        #dte = extractDateFromURL(url)
-        dte='placeHolder' # The times will be determined from the real data
-        urls={dte:url}
-        utilities.log.info('Explicit URL provided {}'.format(urls))
-    else:
-        utilities.log.error('No Proper URL specified')
+    url_reanalysis='http://tds.renci.org:8080/thredds//dodsC/Reanalysis/ADCIRC/hsofs/fort.63.nc'
+    url_cfsv2='http://tds.renci.org:8080/thredds/dodsC/Reanalysis/ADCIRC/CFSv2/hsofs/temp/fort.63.nc'
 
-    # 0) Read the ASGS Forecast URL and create a nowcast timeout from it
-    # NOTE the dict key (datecycle) is not actually used in this code as it is yet to be defined to me
-    # We already expect this to be a single url
+    dte='reanalysis'
+    urls_reanalysis={dte:url_reanalysis}
+    utilities.log.info('Reanalysis URL provided {}'.format(urls_reanalysis))
 
-    timeout=None
-    for datecyc, url in urls.items():
-        utilities.log.info("{} : ".format(datecyc))
-        if url is None:
-            utilities.log.info("   Skipping timefetch. No url.")
-        else:
-            timeout = extractDateFromURL(url)
-    utilities.log.info('Generated value for timeout is {}'.format(timeout.strftime('%Y%m%d%H%M')))
+    dte='cfsv2'
+    urls_cfsv2={dte:url_cfsv2}
+    utilities.log.info('CFSv2 URL provided {}'.format(urls_reanalysis))
+
 
     # 1) Setup main config data
     iosubdir = args.iosubdir
@@ -173,31 +150,41 @@ def main(args):
     outfiles['IOSUBDIR']=iosubdir
     outfiles['IOMETADATA']=iometadata
    
-    # 2) Setup ADCIRC specific YML-resident inputs
+    # 2) Setup list of relevant stations and ADCIRC nodeids
     # Such as node_idx data
     utilities.log.info('Fetch OBS station data')
-    obs_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'obs.yml')
+    obs_yamlname='/projects/sequence_analysis/vol1/prediction_work/Reanalysis/ADCIRCSupportTools/config/obs.yml'
     obs_config = utilities.load_config(obs_yamlname)
     station_df = utilities.get_station_list()
     station_ids = station_df["stationid"].values.reshape(-1,)
     node_idx = station_df["Node"].values
 
+    # 3) Fetch REANALYSIS data
+
     utilities.log.info('Fetch ADCIRC')
-    adc_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'adc.yml')
-    #adc_config = utilities.load_config(adc_yamlname)
-    ADCfile, ADCjson, timestart, timeend = exec_adcirc(timeout.strftime('%Y-%m-%d %H:%M'), rootdir, '_nowcast'+iometadata, adc_yamlname, node_idx, station_ids, doffset=doffset)
-    utilities.log.info('Completed ADCIRC nowcast Reads')
-    outfiles['ADCIRC_WL_PKL']=ADCfile
-    outfiles['ADCIRC_WL_JSON']=ADCjson
+    adc_yamlname='/projects/sequence_analysis/vol1/prediction_work/Reanalysis/ADCIRCSupportTools/config/adc.yml'
+    ADCfile_reanalysis, ADCjson_reanalysis, timestart_reanalysis, timeend_reanalysis = exec_adcirc_url(urls_reanalysis, rootdir, iometadata, adc_yamlname, node_idx, station_ids)
+    utilities.log.info('Completed REANALYSIS ADCIRC nowcast Reads')
+    outfiles['ADCIRC_REANALYSIS_WL_PKL']=ADCfile_reanalysis
+    outfiles['ADCIRC_REANALYSIS_WL_JSON']=ADCjson_reanalysis
 
-    # 3) Setup OBS specific YML-resident values
-    utilities.log.info('Fetch Observations')
-    #obs_yamlname = os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'obs.yml')
+    # 4) Fetch CFSv2 data
 
-    # Grab time Range and tentative station list from the ADCIRC fetch  (stations may still be filtered out)
+    ADCfile_cfsv2, ADCjson_cfsv2, timestart_cfsv2, timeend_cfsv2 = exec_adcirc_url(urls_cfsv2, rootdir, iometadata, adc_yamlname, node_idx, station_ids)
+    utilities.log.info('Completed CFSV2 ADCIRC nowcast Reads')
+    outfiles['ADCIRC_CFSV2_WL_PKL']=ADCfile_cfsv2
+    outfiles['ADCIRC_CFSV2_WL_JSON']=ADCjson_cfsv2
+
+    # 5) Match the times so that we only get station data for smallest overlapping times. 
+    timestart = timestart_reanalysis if timestart_reanalysis >= timestart_cfsv2 else timestart_cfsv2
+    timeend = timeend_reanalysis if timeend_reanalysis < timeend_cfsv2 else timeend_cfsv2
     timein = timestart.strftime('%Y%m%d %H:%M')
     timeout = timeend.strftime('%Y%m%d %H:%M')
     utilities.log.info('ADC provided times are {} and {}'.format(timein, timeout))
+
+    # 6) Setup OBS specific YML-resident values
+    utilities.log.info('Fetch Observations')
+    #obs_yamlname = os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'obs.yml')
 
     # Could also set stations to None
     detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ = exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdir)
@@ -211,13 +198,16 @@ def main(args):
     outfiles['OBS_METADATA_JSON']=metaJ
     utilities.log.info('Completed OBS: Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {} MetaJ {}, DetailedJ {}, SmoothedJ {}'.format(detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv,metaJ, detailedJ, smoothedJ))
 
-    # 4) Setup ERR specific YML-resident values
+    # 7) Compute DIFFS between REANALYSIS ansd CFSV2 
     utilities.log.info('Error computation NOTIDAL corrections')
-    err_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'err.yml')
+    err_yamlname='/projects/sequence_analysis/vol1/prediction_work/Reanalysis/ADCIRCSupportTools/config/err.yml'
     meta = outfiles['OBS_METADATA_PKL']
     obsf = outfiles['OBS_SMOOTHED_PKL']
     adcf = outfiles['ADCIRC_WL_PKL']
-    errf, finalf, cyclef, metaf, mergedf, jsonf = exec_error(obsf, adcf, meta, err_yamlname, rootdir, iometadata, iosubdir)
+    adcR = outfiles['ADCIRC_REANALYSIS_WL_PKL']
+    adcC = outfiles['ADCIRC_CFSV2_WL_PKL']
+
+    errf, finalf, cyclef, metaf, mergedf, jsonf = exec_error(adcR, adcC, meta, err_yamlname, rootdir, iometadata, iosubdir)
     outfiles['ERR_TIME_PKL']=errf
     outfiles['ERR_TIME_JSON']=jsonf
     outfiles['ERR_STATION_AVES_CSV']=errf  # THis would pass to interpolator
@@ -226,21 +216,11 @@ def main(args):
     outfiles['ERR_ADCOBSERR_MERGED_CSV']=mergedf # This is useful for visualization insets of station bahavior
     utilities.log.info('Completed ERR')
 
-    # 5) Get actual ASGS Forecast data
-    # Not any need to specify a diff yml since we pass in the url directly
-    # This will be appended to the DIFF plots in the final PNGs
-
-    ADCfileFore, ADCjsonFore, timestart, timeend = exec_adcirc_forecast(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids)
-    utilities.log.info('Completed ADCIRC Forecast Read')
-    outfiles['ADCIRC_WL_FORECAST_PKL']=ADCfileFore
-    outfiles['ADCIRC_WL_FORECAST_JSON']=ADCjsonFore
-
     # 6) Build a series of station-PNGs.
     # Build input dict for the plotting
     files=dict()
     files['META']=outfiles['OBS_METADATA_JSON']
     files['DIFFS']=outfiles['ERR_TIME_JSON']
-    files['FORECAST']=outfiles['ADCIRC_WL_FORECAST_JSON']
     utilities.log.info('PNG plotter dict is {}'.format(files))
     png_dict = exec_pngs(files=files, rootdir=rootdir, iometadata=iometadata, iosubdir=iosubdir)
 
@@ -249,8 +229,7 @@ def main(args):
     outfilesjson = utilities.writeDictToJson(outfiles, rootdir=rootdir,subdir=iosubdir,fileroot='runProps',iometadata='') # Never change fname
     utilities.log.info('Wrote pipeline Dict data to {}'.format(outfilesjson)) 
     utilities.log.info('Finished pipeline in {} s'.format(tm.time()-t0))
-    print(outfiles)
-    return 0
+    return outfiles
 
     # Setup for computing the station diffs (aka adcirc - obs errors)
 
@@ -268,10 +247,6 @@ if __name__ == '__main__':
     parser.add_argument('--doffset', default=-4, help='Day lag or datetime string for analysis: def to YML -4', type=int)
     parser.add_argument('--iometadata', action='store', dest='iometadata',default='', help='Used to further annotate output files', type=str)
     parser.add_argument('--iosubdir', action='store', dest='iosubdir',default='', help='Used to locate output files into subdir', type=str)
-    parser.add_argument('--urljson', action='store', dest='urljson', default=None,
-                        help='String: Filename with a json of urls to loop over.')
-    parser.add_argument('--url', action='store', dest='url', default=None,
-                        help='String: url.')
     args = parser.parse_args()
     sys.exit(main(args))
 

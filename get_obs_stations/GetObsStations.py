@@ -27,10 +27,16 @@
 # A new dataframe carries the number of nans(and percentages) to allow subsequent exclusions 
 # based on stations.
 #
+# All data that could be written to files are assembled in the dict self.files
+# The data types are distinguished using the keys META, DETAILED, SMOOTHED, LOWPASS. Detailed
+# can mean 6min or hourly data dependingh on the user supplied interval. Hourly data should not be
+# passed to the SMOOTHER as the window width is fixed at 11.
+#
+# Examples of typical files that get saved and representative filenames, follows.
 # Outputs: several files are (optionally) written to disk
 # All filename selections can be customized using calling-program supplied metadata
 #    For illustration, filenames generated using the metadata "metadata" are listed.
-#    obs_wl_detailed_metadata.pkl: Time x Station product level data at 6 (sometimes 1) min intervals
+#    obs_wl_detailed_metadata.pkl: Time x Station product level data at 6 (sometimes 1) min intervals (hourly also)
 #    obs_wl_smoothed_metadata.pkl: Time x Station product level at an hourly rate
 #        Data resulting from window=11, interpolation. Will remove last nans in the data set
 #        The interpolation will results in nans at the head/tail of the time range - these
@@ -43,8 +49,6 @@
 #
 # Generally all we really want are the smoothed hourly data 
 
-# TODO excludeStationList is written out by the URL method. This needs to be refactored
-
 import os, sys
 import numpy as np
 import pandas as pd
@@ -54,7 +58,9 @@ import webbrowser
 import urllib.parse
 from utilities.utilities import utilities
 import noaa_coops as coops
-from requests.exceptions import ConnectionError,Timeout,HTTPError
+from requests.exceptions import ConnectionError
+from requests.exceptions import Timeout
+from requests.exceptions import HTTPError
 
 # globals: Note for now we will only tested MSL .
 # https://tidesandcurrents.noaa.gov/api/#products
@@ -163,7 +169,7 @@ class GetObsStations(object):
         self.iometadata = metadata 
         self.rootdir = rootdir
         self.iosubdir = iosubdir
-        if self.rootdir == None:
+        if self.rootdir is None:
             utilities.log.error("No rootdir specified on init {}".format(self.rootdir))
             sys.exit(1)
         self.config = utilities.load_config(yamlname) 
@@ -174,6 +180,89 @@ class GetObsStations(object):
         if not self.ex_coops_nans:
             utilities.log.error('EX_COOPS must be True for all nontrivial work')
         utilities.log.info('PRODUCT to fetch is {}'.format(self.product))
+        self.detailedjson='Empty'
+
+        self.files = dict() # Collects the current set of files that could be (optionally) stored to disk.
+
+    def writeFilesToDisk(self):
+        """
+        Process all files in the provided dict object andf write them all to disk
+        entries can specify PKL,CSV,and JSON files. All files are written to the same 
+        subdirectory as specified by rootdir and iosubdir. additionakl metadata is grabbed
+        from the class variables
+
+        Returns:
+        A dict of all the files created during this instance of the class
+
+        """
+        outputdict = dict()
+        fileobj = self.files
+        rootdir=self.rootdir
+        iosubdir=self.iosubdir
+        iometadata=self.iometadata
+        product = self.product
+        print('write dicts')
+        for key in fileobj.keys():
+            if key=='META': # Need to treat a little differently
+                utilities.log.info('Writing META file(s) to disk')
+                for format in fileobj[key].keys():
+                    metadata=fileobj[key][format]['DESCRIPTION']
+                    product=fileobj[key][format]['PRODUCT']
+                    filebase='_'.join(['obs',product,'metadata'])
+                    df_data = fileobj[key][format]['DATA']
+                    if format=='PKL':
+                        self.metapkl = utilities.writePickle(df_data,rootdir=self.rootdir,subdir=self.iosubdir,fileroot=filebase,iometadata=self.iometadata)
+                        outputdict['PKLmeta']=self.metapkl
+                    elif format=='JSON':
+                        self.metajsonname = utilities.getSubdirectoryFileName(self.rootdir, self.iosubdir, filebase+self.iometadata+'.json')
+                        df_data.to_json(self.metajsonname)
+                        outputdict['JSONmeta']=self.metajsonname
+            elif key=='DETAILED':
+                utilities.log.info('Writing DETAILED file(s) to disk')
+                for format in fileobj[key].keys():
+                    metadata=fileobj[key][format]['DESCRIPTION']
+                    product=fileobj[key][format]['PRODUCT']
+                    interval=fileobj[key][format]['INTERVAL']
+                    filebase='_'.join(['obs',product,'detailed',interval]) if interval=='h' else '_'.join(['obs',product,'detailed'])
+                    df_data = fileobj[key][format]['DATA']
+                    if format=='PKL':
+                        self.detailedpkl = utilities.writePickle(df_data, rootdir=self.rootdir,subdir=self.iosubdir,fileroot=filebase,iometadata=self.iometadata)
+                        outputdict['PKLdetailed']=self.detailedpkl
+                    elif format=='JSON':
+                        self.detailedjsonname = utilities.getSubdirectoryFileName(self.rootdir, self.iosubdir, filebase+self.iometadata+'.json')
+                        df_data.to_json(self.detailedjsonname)
+                        outputdict['JSONdetailed']=self.detailedjsonname
+            elif key=='SMOOTHED':
+                utilities.log.info('Writing Smoothed file(s) to disk')
+                for format in fileobj[key].keys():
+                    metadata=fileobj[key][format]['DESCRIPTION']
+                    product=fileobj[key][format]['PRODUCT']
+                    window=str(fileobj[key][format]['WINDOW'])
+                    filebase='_'.join(['obs',product,'smoothed',window]) 
+                    df_data = fileobj[key][format]['DATA']
+                    if format=='PKL':
+                        self.smoothedpkl = utilities.writePickle(df_data, rootdir=self.rootdir,subdir=self.iosubdir,fileroot=filebase,iometadata=self.iometadata)
+                        outputdict['PKLsmoothed']=self.smoothedpkl
+                    elif format=='JSON':
+                        self.smoothedjsonname = utilities.getSubdirectoryFileName(self.rootdir, self.iosubdir, filebase+self.iometadata+'.json')
+                        df_data.to_json(self.smoothedjsonname)
+                        outputdict['JSONsmoothed']=self.smoothedjsonname
+            elif key=='EXCLUDED':
+                utilities.log.info('Writing excluded stations to disk')
+                filebase='_'.join(['obs',product,'exclude'])
+                excludeStationID = fileobj[key]['CSV']['DATA']
+                self.excludecsv = utilities.writeCsv(excludeStationID, rootdir=self.rootdir,subdir=self.iosubdir,fileroot=filebase,iometadata=self.iometadata)
+                outputdict['CSVexclude']=self.excludecsv
+            elif key=='URL':
+                utilities.log.info('Writing station urls to disk')
+                filebase='_'.join(['obs',product,'urls'])
+                df_url = fileobj[key]['CSV']['DATA']
+                self.urlcsv = utilities.writeCsv(df_url, rootdir=self.rootdir,subdir=self.iosubdir,fileroot=filebase,iometadata=self.iometadata)
+                outputdict['CSVurl']=self.urlcsv
+            else:
+                utilities.log.error('Files dict with unknown key {}'.format(key))
+                raise('abort') 
+        return outputdict
 
     def fetchStationListIncludeAndExclude(self):
         """
@@ -251,6 +340,7 @@ class GetObsStations(object):
         and validated stations. 
         The class list (stationlist) is updated INPLACE and returned. The excluded list is also
         captured for possible post analysis
+        Updates entries to the self.files object for subsequent writes to disk
 
         Parameters:
             stationlist: list of str stationIDs. Updates several class variables.
@@ -287,10 +377,13 @@ class GetObsStations(object):
                 ['stationid', 'stationname', 'lat', 'lon', 'Node']]
         except FileNotFoundError:
             raise IOerror("Failed to read %s" % (config['StationFile']))
+        utilities.log.info("Update file dict")
+        self.files['META']={'PKL':{'DESCRIPTION': 'metadata', 'PRODUCT':self.product, 'DATA': df_stationData}} 
+        self.files['META'].update({'JSON':{'DESCRIPTION': 'metadata', 'PRODUCT':self.product, 'DATA': df_stationData}})  
         utilities.log.info("Final Metadata products")
-        self.metapkl = utilities.writePickle(df_stationData,rootdir=self.rootdir,subdir=self.iosubdir,fileroot='obs_wl_metadata',iometadata=self.iometadata)
-        self.metajsonname = utilities.getSubdirectoryFileName(self.rootdir, self.iosubdir, 'obs_wl_metadata'+self.iometadata+'.json')
-        df_stationData.to_json(self.metajsonname)
+        #self.metapkl = utilities.writePickle(df_stationData,rootdir=self.rootdir,subdir=self.iosubdir,fileroot='obs_wl_metadata',iometadata=self.iometadata)
+        #self.metajsonname = utilities.getSubdirectoryFileName(self.rootdir, self.iosubdir, 'obs_wl_metadata'+self.iometadata+'.json')
+        #df_stationData.to_json(self.metajsonname)
         return df_stationData, self.stationlist
 
     def fetchStationProductFromIDlist(self, timein, timeout, interval=None):
@@ -301,6 +394,7 @@ class GetObsStations(object):
         the time input to noaa_coops is HOURLY yyyymmdd while the user inputs a range in the format 
         yyyy-mm-dd hh:mm. So noaa-coops may return more than needed for the DA process.
         Can pass an interval='h' to fetch hourly data for some products
+        Updates self.files for subsequent writes of data to disk
 
         Parameters:
             timein, timeout: in str or timestanp format. The detailed time range (inclusive).
@@ -312,7 +406,6 @@ class GetObsStations(object):
             count_nan: dataframe of num nans, %nans, total vals for each station (Used for subsequent filtering).
             stationlist: List (str) of current set of validated stationIDs (also updates class list).
    
-            Write out product list to disk
         """
         list_frame = list()
         exclude_stations = list()
@@ -354,7 +447,6 @@ class GetObsStations(object):
                 print(message)
                 exclude_stations.append(station)
         if len(exclude_stations) > 0:
-            newlist = self.stationlist
             # print('Removing stations from list')
             utilities.log.info('Removing stations from stationlist: Number to remove is {}'.format(len(exclude_stations)))
             temp_excludeRepsStationID = pd.DataFrame(exclude_stations).set_index(0)
@@ -362,7 +454,7 @@ class GetObsStations(object):
             self.excludeStationID = self.excludeStationID.append(temp_excludeRepsStationID)
         utilities.log.info("Length of stations for product fetch is {}.".format(str(len(list_frame))))
         df_final = df_final.join(list_frame, how='outer') # Preserves indexing and adds nans as required
-        # POtentially Remove any multivalued stations in the exclude list
+        # Potentially Remove any multivalued stations in the exclude list
         #  df_final.drop(exclude_stations,axis=1,inplace=True)
         self.stationlist = df_final.columns.values.tolist()
         total_elems = len(df_final) 
@@ -375,11 +467,13 @@ class GetObsStations(object):
         utilities.log.info("Final detailed data product: Number of times {}. Num Stations {}".format(df_final.shape[0],df_final.shape[1]))
         print('Final detailed data product: Number of times %i, Number of stations %i' % df_final.shape)
         utilities.log.info("Writing PKL for detailed 6min data")
-        self.detailedpkl = utilities.writePickle(df_final, rootdir=self.rootdir,subdir=self.iosubdir,fileroot='obs_wl_detailed',iometadata=self.iometadata)
-        self.detailedjsonname = utilities.getSubdirectoryFileName(self.rootdir, self.iosubdir, 'obs_wl_detailed'+self.iometadata+'.json')
+        #self.detailedpkl = utilities.writePickle(df_final, rootdir=self.rootdir,subdir=self.iosubdir,fileroot='obs_wl_detailed',iometadata=self.iometadata)
+        #self.detailedjsonname = utilities.getSubdirectoryFileName(self.rootdir, self.iosubdir, 'obs_wl_detailed'+self.iometadata+'.json')
         dfjson=df_final.copy()
         dfjson.index = dfjson.index.strftime('%Y-%m-%d %H:%M:%S')
-        dfjson.to_json(self.detailedjsonname)
+        #dfjson.to_json(self.detailedjsonname)
+        self.files['DETAILED']={'PKL':{'DESCRIPTION': 'detailed', 'PRODUCT':self.product, 'INTERVAL': interval, 'DATA': df_final}}
+        self.files['DETAILED'].update({'JSON':{'DESCRIPTION': 'detailed', 'PRODUCT':self.product, 'INTERVAL': interval, 'DATA': dfjson}})
         return df_final, count_nan, self.stationlist, self.excludeStationID.index.tolist()
 
     def fetchOutputNames(self):
@@ -387,12 +481,20 @@ class GetObsStations(object):
         Results:
             detailedpkl, smoothpkl, metapkl, urlcsv, excludecsv meta-json, detailed-json, smoothed-json
         """
+        print('Fetch output DICT')
+        ####print('{}'.format(self.files))
         return self.detailedpkl, self.smoothpkl, self.metapkl, self.urlcsv, self.excludecsv, self.metajsonname, self.detailedjsonname, self.smoothedjsonname
+    def fetchOutputNamesDict(self):
+        """
+        Results:
+            A dict of the files created and saved in the current class instance
+        """
+        return self.files
 
 # On input, the caller should self.removeMissingProducts() 
 # As this method will interpolate through the nans
 #
-    def fetchStationSmoothedHourlyProductFromIDlist(self, timein, timeout, percentage_cutoff=None):
+    def fetchStationSmoothedHourlyProductFromIDlist(self, timein, timeout, percentage_cutoff=None, interval=None):
         """ 
         Fetch the selected data product (for now this is only tested for water_level)
         return all values within the provided range.
@@ -403,6 +505,10 @@ class GetObsStations(object):
         Smoothing itself can introduce nans to a timeseries. For example in a rolling average. Filtering 
         on those nans is not performed. Rather, those nans are replaced with actual values from the
         detailed_list data set.
+        save smoothed and excluded station list to self.files for subsequent optional write to disk
+
+        You do not want to preface this call with an explicit call to fetchStationProductFromIDlist as this 
+        method will overwrite the previous call
 
         Parameters:
             timein, timeout: str or timestamp. Hourly range to fetch product levels.
@@ -411,14 +517,14 @@ class GetObsStations(object):
             be excluded depending on user selection for missingness (EX_MULTIVALUE and EX_THRESH).
             count_nan: dataframe of num nans, %nans, total vals for each station (Used for subsequent filtering).
             stationlist: List (str) of current set of validated stationIDs (also updates class list).
-
-            Write out smoothed data to disk
-            Write out exluded list of stations to disk
         """
-        df_detailed, count_nan, stationlist, excludelist = self.fetchStationProductFromIDlist(timein, timeout)
-        df_det_filter, newstationlist, excludelist = self.removeMissingProducts(df_detailed, count_nan, percentage_cutoff=percentage_cutoff) # If none then read from yaml;
+        window=11
+        utilities.log.info('Smoothing will be centered windows of width {}'.format(window))
+        df_detailed, count_nan, stationlist, excludelist = self.fetchStationProductFromIDlist(timein, timeout, interval=interval)
+        df_det_filter, newstationlist, excludelist = self.removeMissingProducts(df_detailed, count_nan, 
+            percentage_cutoff=percentage_cutoff) # If none then read from yaml;
         #df_smoothed = self.smoothVectorProducts( df_detailed, window=11, degree=3 )
-        df_smoothed = self.smoothRollingAveProducts( df_det_filter, window=11)
+        df_smoothed = self.smoothRollingAveProducts( df_det_filter, window=window)
         df_smoothed = df_smoothed.loc[df_smoothed.index.strftime('%M:%S')=='00:00'] # Is this sufficient ?
         total_elems = len(df_smoothed)
         num_nans = total_elems - df_smoothed.count()
@@ -429,17 +535,22 @@ class GetObsStations(object):
         count_nan.index.name='stationid'
         utilities.log.info("Smoothed hourly data product: Number of times {}. Num Stations {}".format(df_smoothed.shape[0],df_smoothed.shape[1]))
         utilities.log.info("Writing PKL for Smoothed hourly data")
-        self.smoothpkl = utilities.writePickle(df_smoothed, rootdir=self.rootdir,subdir=self.iosubdir,fileroot='obs_wl_smoothed',iometadata=self.iometadata)
-        self.excludecsv = utilities.writeCsv(self.excludeStationID, rootdir=self.rootdir,subdir=self.iosubdir,fileroot='obs_wl_exclude',iometadata=self.iometadata)
+        #self.smoothpkl = utilities.writePickle(df_smoothed, rootdir=self.rootdir,subdir=self.iosubdir,fileroot='obs_wl_smoothed',iometadata=self.iometadata)
+        #self.excludecsv = utilities.writeCsv(self.excludeStationID, rootdir=self.rootdir,subdir=self.iosubdir,fileroot='obs_wl_exclude',iometadata=self.iometadata)
         self.stationlist = newstationlist
-        self.smoothedjsonname = utilities.getSubdirectoryFileName(self.rootdir, self.iosubdir, 'obs_wl_smoothed'+self.iometadata+'.json')
+        #self.smoothedjsonname = utilities.getSubdirectoryFileName(self.rootdir, self.iosubdir, 'obs_wl_smoothed'+self.iometadata+'.json')
         dfjson=df_smoothed.copy()
         dfjson.index = dfjson.index.strftime('%Y-%m-%d %H:%M:%S')
-        dfjson.to_json(self.smoothedjsonname)
+        #dfjson.to_json(self.smoothedjsonname)
+        self.files['SMOOTHED']={'PKL':{'DESCRIPTION': 'smoothed', 'PRODUCT':self.product, 'WINDOW': window, 'DATA': df_smoothed}}
+        self.files['SMOOTHED'].update({'JSON':{'DESCRIPTION': 'smoothed', 'PRODUCT':self.product, 'WINDOW': window, 'DATA': dfjson}})
+        # Capture the excluded data
+        self.files['EXCLUDED']={'CSV':{'DESCRIPTION': 'exclude', 'DATA': self.excludeStationID}}
         return df_smoothed, count_nan, stationlist, excludelist
 
     def fetchStationSmoothedLowpassHourlyProductFromIDlist(self, timein, timeout, percentage_cutoff=None):
         """ 
+        TODO
         Fetch the selected data product 
         return all values within the provided range.
         The time input to noaa_coops is at yyyymmdd while the user inputs a range in the format yyyy-mm-dd hh:mm
@@ -451,6 +562,7 @@ class GetObsStations(object):
         detailed_list data set.
         Once smoothed, a lowpass filter is applied to the dense data set (detailed) remove tidal variations
         Smooth using the same parameters are for the regular smoothing approach
+        save smoothed and excluded station list to self.files for subsequent optional write to disk
 
         Parameters:
             timein, timeout: str or timestamp. Hourly range to fetch product levels.
@@ -459,17 +571,11 @@ class GetObsStations(object):
             be excluded depending on user selection for missingness (EX_MULTIVALUE and EX_THRESH).
             count_nan: dataframe of num nans, %nans, total vals for each station (Used for subsequent filtering).
             stationlist: List (str) of current set of validated stationIDs (also updates class list).
-
-            Write out smoothed and lowpass hourly filtered data to disk
-            Write out exluded list of stations to disk
         """
         df_detailed, count_nan, stationlist, excludelist = self.fetchStationProductFromIDlist(timein, timeout)
         df_det_filter, newstationlist, excludelist = self.removeMissingProducts(df_detailed, count_nan, percentage_cutoff=percentage_cutoff) # If none then read from yaml;
         df_smoothed = self.smoothRollingAveProducts( df_det_filter, window=11)
         # Now build a lowpass filter 
-
-
-
         df_smoothed = df_smoothed.loc[df_smoothed.index.strftime('%M:%S')=='00:00'] # Is this sufficient ?
         total_elems = len(df_smoothed)
         num_nans = total_elems - df_smoothed.count()
@@ -489,7 +595,8 @@ class GetObsStations(object):
         dfjson.to_json(self.smoothedjsonname)
         return df_smoothed, count_nan, stationlist, excludelist
 
-    def smoothVectorProducts( self,  df_in, window=21, degree=3 ):
+    @staticmethod
+    def smoothVectorProducts(df_in, window=21, degree=3 ):
         """
         Not used for now.
         Apply a Savitzky-Golay filter.
@@ -504,7 +611,8 @@ class GetObsStations(object):
         df_smooth = savgol_filter(df_in, window, degree)
         return df_smooth
 
-    def smoothRollingAveProducts( self, df_in, window=11):
+    @staticmethod
+    def smoothRollingAveProducts(df_in, window=11):
         """
         CENTERED window rolling average.
 
@@ -549,7 +657,7 @@ class GetObsStations(object):
             stationlist: list (str) of stationIDs.
         """
         # could be none
-        if percentage_cutoff == None:
+        if percentage_cutoff is None:
             percentage_cutoff = self.nanthresh # Grabs from config yaml
         if not self.ex_thresh:
             utilities.log.info('removeMissingness called by EX_THRESH set to False: Ignore')
@@ -565,35 +673,30 @@ class GetObsStations(object):
         self.stationlist = df_out.columns.values.tolist()
         return df_out, self.stationlist, self.excludeStationID.index.tolist()
 
-    def writeURLsForStationPlotting( self, liststations, timein, timeout ):
+    def buildURLsForStationPlotting( self, liststations, timein, timeout ):
         """
         Rudimentary function to take a list of station IDs and build URLs with the proper
         time ranges, etc for calling noaa-coops and viewing their data directly. 
         This is really only meant for code validation and
         is not guaranteed to work in generalized environments.
         URLs are constructed for both included and excluded stations.
+        Results are stored into self.files for subsequent write to disk
 
         Parameters:
             timein, timeout: time range (hourly for station data inspection.
         Results:
             URLs: written to file: obs_wl_urls_iometadata.cvs' in rootdir/obspkl/.
         """
-        lens = len(liststations)
         station_timein = pd.Timestamp(timein).strftime('%Y%m%d')
         station_timeout = pd.Timestamp(timeout).strftime('%Y%m%d')
         d = []
         utilities.log.debug('Write URLs timein {} timeout {} station_timein {} station_timeout {}'.format(timein,
             timeout, station_timein, station_timeout))
         for station in liststations:
-            data = {}
-            data['id']=str(station)
-            data['units']=self.unit
-            data['bdate']=station_timein
-            data['edate']=station_timeout
-            data['timezone']=self.timezone
-            data['datum']=self.datum
-            data['interval']=6
-            data['action']=' '
+            data = {'id': str(station), 'units': self.unit,
+                    'bdate': station_timein, 'edate': station_timeout,
+                    'timezone': self.timezone, 'datum': self.datum,
+                    'interval': 6 ,'action': ' '}
             url_values=urllib.parse.urlencode(data)
             url = 'https://tidesandcurrents.noaa.gov/waterlevels.html'
             full_url = url +'?' +url_values
@@ -601,7 +704,8 @@ class GetObsStations(object):
             d.append((station, full_url, new))
         df_url = pd.DataFrame(d,columns=['station','noaa_url','new']) 
         df_url.set_index('station',inplace=True)
-        self.urlcsv = utilities.writeCsv(df_url, rootdir=self.rootdir,subdir=self.iosubdir,fileroot='obs_wl_urls',iometadata=self.iometadata)
+        #self.urlcsv = utilities.writeCsv(df_url, rootdir=self.rootdir,subdir=self.iosubdir,fileroot='obs_wl_urls',iometadata=self.iometadata)
+        self.files['URL']={'CSV':{'DESCRIPTION': 'urls', 'DATA': df_url}}
         utilities.log.debug("Test class-base url code: Not for production use")
 
     def executeBasicPipeline(self, timein, timeout):
@@ -616,28 +720,34 @@ class GetObsStations(object):
         metadata = self.iometadata
         rootdir=self.rootdir
     
-        rpl = GetObsStations(rootdir=rootdir, yamlname=os.path.join(os.path.dirname(__file__), '../config', 'obs.yml'), metadata=metadata) 
-        df_stationNodelist = rpl.fetchStationNodeList() 
+        ##rpl = GetObsStations(rootdir=rootdir, yamlname=os.path.join(os.path.dirname(__file__), '../config', 'obs.yml'), metadata=metadata) 
+        df_stationNodelist = self.fetchStationNodeList() 
         stationNodelist = df_stationNodelist['stationid'].to_list()
         #Fetch metadata abnd remove stations from the list that did not exists in coops
-        df_stationData, stationNodelist = rpl.fetchStationMetaDataFromIDs(stationNodelist)
-    
+        df_stationData, stationNodelist = self.fetchStationMetaDataFromIDs(stationNodelist)
         # Fetch the smoothed hourly data    
-        df_pruned, count_nan, newstationlist, excludelist = rpl.fetchStationSmoothedHourlyProductFromIDlist(timein, timeout)
+        df_pruned, count_nan, newstationlist, excludelist = self.fetchStationSmoothedHourlyProductFromIDlist(timein, timeout)
         retained_times = df_pruned.index.to_list() # some may have gotten wacked during the smoothing`
         # For now these two functions MUST be performed and in this order
-        listSuspectStations = rpl.writeURLsForStationPlotting(newstationlist, timein, timeout)
-    
+        dummy = self.buildURLsForStationPlotting(newstationlist, timein, timeout)
+        outputdict = self.writeFilesToDisk()
+        detailedpkl=outputdict['PKLdetailed']
+        detailedJ=outputdict['JSONdetailed']
+        smoothedpkl=outputdict['PKLsmoothed']
+        smoothedJ=outputdict['JSONsmoothed']
+        metapkl=outputdict['PKLmeta']
+        metaJ=outputdict['JSONmeta']
+        urlcsv=outputdict['CSVurl']
+        exccsv=outputdict['CSVexclude']
         # Dump some information
-        detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJson, detailedJson, smoothedJson = rpl.fetchOutputNames()
-        utilities.log.info('Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {} META Json {}, Detailed Json {}, Smoothed Json {}'.format(detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJson, detailedJson, smoothedJson))
-        return detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJson, detailedJson, smoothedJson
+        utilities.log.info('Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {} META Json {}, Detailed Json {}, Smoothed Json {}'.format(detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ))
+        return detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ
 
-def executeBasicPipeline(rootdir, timein, timeout, metadata=''):
+def TESTexecuteBasicPipeline(rootdir, timein, timeout, metadata=''):
     """
     Combine basic steps into a single call"
     """
-    print('Invoking OBS pipeline')
+    print('Invoking main OBS pipeline')
     utilities.log.info("ProductLevel Working in {}.".format(os.getcwd()))
     timein = pd.Timestamp(args.timein)
     timeout = pd.Timestamp(args.timeout)
@@ -658,13 +768,21 @@ def executeBasicPipeline(rootdir, timein, timeout, metadata=''):
     df_pruned, count_nan, newstationlist, excludelist = rpl.fetchStationSmoothedHourlyProductFromIDlist(timein, timeout)
     retained_times = df_pruned.index.to_list() # some may have gotten wacked during the smoothing`
 # For now these two functions MUST be performed and in this order
-    listSuspectStations = rpl.writeURLsForStationPlotting(newstationlist, timein, timeout)
+    dummy = rpl.buildURLsForStationPlotting(newstationlist, timein, timeout)
 
+    outputdict = rpl.writeFilesToDisk()
+    detailedpkl=outputdict['PKLdetailed']
+    detailedJ=outputdict['JSONdetailed']
+    smoothedpkl=outputdict['PKLsmoothed']
+    smoothedJ=outputdict['JSONsmoothed']
+    metapkl=outputdict['PKLmeta']
+    metaJ=outputdict['JSONmeta']
+    urlcsv=outputdict['CSVurl']
+    exccsv=outputdict['CSVexclude']
 # Dump some information
-    detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJson, detailedJson, smoothedJson = rpl.fetchOutputNames()
-    utilities.log.info('Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {} META Json {}, Detailed Json {}, Smoothed Json {}'.format(detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJson, detailedJson, smoothedJson))
+    utilities.log.info('Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {} META Json {}, Detailed Json {},Smoothed Json {}'.format(detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ)) 
     print('Finished with OBS pipeline')
-    return detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJson, detailedJson, smoothedJson
+    return detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ
 
 def main(args):
     """
@@ -673,17 +791,18 @@ def main(args):
     Some extra steps are included (such as adding/removing stations
     to demonstrate their use
     """
+    from get_obs_stations.GetObsStations import GetObsStations
+
     utilities.log.info("ProductLevel Working in {}.".format(os.getcwd()))
     timein = pd.Timestamp(args.timein)
     timeout = pd.Timestamp(args.timeout)
-
     config = utilities.load_config() # Defaults to main.yml as sapecified in the config
     rootdir=utilities.fetchBasedir(config['DEFAULT']['RDIR'], basedirExtra='StationTest')
-    # NOTE: we add a presumtive delimited to our metadata. That way we can send a black
+    # NOTE: we add a presumtive delimited to our metadata. That way we can send a blank
     iometadata = '_'+timein.strftime('%Y%m%d%H%M')+'_'+timeout.strftime('%Y%m%d%H%M')
     iometadata=''
-
-    detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metajson,detailedjson,smoothedjson = executeBasicPipeline(rootdir, timein, timeout, metadata=iometadata)
+    rpl = GetObsStations(rootdir=rootdir, yamlname=os.path.join(os.path.dirname(__file__), '../config', 'obs.yml'), metadata=iometadata)
+    detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ = rpl.executeBasicPipeline(timein, timeout)
     utilities.log.info('Finished')
 
 if __name__ == '__main__':

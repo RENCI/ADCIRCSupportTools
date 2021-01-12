@@ -9,7 +9,6 @@
 import os, sys
 import numpy as np
 import pandas as pd
-import json
 from argparse import ArgumentParser
 from utilities.utilities import utilities
 from scipy import stats
@@ -27,7 +26,7 @@ class computeErrorField(object):
         self.config = utilities.load_config(yamlname)
         self.n_pad = self.config['TIME']['n_pad']
         #self.n_cycles = self.config['TIME']['AvgPer']
-        self.n_cycles = self.config['TIME']['AvgPer'] if aveper==None else aveper
+        self.n_cycles = self.config['TIME']['AvgPer'] if aveper is None else aveper
         self.bound_lo = bound_lo
         self.bound_hi = bound_hi
         self.n_period = self.config['TIME']['n_period']
@@ -37,24 +36,24 @@ class computeErrorField(object):
         utilities.log.debug("OBSF filename "+obsf)
         self.rootdir = rootdir
         self.merged_dict = None
-        if self.rootdir == None:
+        if self.rootdir is None:
             utilities.log.error('No rootdir was specified')
         try:
             self.df_obs_wl = pd.read_pickle(self.obs_filename)
         except FileNotFoundError:
-            raise IOError("Failed to read %s" % self.obs_filename)
             utilities.log.error("Failed to read %s" % self.obs_filename)
+            raise IOError("Failed to read %s" % self.obs_filename)
         try:
             self.df_adc_wl = pd.read_pickle(self.adc_filename)
         except:
-            raise IOError("Failed to read %s" % self.adc_filename)
             utilities.log.error("Failed to read %s" % self.adc_filename)
+            raise IOError("Failed to read %s" % self.adc_filename)
         try:
             self.df_meta = pd.read_pickle(self.meta_filename)
             self.df_meta.set_index('stationid', inplace=True)
         except:
-            raise IOError("Failed to read %s" % self.meta_filename)
             utilities.log.error("Failed to read %s" % self.meta_filename)
+            raise IOError("Failed to read %s" % self.meta_filename)
         utilities.log.debug('input ADC wl data are {}'.format(str(self.df_adc_wl)))
         utilities.log.debug('input OBS wl data are {}'.format(str(self.df_obs_wl)))
         print(self.df_adc_wl)
@@ -116,14 +115,14 @@ class computeErrorField(object):
         For now bound_up will always be the ADC highest value (=now). bound_lo will be highest-n_cycles*n_period)
         which accounts for the amount of time used to average. We can always overwrite the bounds manually
         """
-#       self.bound_lo = df_adc_wl.index.min() if self.bound_lo==None else  np.datetime64(self.bound_lo)
+#       self.bound_lo = df_adc_wl.index.min() if self.bound_lo is None else  np.datetime64(self.bound_lo)
         if len(self.df_adc_wl.index) < self.n_cycles*self.n_period:
             #print('Averaging bounds range too wide for actual data. ADC only of length '+str(len(self.df_adc_wl.index)))
             utilities.log.error('Averaging bounds range too wide for actual data. ADC only of length '+str(len(self.df_adc_wl.index)))
             sys.exit('Failed averaging bounds setting')
-        self.bound_hi = self.df_adc_wl.index.max() if self.bound_hi==None else  np.datetime64(self.bound_hi)
-        #self.bound_lo = self.df_adc_wl.index.min() if self.bound_lo==None else np.datetime64(self.df_adc_wl.index[-(self.n_cycles*self.n_period)])
-        self.bound_lo = self.df_adc_wl.index[-(self.n_cycles*self.n_period)] if self.bound_lo==None else np.datetime64(self.bound_lo)
+        self.bound_hi = self.df_adc_wl.index.max() if self.bound_hi is None else  np.datetime64(self.bound_hi)
+        #self.bound_lo = self.df_adc_wl.index.min() if self.bound_lo is None else np.datetime64(self.df_adc_wl.index[-(self.n_cycles*self.n_period)])
+        self.bound_lo = self.df_adc_wl.index[-(self.n_cycles*self.n_period)] if self.bound_lo is None else np.datetime64(self.bound_lo)
         print(self.df_adc_wl)
         print(self.bound_lo)
         print(self.bound_hi)
@@ -164,6 +163,8 @@ class computeErrorField(object):
         diurnalRange = pd.date_range(timein, timeout+np.timedelta64(n_pad,'h'), freq=str(timef)+'S')
         utilities.log.info('interpolation timein '+str(timein))
         utilities.log.info('interpolation timeout with + hourly padding '+str(timeout+np.timedelta64(n_pad,'h')))
+      
+        #TODO combine the following code
 
         df_in= self.df_adc_wl.copy()
         df_x = pd.DataFrame(diurnalRange)
@@ -241,7 +242,8 @@ class computeErrorField(object):
             print(str(self.diff.shape))
             #print(self.diff)
         
-    def _combineDataFrames(self,adc,obs,err):
+    @staticmethod
+    def _combineDataFrames(adc,obs,err):
         """Combines the three diurnal corrected data frames into a single multiindex object
         """
         # Add a new column for building index
@@ -262,7 +264,8 @@ class computeErrorField(object):
         df_merged = pd.concat([adc,obs,err])
         return df_merged
 
-    def _combineDataFramesNewversion(self,adc,obs,err):
+    @staticmethod
+    def _combineDataFramesNewversion(adc,obs,err):
         """Combines the three diurnal corrected data frames into a single better dict-able object
         """
         # Add a new column for building index
@@ -331,27 +334,27 @@ class computeErrorField(object):
         return self.errorfilename, self.finalfilename, self.cyclefilename, self.metafilename, self.mergedname, self.jsonfilename
 
     def executePipeline(self, metadata = 'Nometadata',subdir=''):
-        dummy = self._intersectionStations()
-        dummy = self._intersectionTimes()
-        dummy = self._tidalCorrectData()
-        dummy = self._applyTimeBounds()
-        dummy = self._computeAndAverageErrors()
-        ##dummy = self._generateDICTdata()
+        self._intersectionStations()
+        self._intersectionTimes()
+        self._tidalCorrectData()
+        self._applyTimeBounds()
+        self._computeAndAverageErrors()
+        ##self._generateDICTdata()
         self.merged_dict = utilities.convertTimeseriesToDICTdata(self.df_merged, variables=['ADC','OBS','ERR'])
-        dummy = self._outputDataToFiles(metadata=metadata,subdir=subdir)
+        self._outputDataToFiles(metadata=metadata,subdir=subdir)
         errf, finalf, cyclef, metaf, mergedf, jsonf = self._fetchOutputFilenames()
         ##dummy = self._generatePerStationPlot(metadata='Nometadata')
         return errf, finalf, cyclef, metaf, mergedf, jsonf
 
     def executePipelineNoTidalTransform(self, metadata = 'Nometadata',subdir=''):
-        dummy = self._intersectionStations()
-        dummy = self._intersectionTimes()
-        #dummy = self._tidalCorrectData()
-        dummy = self._applyTimeBounds()
-        dummy = self._computeAndAverageErrors()
-        ##dummy = self._generateDICTdata()
+        self._intersectionStations()
+        self._intersectionTimes()
+        #self._tidalCorrectData()
+        self._applyTimeBounds()
+        self._computeAndAverageErrors()
+        ##self._generateDICTdata()
         self.merged_dict = utilities.convertTimeseriesToDICTdata(self.df_merged, variables=['ADC','OBS','ERR'])
-        dummy = self._outputDataToFiles(metadata=metadata,subdir=subdir)
+        self._outputDataToFiles(metadata=metadata,subdir=subdir)
         errf, finalf, cyclef, metaf, mergedf, jsonf = self._fetchOutputFilenames()
         return errf, finalf, cyclef, metaf, mergedf, jsonf
 

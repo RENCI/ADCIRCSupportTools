@@ -9,8 +9,8 @@ import pandas as pd
 from get_obs_stations.GetObsStations import GetObsStations
 from utilities.utilities import utilities as utilities
 
-timein = '2020-01-01 00:00'
-timeout = '2020-01-10 00:06'
+#timein = '2020-01-01 00:00'
+#timeout = '2020-01-10 00:06'
 
 timein = '2020-10-01 18:00'
 timeout = '2020-10-06 18:00'
@@ -29,9 +29,21 @@ df_stationData, stationNodelist = rpl.fetchStationMetaDataFromIDs(stations)
 
 df_pruned, count_nan, newstationlist, excludelist = rpl.fetchStationSmoothedHourlyProductFromIDlist(timein, timeout)
 retained_times = df_pruned.index.to_list() # some may have gotten wacked during the smoothing`
-listSuspectStations = rpl.writeURLsForStationPlotting(newstationlist, timein, timeout)
+dummy = rpl.buildURLsForStationPlotting(newstationlist, timein, timeout) # Could also use newstationlist+excludelist
 
-detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ = rpl.fetchOutputNames()
+outputdict = rpl.writeFilesToDisk()
+print('output files {}'.format(outputdict))
+
+detailedpkl=outputdict['PKLdetailed']
+detailedJ=outputdict['JSONdetailed']
+smoothedpkl=outputdict['PKLsmoothed']
+smoothedJ=outputdict['JSONsmoothed']
+metapkl=outputdict['PKLmeta']
+metaJ=outputdict['JSONmeta']
+urlcsv=outputdict['CSVurl']
+exccsv=outputdict['CSVexclude']
+
 utilities.log.info('Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {} MetaJ {} detailedJ {}, smoothedJ {}'.format(detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv,metaJ, detailedJ, smoothedJ ))
+
 print('Finished with OBS pipeline')
 

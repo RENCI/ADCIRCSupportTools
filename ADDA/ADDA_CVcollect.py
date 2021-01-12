@@ -201,8 +201,16 @@ def main(args):
     # Fetch final smoothed PKL file
     # Join merged and excluded stations into a single set of URLs for subsequent interrogation
 
-    dummy = water_object.writeURLsForStationPlotting(stationList, timein, timeout) # Need this to build urlcsv
-    obs_wl_detailed, obs_wl_smoothed, metadata, urlcsv, exccsv, metaJ, detailedJ, smoothedJ = water_object.fetchOutputNames()
+    dummy = water_object.buildURLsForStationPlotting(stationList, timein, timeout) # Need this to build urlcsv
+    outputdict = water_object.writeFilesToDisk()
+    obs_wl_detailed=outputdict['PKLdetailed']
+    detailedJ=outputdict['JSONdetailed']
+    obs_wl_smoothed=outputdict['PKLsmoothed']
+    smoothedJ=outputdict['JSONsmoothed']
+    metadata=outputdict['PKLmeta']
+    metaJ=outputdict['JSONmeta']
+    urlcsv=outputdict['CSVurl']
+    exccsv=outputdict['CSVexclude']
 
     ###########################################################################
     # Construct error file based on the existing station data and time
