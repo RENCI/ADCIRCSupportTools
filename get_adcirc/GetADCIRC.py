@@ -243,7 +243,7 @@ class Adcirc:
         # get THREDDS urls for dates in time range
         if len(dates_in_range)==0:
             utilities.log.error('dates_in_range is empty. No ADCIRC data within specified bounds')
-            sys.exit('dates_in_range is empty. No ADCIRC data within specified bounds') 
+            sys.exit('dates_in_range is empty. exit')
         for i, d in enumerate(dates_in_range):
             dstr = dt.datetime.strftime(d, "%Y%m%d%H")
             subdir=dt.datetime.strftime(d, "%Y")
