@@ -10,6 +10,7 @@ import sys
 import os
 import datetime as dt
 from datetime import timedelta
+from dateutil.relativedelta import relativedelta
 import netCDF4 as nc4
 import numpy as np
 import pandas as pd
@@ -19,6 +20,9 @@ from utilities import CurrentDateCycle as cdc
 from siphon.catalog import TDSCatalog
 
 # noinspection PyPep8Naming,DuplicatedCode
+
+instance={2020: 'hsofs-nam-bob', 2021: 'hsofs-nam-bob-2021'}
+    
 def main(args):
 
     # Possible override YML defaults
@@ -220,45 +224,54 @@ class Adcirc:
         Gets a dict of URLs for the time range and other parameters from the specified
         THREDDS server, using siphon. Parameters are specified in the adc.yml config file
 
+        perhaps we need to loop over all possible years spanned by the adc.T1 and adc.T2
+
         :return: dict of datecycles ("YYYYMMDDHH") entries and corresponding url.
         """
-        cdg = self.config["ADCIRC"] if inconfig==None else inconfig
+        setYears=fetchYears(self.T1, self.T2)
         urls = {}   # dict of datecycles and corresponding urls
-        maincat = cfg["baseurl"] + cfg["catPart"]
-        cat = TDSCatalog(maincat)
-        available_dates = cat.catalog_refs
-        # filter available dates between T1 and T2, inclusive
-        dates_in_range = np.array([])
-        for i, d in enumerate(available_dates):
-            date_time_obj = dt.datetime.strptime(d, "%Y%m%d%H")
-            if self.T1 <= date_time_obj <= self.T2:
-                utilities.log.debug("%02d : %s in range." % (i, date_time_obj))
-                dates_in_range = np.append(dates_in_range, date_time_obj)
-        dates_in_range = np.flip(dates_in_range, 0)
-        # get THREDDS urls for dates in time range
-        if len(dates_in_range)==0:
-            utilities.log.error('dates_in_range is empty. No ADCIRC data within specified bounds')
-            sys.exit('dates_in_range is empty. exit')
-        for i, d in enumerate(dates_in_range):
-            dstr = dt.datetime.strftime(d, "%Y%m%d%H")
-            subdir=dt.datetime.strftime(d, "%Y")
-            url = cfg["baseurl"] + \
-                  cfg["dodsCpart"] % (subdir,
+        for year in setYears:
+            print('year {}'.format(year))
+            cfg = self.config["ADCIRC"] if inconfig==None else inconfig
+            urls = {}   # dict of datecycles and corresponding urls
+            maincat = cfg["baseurl"] + cfg["catPart"]%(year)
+            utilities.log.info('Check out cat {}'.format(maincat))
+            cat = TDSCatalog(maincat)
+            available_dates = cat.catalog_refs
+            # filter available dates between T1 and T2, inclusive
+            dates_in_range = np.array([])
+            #print('avail_date {}'.format(available_dates))
+            for i, d in enumerate(available_dates):
+                date_time_obj = dt.datetime.strptime(d, "%Y%m%d%H")
+                if self.T1 <= date_time_obj <= self.T2:
+                    utilities.log.debug("%02d : %s in range." % (i, date_time_obj))
+                    dates_in_range = np.append(dates_in_range, date_time_obj)
+            dates_in_range = np.flip(dates_in_range, 0)
+            # get THREDDS urls for dates in time range
+            if len(dates_in_range)==0:
+                utilities.log.error('dates_in_range is empty. No ADCIRC data within specified bounds %s' % (year))
+                sys.exit('dates_in_range is empty. exit')
+            #utilities.log.info('dates in range year {} dates {}'.format(year,dates_in_range))
+            for i, d in enumerate(dates_in_range):
+                dstr = dt.datetime.strftime(d, "%Y%m%d%H")
+                subdir=dt.datetime.strftime(d, "%Y")
+                url = cfg["baseurl"] + \
+                      cfg["dodsCpart"] % (subdir,
                                       dstr,
                                       cfg["AdcircGrid"],
                                       cfg["Machine"],
-                                      cfg["Instance"],
+                                      cfg["Instance"]%(instance[year]),
                                       cfg["fortNumber"])
-            print('URL {}'.format(url))
-            try:
-                nc = nc4.Dataset(url)
-                # test access
-                z = nc['zeta'][:, 0]
-                url2add = url
-            except:
-                utilities.log.info("Could not access {}. It will be skipped.".format(url))
-                url2add = None
-            urls[d] = url2add
+                #print('NEW URL {}'.format(url))
+                try:
+                    nc = nc4.Dataset(url)
+                    # test access
+                    z = nc['zeta'][:, 0]
+                    url2add = url
+                except:
+                    utilities.log.info("Could not access {}. It will be skipped.".format(url))
+                    url2add = None
+                urls[d] = url2add
         self.urls = urls
 
 def writeToJSON(df, rootdir, iometadata, fileroot='adc_wl', variableName=None):
@@ -374,6 +387,17 @@ def get_water_levels61(urls, stationids):
         # df.reset_index()
         # print(df.shape)
     return df
+
+def fetchYears(T1, T2):
+    """
+    Build a set of the unique years spanned  by T1 and T2. 
+    """    
+    setyr=set()
+    dtimes = [T1,T2]
+    for year in range(dtimes[0].year, dtimes[1].year+1):
+        setyr.add(year)
+    utilities.log.info('Unique set of spanning years is {}'.format(setyr))
+    return setyr
 
 def first_true(iterable, default=False, pred=None):
     """
