@@ -2,9 +2,10 @@ ADCIRC: &adcirc
   AdcircGrid: "hsofs"
   Machine: "hatteras.renci.org"
   NodeList: "adcirc_test_nodes.dat"
-  Instance: "hsofs-nam-bob"  #  "ncfs-dev-hsofs-nam-master"
+  Instance: '%s' #"hsofs-nam-bob"  #  "ncfs-dev-hsofs-nam-master"
   baseurl: "http://tds.renci.org:8080/thredds/"
-  catPart: "/catalog/2020/nam/catalog.xml"
+  #catPart: "/catalog/2020/nam/catalog.xml"
+  catPart: "/catalog/%s/nam/catalog.xml"
   #                 year    /ymd,c/grid/machine/...
   # http://tds.renci.org:8080/thredds/dodsC/2020/nam/2020012706/hsofs/hatteras.renci.org/ncfs-dev-hsofs-nam-master/namforecast/maxele.63.nc
   # http://tds.renci.org:8080/thredds/dodsC/2020/nam/2020012706/hsofs/hatteras.renci.org/ncfs-dev-hsofs-nam-master/namforecast/maxele.63.nc

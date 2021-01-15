@@ -9,13 +9,13 @@ ADCIRC: &adcirc
   #                 year    /ymd,c/grid/machine/...
   # http://tds.renci.org:8080/thredds/dodsC/2020/nam/2020012706/hsofs/hatteras.renci.org/ncfs-dev-hsofs-nam-master/namforecast/maxele.63.nc
   # http://tds.renci.org:8080/thredds/dodsC/2020/nam/2020012706/hsofs/hatteras.renci.org/ncfs-dev-hsofs-nam-master/namforecast/maxele.63.nc
-  #dodsCpart: "/dodsC/%s/nam/%s/%s/%s/%s/nowcast/fort.%s.nc"
-  dodsCpart: "/dodsC/%s/nam/%s/%s/%s/%s/namforecast/fort.%s.nc"
+  dodsCpart: "/dodsC/%s/nam/%s/%s/%s/%s/nowcast/fort.%s.nc"
+  #dodsCpart: "/dodsC/%s/nam/%s/%s/%s/%s/namforecast/fort.%s.nc"
   fortNumber: "63"
 
 TIME: &time
-  T1: 0        # datetime or negative for lag from T2 Can set this to >0 and specify timein to look forward
-  T2: +4         # datetime for end date or 0 for "now"
+  T1: -4        # datetime or negative for lag from T2 Can set this to >0 and specify timein to look forward
+  T2: 0         # datetime for end date or 0 for "now"
   # doffset: 4     # multiple of M2 cycles to do averaging over
 
 REGRID: &regrid
