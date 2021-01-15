@@ -5,7 +5,10 @@
 ## Pipeline that is useful in the APSVIZ context. Entry an adcirc URL and the nodelist
 ## and generate the ADS,OBS,ERR data sets.
 ##
+## Read the input url forecast first, so that we can get its timein, and used that to 
+## specify the timeout for a previous nowcast.
 ###################################################################
+
 import os,sys
 import time as tm
 import pandas as pd
@@ -21,6 +24,10 @@ from visualization.stationPlotter import stationPlotter
 import datetime as dt
 
 ## Invoke a basic pipeline. 
+
+## Little trick 
+## For now this sidesteps the differing nomenclatures used for 2020 and 2021 data storage
+## Moving forward this needs to be handled much more generally 
 
 def extractDateFromURL(url):
     """
@@ -43,10 +50,13 @@ def exec_adcirc(dtime2, rootdir, iometadata, adc_yamlname, node_idx, station_ids
     """
     # Start the fetch of ADCIRC data
     adc = Adcirc(adc_yamlname)
-    adc.set_times(dtime2=dtime2, doffset=doffset)
+    adc.set_times(dtime2=dtime2, doffset=doffset) # Global time get set for use by get_urls
     utilities.log.info("T1 (start) = {}".format(adc.T1))
     utilities.log.info("T2 (end)   = {}".format(adc.T2))
-    adc.get_urls()
+
+    # Check the year and update Instance if 2021
+    newconfig = buildLocalConfig()
+    adc.get_urls(inconfig=newconfig)
     if not any(adc.urls):
         utilities.log.error('No URL entries. Aborting {}'.format(adc.urls))
     ADCfile = rootdir+'/adc_wl'+iometadata+'.pkl'
@@ -115,7 +125,32 @@ def exec_pngs(files, rootdir, iometadata, iosubdir):
     png_dict = viz.generatePNGs()
     return png_dict
 
+def buildNowcast(urls):
+    """
+    Take the input dict, grab the url and convert from a ASGS forecast to a nowcast
+    Special cases suc h as hurricane events are not yet handled
+    I dont know how many urls may present, so we assume all must be converted.
+    """ 
+    for key,url in urls.items():
+        print('key{} url{}'.format(key,url))
+    return urls
     
+def buildLocalConfig():
+    """
+    Temporary function to build a config object that can be passed to an ADCIRC nowcast
+    We need to beable to update Instance and year
+    """
+    cfg = dict() 
+    cfg['AdcircGrid']= "hsofs"
+    cfg['Machine']= "hatteras.renci.org"
+    cfg['NodeList']= "adcirc_test_nodes.dat"
+    cfg['Instance']= "%s"
+    cfg['baseurl']= "http://tds.renci.org:8080/thredds/"
+    cfg['catPart']= "/catalog/%s/nam/catalog.xml"
+    cfg['dodsCpart']= "/dodsC/%s/nam/%s/%s/%s/%s/nowcast/fort.%s.nc"
+    cfg['fortNumber']= "63"
+    return cfg
+
 # noinspection PyPep8Naming,DuplicatedCode
 def main(args):
 
@@ -148,16 +183,16 @@ def main(args):
     # NOTE the dict key (datecycle) is not actually used in this code as it is yet to be defined to me
     # We already expect this to be a single url
 
-    timeout=None
-    for datecyc, url in urls.items():
-        utilities.log.info("{} : ".format(datecyc))
-        if url is None:
-            utilities.log.info("   Skipping timefetch. No url.")
-        else:
-            timeout = extractDateFromURL(url)
-    utilities.log.info('Generated value for timeout is {}'.format(timeout.strftime('%Y%m%d%H%M')))
+    #timeout=None
+    #for datecyc, url in urls.items():
+    #    utilities.log.info("{} : ".format(datecyc))
+    #    if url is None:
+    #        utilities.log.info("   Skipping timefetch. No url.")
+    #    else:
+    #        timeout = extractDateFromURL(url)
+    #utilities.log.info('Generated value for timeout is {}'.format(timeout.strftime('%Y%m%d%H%M')))
 
-    # 1) Setup main config data
+    # 1) Setup main config data - we will override elements later
     iosubdir = args.iosubdir
     iometadata = args.iometadata
     main_config = utilities.load_config() # Get main comnfig. RUNTIMEDIR, etc
@@ -173,14 +208,37 @@ def main(args):
     outfiles['IOSUBDIR']=iosubdir
     outfiles['IOMETADATA']=iometadata
    
-    # 2) Setup ADCIRC specific YML-resident inputs
-    # Such as node_idx data
+    # 2) Setup OBS specific YML-resident inputs
+    # FETCH ADCIRC NODEIDs and station_IDs
+    # Such as node_idx data required for the ADCIRC calls
     utilities.log.info('Fetch OBS station data')
     obs_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'obs.yml')
     obs_config = utilities.load_config(obs_yamlname)
     station_df = utilities.get_station_list()
     station_ids = station_df["stationid"].values.reshape(-1,)
     node_idx = station_df["Node"].values
+
+    # 3) Setup ADCIRC specific YML-resident inputs
+    utilities.log.info('Fetch ADCIRC-FORECAST')
+    adc_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'adc.yml')
+    #adc_config = utilities.load_config(adc_yamlname)
+
+    # 4) Get actual ASGS Forecast data from this we can ghet the times
+    # Not any need to specify a diff yml since we pass in the url directly
+    # This will be appended to the DIFF plots in the final PNGs
+    ADCfileFore, ADCjsonFore, timestart_forecast, timeend_forecast = exec_adcirc_forecast(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids)
+    utilities.log.info('Completed ADCIRC Forecast Read')
+    utilities.log.info('Forecast timein={}, timeout={}'.format(timestart_forecast, timeend_forecast))
+    outfiles['ADCIRC_WL_FORECAST_PKL']=ADCfileFore
+    outfiles['ADCIRC_WL_FORECAST_JSON']=ADCjsonFore
+
+    # 5) Build the nowcast URL
+    utilities.log.info('Build a nowcast style url')
+    urlnow = buildNowcast(urls)
+    utilities.log.info('Resulting nowcast style url {}'.format(urlnow))
+
+    # 6) Get the ADCIRC nowcast with a final time of 
+    timeout = timestart_forecast
 
     utilities.log.info('Fetch ADCIRC')
     adc_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'adc.yml')
@@ -226,14 +284,6 @@ def main(args):
     outfiles['ERR_ADCOBSERR_MERGED_CSV']=mergedf # This is useful for visualization insets of station bahavior
     utilities.log.info('Completed ERR')
 
-    # 5) Get actual ASGS Forecast data
-    # Not any need to specify a diff yml since we pass in the url directly
-    # This will be appended to the DIFF plots in the final PNGs
-
-    ADCfileFore, ADCjsonFore, timestart, timeend = exec_adcirc_forecast(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids)
-    utilities.log.info('Completed ADCIRC Forecast Read')
-    outfiles['ADCIRC_WL_FORECAST_PKL']=ADCfileFore
-    outfiles['ADCIRC_WL_FORECAST_JSON']=ADCjsonFore
 
     # 6) Build a series of station-PNGs.
     # Build input dict for the plotting
