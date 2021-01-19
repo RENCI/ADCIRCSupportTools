@@ -14,6 +14,9 @@ LABEL maintainer="jtilson@renci.org"
 # make sure the container is up-to-date
 RUN apt-get update
 
+# Start off getting Python 3.7.3
+RUN conda install  -y python=3.7.3
+
 # update conda and set the download channel
 RUN conda update conda && \
     conda config --add channels conda-forge
