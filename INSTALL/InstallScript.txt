@@ -1,10 +1,12 @@
+# This approach works fine on Lynch.
+# This approach also works fine on hatteras (Jan 19, 2021)
 # An install procedure on your local machine inside a venv
 
 # 1) Install conda on your system
 
 # 2) Build the environment
-conda create --name myenv -y python=3.7.3
-conda activate myenv
+conda create --name myenvtest -y python=3.7.3
+conda activate myenvtest
 
 conda install -y cartopy=0.17.0
 conda install -y basemap=1.2.0
