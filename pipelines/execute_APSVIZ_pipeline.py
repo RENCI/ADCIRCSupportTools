@@ -10,6 +10,7 @@
 ###################################################################
 
 import os,sys
+import shutil
 import time as tm
 import pandas as pd
 import json
@@ -169,9 +170,9 @@ def main(args):
         if len(urls) !=1:
             utilities.log.error('JSON file can only contain a single URL. It has {}'.format(len(urls)))
         utilities.log.info('Explicit JSON URLs provided {}'.format(urls))
-    elif args.url != None:
+    elif args.inputURL != None:
         # If here we still need to build a dict for ADCIRC
-        url = args.url
+        url = args.inputURL
         #dte = extractDateFromURL(url)
         dte='placeHolder' # The times will be determined from the real data
         urls={dte:url}
@@ -197,14 +198,14 @@ def main(args):
     iometadata = args.iometadata
     main_config = utilities.load_config() # Get main comnfig. RUNTIMEDIR, etc
 
-    if args.rootdir is None:
+    if args.outputDir is None:
         rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'], basedirExtra=iosubdir)
     else:
-        rootdir = args.rootdir
-    utilities.log.info('Specified rootdir underwhich all files wil; be stored. Rootdir is {}'.format(rootdir))
+        rootdir = args.outputDir
+    utilities.log.info('Specified rootdir underwhich all files will be stored. Rootdir is {}'.format(rootdir))
 
     outfiles['RUNDATE']=dt.datetime.now().strftime('%Y%m%d%H%M')
-    outfiles['ROOTDIR']=rootdir
+    outfiles['OUTPUTDIR']=rootdir
     outfiles['IOSUBDIR']=iosubdir
     outfiles['IOMETADATA']=iometadata
    
@@ -298,6 +299,11 @@ def main(args):
     outfiles.update(png_dict)
     outfilesjson = utilities.writeDictToJson(outfiles, rootdir=rootdir,subdir=iosubdir,fileroot='runProps',iometadata='') # Never change fname
     utilities.log.info('Wrote pipeline Dict data to {}'.format(outfilesjson)) 
+
+    # Move the log file from the working dir to rootdir
+    shutil.move('log','/'.join([rootdir,'log']))
+    utilities.log.info('Moved log file to {}'.format('/'.join([rootdir,'log'])))
+    #
     utilities.log.info('Finished pipeline in {} s'.format(tm.time()-t0))
     print(outfiles)
     return 0
@@ -312,7 +318,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--experiment_name', action='store', dest='experiment_name', default=None,
                         help='Names highlevel Experiment-tag value')
-    parser.add_argument('--rootdir', action='store', dest='rootdir', default=None,
+    parser.add_argument('--outputDir', action='store', dest='outputDir', default=None,
                         help='Available high leverl directory')
     parser.add_argument('--ignore_pkl', help="Ignore existing pickle files.", action='store_true')
     parser.add_argument('--doffset', default=-4, help='Day lag or datetime string for analysis: def to YML -4', type=int)
@@ -320,7 +326,7 @@ if __name__ == '__main__':
     parser.add_argument('--iosubdir', action='store', dest='iosubdir',default='', help='Used to locate output files into subdir', type=str)
     parser.add_argument('--urljson', action='store', dest='urljson', default=None,
                         help='String: Filename with a json of urls to loop over.')
-    parser.add_argument('--url', action='store', dest='url', default=None,
+    parser.add_argument('--inputURL', action='store', dest='inputURL', default=None,
                         help='String: url.')
     args = parser.parse_args()
     sys.exit(main(args))
