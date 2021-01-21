@@ -32,11 +32,12 @@ def buildLocalConfig(n_aveper=4, n_period=24, n_tide=12.42, n_pad=1):
     processing (eg) an entire years worth of data in 24 hour blocks.
     The defaults are the same as those used for a traditional ADDA
     """
-    cfg = dict()
-    cfg['TIME']['AvgPer']=n_aveper
-    cfg['TIME']['n_period']=n_period
-    cfg['TIME']['n_tide']=n_tide
-    cfg['TIME']['n_pads']=n_pad
+    cfg = {'TIME': 
+        {'AvgPer': n_aveper,
+         'n_tide': n_tide,
+         'n_period': n_period,
+         'n_pad': n_pad }
+        }
     utilities.log.info('Constructed an internal err.yml configuration dict containing {}'.format(cfg))
     return cfg
 
