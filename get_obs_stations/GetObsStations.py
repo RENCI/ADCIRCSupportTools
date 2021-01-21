@@ -413,7 +413,7 @@ class GetObsStations(object):
         timein, timeout = convertToTimeStamp(timein, timeout)
         station_timein, station_timeout = processToStationFormat(timein, timeout)
         utilities.log.info("station IDlist timein {} and timeout {}".format(timein, timeout))
-        utilities.log.info('User supplied INTERVAL is {} unit'.format(interval))
+        utilities.log.info('User supplied INTERVAL is {}'.format(interval))
         for station in self.stationlist:
             try:
                 stationdata = pd.DataFrame()
@@ -423,7 +423,7 @@ class GetObsStations(object):
                                                 product=self.product,
                                                 datum=self.datum,
                                                 units=self.unit,
-                                                interval=interval,
+                                                interval=interval, # If none defaults to 6min
                                                 time_zone=self.timezone)[self.productName].to_frame()
                 stationdata, multivalue = self.checkDuplicateTimeEntries(station, stationdata)
                 if self.ex_multivalue and multivalue:
