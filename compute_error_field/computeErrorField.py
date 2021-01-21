@@ -16,14 +16,21 @@ from scipy import stats
 class computeErrorField(object):
     """ Pass in the fully qualitied filenames for the observations data and the adcirc data
     Perform some rudimentary checks on times/stations and then compute an error matrix
+    Added an inputcfg variable for special use cases where ther caller wants to create their own config 
+    on-the-fly, Eg in the Reanalysis work
     """
     #def __init__(self, obsf, adcf, meta, bound_lo=None, bound_hi=None, n_cycles=4, n_pad=1, n_period = 12, n_tide = 12.42):
-    def __init__(self, obsf, adcf, meta, yamlname=os.path.join(os.path.dirname(__file__), '../config', 'err.yml'),
+    def __init__(self, obsf, adcf, meta, inputcfg=None, yamlname=os.path.join(os.path.dirname(__file__), '../config', 'err.yml'),
                  bound_lo=None, bound_hi=None, rootdir=None, aveper=None, zthresh=3):
         self.obs_filename = obsf
         self.adc_filename = adcf
         self.meta_filename = meta
-        self.config = utilities.load_config(yamlname)
+        if inputcfg==None: 
+            utilities.log.info('Reading the yml file')
+            self.config = utilities.load_config(yamlname)
+        else:
+            utilities.log.info('grabbing a Dict file from the caller not via the yml')
+            self.config = inputcfg
         self.n_pad = self.config['TIME']['n_pad']
         #self.n_cycles = self.config['TIME']['AvgPer']
         self.n_cycles = self.config['TIME']['AvgPer'] if aveper is None else aveper
