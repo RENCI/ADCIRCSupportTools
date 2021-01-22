@@ -36,8 +36,9 @@ def buildLocalConfig(n_aveper=4, n_period=24, n_tide=12.42, n_pad=1):
         {'AvgPer': n_aveper,
          'n_tide': n_tide,
          'n_period': n_period,
-         'n_pad': n_pad }
-        }
+         'n_pad': n_pad }, 
+        'ERRORFIELD': {'EX_OUTLIER': True}
+    }
     utilities.log.info('Constructed an internal err.yml configuration dict containing {}'.format(cfg))
     return cfg
 
