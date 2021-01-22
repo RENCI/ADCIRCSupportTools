@@ -7,6 +7,7 @@
 import os,sys
 import numpy as np
 import pandas as pd
+import time as tm
 import matplotlib.pyplot as plt
 import seaborn as sns
 import matplotlib.dates as mdates
@@ -73,9 +74,8 @@ def fft_lowpass(signal, lowhrs):
     result = result * factor
     return np.fft.irfft(result, len(signal))
 
-# The means are proper means for the month./week. The loffsey simply changes the index underwhich it will be stored
-# Moved away from deprecated codes
-# THe weekly means index at starting week +3 days.
+# The means are proper means for the month./week. The offset simply changes the index underwhich it will be stored
+# The weekly means index at starting week +3 days.
 def station_level_means(df_obs, df_adc, df_err, station):
     dfs = pd.DataFrame()
     dfs['OBS']=df_obs[station]
@@ -98,8 +98,7 @@ def station_level_means(df_obs, df_adc, df_err, station):
     dfs_7d = dfs[data_columns].rolling(7, center=True).mean()
     return dfs, dfs_weekly_mean, dfs_monthly_mean, dfs_7d
 
-# Brian prefers to use a lowpass filter. than the means
-
+# Brian prefers to use a lowpass filter than the means
 
 def dictToDataFrame(dataDict, src):
     stations = list(dataDict.keys())
@@ -183,137 +182,163 @@ def makeLowpassPlot(start, end, lowpassAllstations, filterOrder='', metadata=['l
     plt.savefig(fileName)
     #plt.show()
 
-f='/projects/sequence_analysis/vol1/prediction_work/Reanalysis/2018-Reanalysis-ERR_weeklyMeans/JAN72018/adc_obs_error_merged.json'
-meta='/projects/sequence_analysis/vol1/prediction_work/Reanalysis/2018-Reanalysis-ERR_weeklyMeans/JAN72018/obs_water_level_metadata.json'
+# OrderedDicts ?
+def fetch_data_metadata(f, meta):
+    with open(meta, 'r') as fp:
+        try:
+            metaDict = json.load(fp)
+        except OSError:
+            utilities.log.error("Could not open/read file {}".format(meta)) 
+            sys.exit()
+    # Timeseries data
+    with open(f, 'r') as fp1:
+        try:
+            dataDict = json.load(fp1)
+        except OSError:
+            utilities.log.error("Could not open/read file {}".format(meta))
+            sys.exit()
+    return dataDict, metaDict
 
-# Read jsons, Convert to DataFrames for subsequent plotting
-# Metadata
-with open(meta, 'r') as fp:
-    try:
-        metaDict = json.load(fp)
-    except OSError:
-        utilities.log.error("Could not open/read file {}".format(meta)) 
-        sys.exit()
+def main(args):
+    t0 = tm.time()
 
-# Timeseries data
-with open(f, 'r') as fp1:
-    try:
-        dataDict = json.load(fp1)
-    except OSError:
-        utilities.log.error("Could not open/read file {}".format(meta))
-        sys.exit()
+    if not args.yearlyDir:
+        utilities.log.error('Need yearlyDir on command line: --yearlyDir <yearlyDir>')
+        return 1
+    topdir = args.yearlyDir.strip()
+    if not args.inyear:
+        utilities.log.error('Need compatible year on command line: --year <year>')
+        return 1
+    inyear = args.inyear.strip()
+    rootdir = '/'.join([topdir,'WEEKLY'])
 
-stations = list(dataDict.keys()) # For subsequent naming - are we sure order is maintained?
+    utilities.log.info('Yearly data (with flanks) found in {}'.format(topdir))
+    utilities.log.info('Actual year to process is {}'.format(inyear))
+    utilities.log.info('Specified rootdir underwhich all files will be stored. Rootdir is {}'.format(rootdir))
 
-# Metadata
-df_meta=pd.DataFrame(metaDict)
-df_meta.set_index('stationid',inplace=True)
+    #f='/projects/sequence_analysis/vol1/prediction_work/Reanalysis/2018-Reanalysis-ERR_weeklyMeans/JAN72018/adc_obs_error_merged.json'
+    #meta='/projects/sequence_analysis/vol1/prediction_work/Reanalysis/2018-Reanalysis-ERR_weeklyMeans/JAN72018/obs_water_level_metadata.json'
+    f='/'.join([topdir,'adc_obs_error_merged.json'])
+    meta='/'.join([topdir,'obs_water_level_metadata.json'])
 
-# Time series data. This ONLY works on compError generated jsons
-df_obs_all = dictToDataFrame(dataDict, 'OBS').loc['2018-01-01 01:00:00':'2018-12'] # Get whole year inclusive
-df_adc_all = dictToDataFrame(dataDict, 'ADC').loc['2018-01-01 01:00:00':'2018-12']
-df_err_all = dictToDataFrame(dataDict, 'ERR').loc['2018-01-01 01:00:00':'2018-12']
+    dataDict, metaDict = fetch_data_metadata(f, meta)
+    stations = list(dataDict.keys()) # For subsequent naming - are we sure order is maintained?
+
+    # Build time ranges
+    timein = '-'.join([inyear,'01','01'])
+    timeout = '-'.join([inyear,'12'])
+
+    # Metadata
+    df_meta=pd.DataFrame(metaDict)
+    df_meta.set_index('stationid',inplace=True)
+
+    utilities.log.info('Selecting yearly data between {} and {}, inclusive'.format(timein, timeout))
+    # Time series data. This ONLY works on compError generated jsons
+    df_obs_all = dictToDataFrame(dataDict, 'OBS').loc[timein:timeout] # Get whole year inclusive
+    df_adc_all = dictToDataFrame(dataDict, 'ADC').loc[timein:timeout]
+    df_err_all = dictToDataFrame(dataDict, 'ERR').loc[timein:timeout]
+
+    #start = df_err_all.index.min().strftime('%Y-%m')
+    #end = df_err_all.index.max().strftime('%Y-%m')
+    start = df_err_all.index.min()
 
 #############
 # Run the plot pipeline
+    sns.set(rc={'figure.figsize':(11, 4)}) # Setr gray background and white gird
+    for station in stations:
+        dfs, dfs_weekly_mean, dfs_monthly_mean, dfs_7d = station_level_means(df_obs_all, df_adc_all, df_err_all, station)
+        start=dfs.index.min().strftime('%Y-%m')
+        end=dfs.index.max().strftime('%Y-%m')
+        #start, end = '2018-01', '2019-01'
+        stationName = df_meta.loc[int(station)]['stationname']
+        makePlot(start, end, station, 'ERR', stationName, dfs, dfs_7d, dfs_weekly_mean, dfs_monthly_mean) 
 
-sns.set(rc={'figure.figsize':(11, 4)}) # Setr gray background and white gird
+    plot_timein=start
+    plot_timeout=end
 
-for station in stations:
-    dfs, dfs_weekly_mean, dfs_monthly_mean, dfs_7d = station_level_means(df_obs_all, df_adc_all, df_err_all, station)
-    #start=dfs.index.min().strftime('%Y-%m')
-    #end=dfs.index.max().strftime('%Y-%m')
-    start, end = '2018-01', '2019-01'
-    stationName = df_meta.loc[int(station)]['stationname']
-    makePlot(start, end, station, 'ERR', stationName, dfs, dfs_7d, dfs_weekly_mean, dfs_monthly_mean) 
+    # Construct new .csv files for each mid-week at a single FFT lowpass cutoff
+    # FFT Lowpass each station for all time. Then, extract values for all stations every mid week.
+    upshift=4
+    hourly_cutoffs=[168]
+    cutoffs = [x + upshift for x in hourly_cutoffs]
+    intersectedStations=stations
+    fftAllstations=dict()
 
-# Additional plots over several lowpass cutoffs
+    # Perform FFT for each stationm oveer the entire time range
+    df_err_all_lowpass=pd.DataFrame()
+    for station in intersectedStations:
+        print('Process station {}'.format(station))
+        stationName = df_meta.loc[int(station)]['stationname']
+        df_fft=pd.DataFrame()
+        for cutoffflank,cutoff in zip(cutoffs,hourly_cutoffs):
+            print('Process cutoff {} for station {}'.format(cutoff,station))
+            df_temp = df_err_all[station].dropna()
+            df_fft[str(cutoff)]=fft_lowpass(df_temp,lowhrs=cutoffflank)
+        df_fft.index = df_temp.index
+        df_err_all_lowpass[station]=df_fft[str(cutoff)]
 
-plot_timein=start
-plot_timeout=end
+    # Now pull out weekly data starting at the middle of the first week
+    # Build a list of indexes from which to extract data. Start at the first midweek then increment every 168 hours
+    # How to handle leap years?
+    
+    midtime=''.join([inyear,'-01-03 12:00:00']) # This is ALWAYS true 
+    #starttime=start.strftime('%Y-%m-%d %H:%M:%S')
+    starttime=''.join([inyear,'-01-01 00:00:00']) 
+    endtime=''.join([inyear,'-01-07 00:00:00'])
+    #starttime='2018-01-03 12:00:00'
+    listdata = pd.date_range(midtime, periods=52, freq=pd.offsets.Hour(n=168)) #.values
+    startweek=pd.date_range(starttime, periods=52, freq=pd.offsets.Hour(n=168)) #.values
+    endweek=pd.date_range(endtime, periods=52, freq=pd.offsets.Hour(n=168)) #.values
 
-# FFT Lowpass 
-upshift=4
-#hourly_cutoffs=[12,24,48,168,720]
-hourly_cutoffs=[12,24,48,168]
-cutoffs = [x + upshift for x in hourly_cutoffs]
-intersectedStations=stations
-fftAllstations=dict()
+    # Build metadata for the files
+    # FOr every midweek tryt to build a week range as metadfata. This is fraught with weakness
+    iometa = dict()
+    for mid,start,end in zip(listdata, startweek, endweek):
+        iometa[mid]=weekname = '_'.join([start.strftime('%Y%m%d%H%M'),end.strftime('%Y%m%d%H%M')])
 
-# FFT Lowpass plots ar several cutoffs
+    df_err_all_lowpass_subselect=df_err_all_lowpass.loc[listdata]
 
-for station in intersectedStations:
-    print('Process station {}'.format(station))
-    stationName = df_meta.loc[int(station)]['stationname']
-    fftdata = dict() # Carry all stations in the order processed buty first add the OBS and detided
-    fftdata['OBS']=df_obs_all[station] # Data to interpret
-    fftdata['ERR']=df_err_all[station] # Actual detided data set
-    df_fft=pd.DataFrame()
-    for cutoffflank,cutoff in zip(cutoffs,hourly_cutoffs):
-        print('Process cutoff {} for station {}'.format(cutoff,station))
-        df_temp = df_err_all[station].dropna()
-        df_fft[str(cutoff)]=fft_lowpass(df_temp,lowhrs=cutoffflank)
-    df_fft.index = df_temp.index
-    fftdata['FFT']=df_fft
-    fftAllstations[station]=fftdata
-    fftAllstations['station']=station
-    fftAllstations['stationName']=stationName
-    # For each station plot. OBS,explicit detided, cutoffs
-    makeLowpassPlot(plot_timein, plot_timeout, fftAllstations, filterOrder='', metadata=['lowpass_fft','FFT'])
+    # Now process the Rows and build a new datafile for each
+    # df_meta and df report stationids as diff types. Yuk.
+    # Store the list iof filenames into a dict for krig processing
 
-# COnstruct new .csv files at a single cutoff
-# FFT Lowpass each station for all time. Then, extract values for all stations every mid week.
+    # Add starttime-endtime to the weekly data nomenclature in additional to week number
 
-upshift=4
-hourly_cutoffs=[168]
-cutoffs = [x + upshift for x in hourly_cutoffs]
-intersectedStations=stations
-fftAllstations=dict()
+    subdir='errorfield'
 
-df_err_all_lowpass=pd.DataFrame()
-for station in intersectedStations:
-    print('Process station {}'.format(station))
-    stationName = df_meta.loc[int(station)]['stationname']
-    df_fft=pd.DataFrame()
-    for cutoffflank,cutoff in zip(cutoffs,hourly_cutoffs):
-        print('Process cutoff {} for station {}'.format(cutoff,station))
-        df_temp = df_err_all[station].dropna()
-        df_fft[str(cutoff)]=fft_lowpass(df_temp,lowhrs=cutoffflank)
-    df_fft.index = df_temp.index
-    df_err_all_lowpass[station]=df_fft[str(cutoff)]
+    datadict = dict()
+    for index, df in df_err_all_lowpass_subselect.iterrows():
+        midweekstamp=index.strftime("%V")
+        #metadata='_'+index.strftime("%Y-%m-%d")
+        metadata='_'+iometa[index]
+        df.index = df.index.astype('int64')    
+        df_merged=df_meta.join(df)
+        df_merged.drop('stationname',axis=1, inplace=True)
+        df_merged.columns=['lat','lon','Node','mean']
+        df_merged.dropna(inplace=True) # Cannot pass Nans to the kriging system
+        df_merged.index.name = None
+        #outfilename='_'.join(['stationSummaryLowpassWeekly',midweekstamp])+'.csv'
+        outfilename=utilities.writeCsv(df_merged,rootdir=rootdir,subdir=subdir,fileroot='_'.join(['stationSummaryAves',midweekstamp]),iometadata=metadata)
+        datadict[midweekstamp]=outfilename
+        df_merged.to_csv(outfilename)
 
-# Now pull out weekly data starting at the middle of the first week
-# Build a list of indexes from which to extract data. Start at the first midweek then increment every 164 hours
+    outfilesjson = utilities.writeDictToJson(datadict, rootdir=rootdir,subdir=subdir,fileroot='runProps',iometadata='') # Never change fname
+    utilities.log.info('Wrote pipeline Dict data to {}'.format(outfilesjson))
+    print('Finished generating weekly lowpass data files')
 
-starttime='2018-01-03 12:00:00'
+if __name__ == '__main__':
+    from argparse import ArgumentParser
+    import sys
 
-listdata = pd.date_range(starttime, periods=52, freq=pd.offsets.Hour(n=168)).values
-df_err_all_lowpass_subselect=df_err_all_lowpass.loc[listdata]
+    parser = ArgumentParser()
+    parser.add_argument('--yearlyDir', action='store', dest='yearlyDir', default=None,
+                        help='directory for yearly data')
+    parser.add_argument('--inyear ', action='store', dest='inyear', default=None,
+                        help='year to keep from the data ( removes anyu flanking months )')
+    parser.add_argument('--iometadata', action='store', dest='iometadata',default='', help='Used to further annotate output files', type=str)
+    parser.add_argument('--iosubdir', action='store', dest='iosubdir',default='', help='Used to locate output files into subdir', type=str)
+    args = parser.parse_args()
+    sys.exit(main(args))
 
-# Now process the Rows and build a new datafile for each
-# Leverage the df_meta object to create the final datasets
-# df_meta and df report stationids as diff types. Yuk.
-# Store the list iof filenames into a dict for krig processing
 
-rootdir='.'
-subdir='LOWPASS'
 
-datadict = dict()
-for index, df in df_err_all_lowpass_subselect.iterrows():
-    midweekstamp=index.strftime("%V")
-    metadata='_'+index.strftime("%Y-%m-%d")
-    df.index = df.index.astype('int64')    
-    df_merged=df_meta.join(df)
-    df_merged.drop('stationname',axis=1, inplace=True)
-    df_merged.columns=['lat','lon','Node','mean']
-    df_merged.dropna(inplace=True) # Cannot pass Nans to the kriging system
-    df_merged.index.name = None
-    #outfilename='_'.join(['stationSummaryLowpassWeekly',midweekstamp])+'.csv'
-    outfilename=utilities.writeCsv(df_merged,rootdir=rootdir,subdir=subdir,fileroot='_'.join(['stationSummaryLowpassWeek',midweekstamp]),iometadata=metadata)
-    datadict[midweekstamp]=outfilename
-    df_merged.to_csv(outfilename)
-
-outfilesjson = utilities.writeDictToJson(datadict, rootdir=rootdir,subdir=subdir,fileroot='runProps',iometadata='') # Never change fname
-utilities.log.info('Wrote pipeline Dict data to {}'.format(outfilesjson))
-
-print('Finished generating lowpass data files')
