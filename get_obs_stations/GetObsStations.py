@@ -239,6 +239,7 @@ class GetObsStations(object):
                     product=fileobj[key][format]['PRODUCT']
                     window=str(fileobj[key][format]['WINDOW'])
                     filebase='_'.join(['obs',product,'smoothed',window]) 
+                    #filebase='_'.join(['obs',product,'smoothed',window]) 
                     df_data = fileobj[key][format]['DATA']
                     if format=='PKL':
                         self.smoothedpkl = utilities.writePickle(df_data, rootdir=self.rootdir,subdir=self.iosubdir,fileroot=filebase,iometadata=self.iometadata)

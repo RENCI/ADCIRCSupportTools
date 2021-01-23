@@ -97,7 +97,6 @@ def exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdi
     dummy = rpl.buildURLsForStationPlotting(newstationlist, timein, timeout) # Could also use newstationlist+excludelist
 
     outputdict = rpl.writeFilesToDisk()
-
     detailedpkl=outputdict['PKLdetailed']
     detailedJ=outputdict['JSONdetailed']
     smoothedpkl=outputdict['PKLsmoothed']
