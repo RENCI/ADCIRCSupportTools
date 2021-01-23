@@ -211,7 +211,7 @@ class computeErrorField(object):
         diff.reset_index(inplace=True) # Specify integers as indexes so we can use a groupby function
         utilities.log.info('Averaging: groupby '+str(self.n_period))
         if self.n_period != 12:
-            sys.exit('Averaging: n_periods not tested beyond = 12')
+            utilities.log.info('Averaging: n_periods greater than the usual 12')
         self.df_cycle_avgs = diff.groupby(diff.index // self.n_period).mean().T
         self.df_cycle_avgs.columns = ['Period_'+str(x) for x in self.df_cycle_avgs.columns]
         self.df_cycle_avgs = pd.concat([self.df_meta[['lon','lat','Node']], self.df_cycle_avgs],axis=1)
