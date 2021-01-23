@@ -11,12 +11,12 @@ export PYTHONPATH=$CODEBASE:$PYTHONPATH
 export RUNTIMEDIR=.
 
 # Build the yearly error file store in $RUNTIMEDIR
-# python yearlyReanalysis.py --rootdir ./YEARLY--urljson reanalysis.json
+python yearlyReanalysis.py --rootdir ./YEARLY--urljson reanalysis.json
 
 # Store files in $RUNTIMEDIR/WEEKLY/errorfield
 export INDIR=$RUNTIMEDIR/YEARLY
 export OUTROOT=$RUNTIMEDIR/YEARLY/WEEKLY
-#python weeklyLowpassSampledError.py --inyear 2018 --inDir $RUNTIMEDIR --outroot $OUTROOT
+python weeklyLowpassSampledError.py --inyear 2018 --inDir $INDIR --outroot $OUTROOT
 
 # Interpolate all stationAves files in the specified directory
 export OUTROOT=$RUNTIMEDIR/YEARLY/WEEKLY
