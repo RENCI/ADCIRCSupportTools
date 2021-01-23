@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+
+
 # Invoke the interpolationm pipeline and create ADCIRC formatted files
 # NOTE: there is an implied order here. We expect the input data to be lon x lat
 # We maintain this order when performing interpolations/predictions
@@ -38,7 +41,7 @@ def parseDateFilename(infilename):
     """
     filename must be of the form stationSummaryAves_01_201801010000_201801070000.csv
     """
-    words=(infilename.split('.')[0]).split('_') 
+    words=(infilename.split('.')[-2]).split('_') 
     metadata = '_'+words[-3]+'_'+words[-1]+'_'+words[-2]
     return metadata
     
@@ -58,7 +61,7 @@ def main(args):
         rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'], basedirExtra=iosubdir)
     else:
         rootdir = args.outroot
-    utilities.log.info('Specified outroot underwhich all files will be stored. Rootdir is {}'.format(outroot))
+    utilities.log.info('Specified rootdir underwhich all files will be stored. Rootdir is {}'.format(rootdir))
     ##rootdir=utilities.fetchBasedir(config['DEFAULT']['RDIR'],basedirExtra=extraExpDir)
    
     # Set up interpolation YML. To find clamp file if not specified
