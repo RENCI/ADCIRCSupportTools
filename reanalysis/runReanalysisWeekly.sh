@@ -10,11 +10,12 @@ export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/CausalInferen
 export RUNTIMEDIR=./YEARLY
 
 # Build the yearly error file store in $RUNTIMEDIR
-python yearlyReanalysis.py --urljson reanalysis.json
+# python yearlyReanalysis.py --urljson reanalysis.json
 
 # Store files in $RUNTIMEDIR/WEEKLY/errorfield
-export RUNTIMEDIR=./YEARLY
-#python weeklyLowpassSampledError.py --inyear 2018 --yearlyDir $RUNTIMEDIR
+export INDIR=./YEARLY
+export OUTROOT=./YEARLY/WEEKLY
+python weeklyLowpassSampledError.py --inyear 2018 --inDir $RUNTIMEDIR --outRoot $OUTROOT
 
 # Interpolate
 ERRDIR=$RUNTIMEDIR/errorfield

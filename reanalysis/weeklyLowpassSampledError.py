@@ -202,15 +202,20 @@ def fetch_data_metadata(f, meta):
 def main(args):
     t0 = tm.time()
 
-    if not args.yearlyDir:
-        utilities.log.error('Need yearlyDir on command line: --yearlyDir <yearlyDir>')
+    if not args.inDir:
+        utilities.log.error('Need inDir on command line: --inDir <inDir>')
         return 1
-    topdir = args.yearlyDir.strip()
+    topdir = args.inDir.strip()
+
+    if not args.outroot:
+        utilities.log.error('Need outroot on command line: --inDir <inDir>')
+        return 1
+    rootdir = args.outroot.strip()
     if not args.inyear:
         utilities.log.error('Need compatible year on command line: --year <year>')
         return 1
     inyear = args.inyear.strip()
-    rootdir = '/'.join([topdir,'WEEKLY'])
+    #rootdir = '/'.join([outroot,'WEEKLY'])
 
     utilities.log.info('Yearly data (with flanks) found in {}'.format(topdir))
     utilities.log.info('Actual year to process is {}'.format(inyear))
@@ -331,7 +336,9 @@ if __name__ == '__main__':
     import sys
 
     parser = ArgumentParser()
-    parser.add_argument('--yearlyDir', action='store', dest='yearlyDir', default=None,
+    parser.add_argument('--inDir', action='store', dest='inDir', default=None,
+                        help='directory for yearly data')
+    parser.add_argument('--outroot', action='store', dest='outroot', default=None,
                         help='directory for yearly data')
     parser.add_argument('--inyear ', action='store', dest='inyear', default=None,
                         help='year to keep from the data ( removes anyu flanking months )')

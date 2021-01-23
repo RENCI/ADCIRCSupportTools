@@ -54,11 +54,11 @@ def main(args):
 
     config = utilities.load_config()
     extraExpDir=args.subdir_name
-    if args.rootdir is None:
+    if args.outroot is None:
         rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'], basedirExtra=iosubdir)
     else:
-        rootdir = args.rootdir
-    utilities.log.info('Specified rootdir underwhich all files will be stored. Rootdir is {}'.format(rootdir))
+        rootdir = args.outroot
+    utilities.log.info('Specified outroot underwhich all files will be stored. Rootdir is {}'.format(outroot))
     ##rootdir=utilities.fetchBasedir(config['DEFAULT']['RDIR'],basedirExtra=extraExpDir)
    
     # Set up interpolation YML. To find clamp file if not specified
@@ -251,7 +251,7 @@ if __name__ == '__main__':
     parser.add_argument('--yamlname', action='store', dest='yamlname', default=None)
     parser.add_argument('--error_histograms', action='store_true',dest='error_histograms',
                         help='Boolean: Display histograms station only, vis grid errors, and adcirc nodes')
-    parser.add_argument('--rootdir', action='store', dest='rootdir', default=None,
+    parser.add_argument('--outroot', action='store', dest='outroot', default=None,
                         help='Available high level output dir directory')
     args = parser.parse_args()
     sys.exit(main(args))
