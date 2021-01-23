@@ -11,7 +11,7 @@ export PYTHONPATH=$CODEBASE:$PYTHONPATH
 export RUNTIMEDIR=./TEST
 
 # Build the yearly error file store in $RUNTIMEDIR
-python yearlyReanalysis.py --rootdir $RUNTIMEDIR/YEARLY--urljson reanalysis.json
+python yearlyReanalysis.py --rootdir $RUNTIMEDIR/YEARLY --urljson reanalysis.json
 
 # Store files in $RUNTIMEDIR/WEEKLY/errorfield
 export INDIR=$RUNTIMEDIR/YEARLY
