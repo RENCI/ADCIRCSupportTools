@@ -8,7 +8,7 @@
 
 export CODEBASE=/projects/sequence_analysis/vol1/prediction_work/CausalInference/CausalNetworking_forKirk/TEST/ADCIRCSupportTools
 export PYTHONPATH=$CODEBASE:$PYTHONPATH
-export RUNTIMEDIR=./TEST
+export RUNTIMEDIR=.
 
 # Build the yearly error file store in $RUNTIMEDIR
 python yearlyReanalysis.py --rootdir $RUNTIMEDIR/YEARLY --urljson reanalysis.json
