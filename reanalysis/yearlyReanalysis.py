@@ -61,6 +61,7 @@ def fetchNOW():
 
 def exec_adcirc_url(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids):
     adc = Adcirc(adc_yamlname)
+    #rootdir = utilities.fetchBasedir(inrootdir) # Ensure the directory exists
     adc.urls = urls
     adc.get_grid_coords()
     utilities.log.debug(' gridx {}'.format(adc.gridx[:]))
@@ -157,6 +158,8 @@ def main(args):
     iosubdir = args.iosubdir
     iometadata = args.iometadata
     main_config = utilities.load_config() # Get main comnfig. RUNTIMEDIR, etc
+
+#rootdir = utilities.fetchBasedir(inrootdir) # Ensure the directory exists
 
     if args.rootdir is None:
         rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'], basedirExtra=iosubdir)
