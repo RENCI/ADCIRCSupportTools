@@ -27,7 +27,8 @@ mv $RUNTIMEDIR/log $RUNTIMEDIR/$BASEDIREXTRA/log-weekly
 # Interpolate a single specific file
 export ADCJSON=$INDIR/adc_coord.json
 export CLAMPFILE=$CODEBASE/config/clamp_list_hsofs.dat
-export YAMLNAME=$CODEBASE/config/int.REANALYSIS.yml
+#export YAMLNAME=$CODEBASE/config/int.REANALYSIS.yml
+export YAMLNAME=$CODEBASE/config/int.yml
 export OUTROOT=$RUNTIMEDIR/$BASEDIREXTRA/WEEKLY
 export ERRDIR=$OUTROOT/errorfield
 python  iterateKriging.py  --outroot $OUTROOT --yamlname $YAMLNAME --errordir $ERRDIR --clampfile $CLAMPFILE --gridjsonfile $ADCJSON
