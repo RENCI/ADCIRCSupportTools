@@ -161,10 +161,13 @@ def main(args):
 
 #rootdir = utilities.fetchBasedir(inrootdir) # Ensure the directory exists
 
+    # Trick the systen to create the dirs
     if args.rootdir is None:
-        rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'], basedirExtra=iosubdir)
+        inrootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'], basedirExtra=iosubdir)
+        rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'], basedirExtra='')
     else:
-        rootdir = args.rootdir
+        inrootdir = args.rootdir
+
     utilities.log.info('Specified rootdir underwhich all files will be stored. Rootdir is {}'.format(rootdir))
 
     outfiles['RUNDATE']=dt.datetime.now().strftime('%Y%m%d%H%M')
@@ -181,9 +184,10 @@ def main(args):
     station_ids = station_df["stationid"].values.reshape(-1,)
     node_idx = station_df["Node"].values
 
+    # NOTE using inrootdir here
     utilities.log.info('Fetch ADCIRC')
     adc_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'adc.yml')
-    ADCfile, ADCjson, timestart, timeend = exec_adcirc_url(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids)
+    ADCfile, ADCjson, timestart, timeend = exec_adcirc_url(urls, inrootdir, iometadata, adc_yamlname, node_idx, station_ids)
     utilities.log.info('Completed ADCIRC nowcast Reads')
     outfiles['ADCIRC_WL_PKL']=ADCfile
     outfiles['ADCIRC_WL_JSON']=ADCjson
