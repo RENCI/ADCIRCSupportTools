@@ -164,7 +164,7 @@ def main(args):
     # Trick the systen to create the dirs
     if args.rootdir is None:
         inrootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'], basedirExtra=iosubdir)
-        rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'], basedirExtra='')
+        rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'],basedirExtra='')
     else:
         inrootdir = args.rootdir
 

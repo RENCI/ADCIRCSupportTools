@@ -136,6 +136,7 @@ def makePlot(start, end, station, src, stationName, dfs, dfs_7d, dfs_weekly_mean
     plt.yticks(fontsize=10)
     plt.tight_layout()
     fname='/'.join([odir,station+'.png'])
+    #fname=station+'.png'
     utilities.log.info('Saving station png {}'.format(fname))
     plt.savefig(fname)
     plt.close()
@@ -221,6 +222,9 @@ def main(args):
     inyear = args.inyear.strip()
     #rootdir = '/'.join([outroot,'WEEKLY'])
 
+    # Ensure the destination is created
+    ##rootdir = utilities.fetchBasedir(rootdir,basedirExtra='')
+
     utilities.log.info('Yearly data (with flanks) found in {}'.format(topdir))
     utilities.log.info('Actual year to process is {}'.format(inyear))
     utilities.log.info('Specified rootdir underwhich all files will be stored. Rootdir is {}'.format(rootdir))
@@ -252,18 +256,6 @@ def main(args):
     start = df_err_all.index.min()
 
 #############
-# Run the plot pipeline
-    sns.set(rc={'figure.figsize':(11, 4)}) # Setr gray background and white gird
-    for station in stations:
-        dfs, dfs_weekly_mean, dfs_monthly_mean, dfs_7d = station_level_means(df_obs_all, df_adc_all, df_err_all, station)
-        start=dfs.index.min().strftime('%Y-%m')
-        end=dfs.index.max().strftime('%Y-%m')
-        #start, end = '2018-01', '2019-01'
-        stationName = df_meta.loc[int(station)]['stationname']
-        makePlot(start, end, station, 'ERR', stationName, dfs, dfs_7d, dfs_weekly_mean, dfs_monthly_mean, rootdir) 
-
-    plot_timein=start
-    plot_timeout=end
 
     # Construct new .csv files for each mid-week at a single FFT lowpass cutoff
     # FFT Lowpass each station for all time. Then, extract values for all stations every mid week.
@@ -332,6 +324,18 @@ def main(args):
         df_merged.to_csv(outfilename)
 
     outfilesjson = utilities.writeDictToJson(datadict, rootdir=rootdir,subdir=subdir,fileroot='runProps',iometadata='') # Never change fname
+
+
+# Run the plot pipeline ASSUMES rootdir has been created already
+    sns.set(rc={'figure.figsize':(11, 4)}) # Setr gray background and white gird
+    for station in stations:
+        dfs, dfs_weekly_mean, dfs_monthly_mean, dfs_7d = station_level_means(df_obs_all, df_adc_all, df_err_all, station)
+        start=dfs.index.min().strftime('%Y-%m')
+        end=dfs.index.max().strftime('%Y-%m')
+        stationName = df_meta.loc[int(station)]['stationname']
+        makePlot(start, end, station, 'ERR', stationName, dfs, dfs_7d, dfs_weekly_mean, dfs_monthly_mean, rootdir) 
+
+
     utilities.log.info('Wrote pipeline Dict data to {}'.format(outfilesjson))
     print('Finished generating weekly lowpass data files')
 
