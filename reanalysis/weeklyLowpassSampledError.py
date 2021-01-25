@@ -115,7 +115,7 @@ def dictToDataFrame(dataDict, src):
     df.index = pd.to_datetime(df.index)
     return df
 
-def makePlot(start, end, station, src, stationName, dfs, dfs_7d, dfs_weekly_mean, dfs_monthly_mean): 
+def makePlot(start, end, station, src, stationName, dfs, dfs_7d, dfs_weekly_mean, dfs_monthly_mean, odir): 
     sns.set(rc={'figure.figsize':(11, 4)}) # Setr gray background and white gird
     # Plot daily, weekly resampled, and 7-day rolling mean time series together
     fig, ax = plt.subplots()
@@ -135,7 +135,9 @@ def makePlot(start, end, station, src, stationName, dfs, dfs_7d, dfs_weekly_mean
     plt.xticks(rotation=0, fontsize=10)
     plt.yticks(fontsize=10)
     plt.tight_layout()
-    plt.savefig(station+'.png')
+    fname='/'.join([odir,station+'.png'])
+    utilities.log.info('Saving station png {}'.format(fname))
+    plt.savefig(fname)
     plt.close()
     #plt.show()
 
@@ -258,7 +260,7 @@ def main(args):
         end=dfs.index.max().strftime('%Y-%m')
         #start, end = '2018-01', '2019-01'
         stationName = df_meta.loc[int(station)]['stationname']
-        makePlot(start, end, station, 'ERR', stationName, dfs, dfs_7d, dfs_weekly_mean, dfs_monthly_mean) 
+        makePlot(start, end, station, 'ERR', stationName, dfs, dfs_7d, dfs_weekly_mean, dfs_monthly_mean, rootdir) 
 
     plot_timein=start
     plot_timeout=end
