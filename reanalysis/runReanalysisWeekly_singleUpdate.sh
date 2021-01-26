@@ -14,7 +14,7 @@ export RUNTIMEDIR=.
 export BASEDIREXTRA=TESTFULL/YEARLY-$YEAR
 
 # Build the yearly error file store in $RUNTIMEDIR/BASEDIREXTRA
-#python yearlyReanalysis.py --iosubdir $BASEDIREXTRA --urljson reanalysis.json
+python yearlyReanalysis.py --iosubdir $BASEDIREXTRA --urljson reanalysis.json
 mv $RUNTIMEDIR/log $RUNTIMEDIR/$BASEDIREXTRA/log-yearly
 
 # Store files in $RUNTIMEDIR/WEEKLY/errorfield
