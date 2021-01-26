@@ -137,6 +137,18 @@ class Utilities:
                     sys.exit("Creation of the high level run directory %s failed" % rundir)
         return rundir
 
+    def setBasedir(self, indir, basedirExtra='None'):
+        if basedirExtra is not None:
+            indir = indir+'/'+basedirExtra
+            if not os.path.exists(indir):
+                #print("Create high level Cycle dir space at "+rundir)
+                try:
+                    #os.mkdir(rundir)
+                    os.makedirs(indir)
+                except OSError:
+                    sys.exit("Creation of the high level run directory %s failed" % indir)
+        return indir
+
     def getSubdirectoryFileName(self, basedir, subdir, fname ):
         """Check and existance of and construct filenames for 
         storing the image data. basedir/subdir/filename 
@@ -145,14 +157,14 @@ class Utilities:
         # print(basedir)
         if not os.path.exists(basedir):
             try:
-                os.mkdir(basedir)
+                os.makedirs(basedir)
             except OSError:
                 sys.exit("Creation of the basedir %s failed" % basedir)
         fulldir = os.path.join(basedir, subdir)
         if not os.path.exists(fulldir):
             #print("Create datastation dir space at "+fulldir)
             try:
-                os.mkdir(fulldir)
+                os.makedirs(fulldir)
             except OSError:
                 sys.exit("Creation of the directory %s failed" % fulldir)
             #else:
