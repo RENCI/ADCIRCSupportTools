@@ -166,7 +166,7 @@ def main(args):
         inrootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'], basedirExtra=iosubdir)
         rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'],basedirExtra='')
     else:
-        inrootdir = args.rootdir
+        inrootdir = utilities.setBasedir(args.rootdir)
 
     utilities.log.info('Specified rootdir underwhich all files will be stored. Rootdir is {}'.format(rootdir))
 
