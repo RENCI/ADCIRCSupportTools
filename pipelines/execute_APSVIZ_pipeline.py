@@ -202,6 +202,7 @@ def main(args):
         rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'], basedirExtra=iosubdir)
     else:
         rootdir = args.outputDir
+        rootdir = utilities.setBasedir(args.outputDir)
     utilities.log.info('Specified rootdir underwhich all files will be stored. Rootdir is {}'.format(rootdir))
 
     outfiles['RUNDATE']=dt.datetime.now().strftime('%Y%m%d%H%M')
