@@ -42,7 +42,7 @@ def main(args):
         utilities.log.info('ADCJSON {}'.format(ADCJSON))
         utilities.log.info('YAMLNAME {}'.format(YAMLNAME))
         utilities.log.info('ROOTDIR {}'.format(ROOTDIR))
-        os.system('python krigListOfErrorSets.py  --outroot '+ROOTDIR+' --yamlname '+YAMLNAME+'  --errorfile '+ERRFILE+' --clampfile '+CLAMPFILE+' --gridjsonfile '+ADCJSON)
+        os.system('python krigListOfErrorSets.py --cv_kriging  --outroot '+ROOTDIR+' --yamlname '+YAMLNAME+'  --errorfile '+ERRFILE+' --clampfile '+CLAMPFILE+' --gridjsonfile '+ADCJSON)
     print('Completed ensemble')
 
 if __name__ == '__main__':

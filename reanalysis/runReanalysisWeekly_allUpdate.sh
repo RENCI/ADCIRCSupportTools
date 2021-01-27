@@ -31,5 +31,5 @@ export CLAMPFILE=$CODEBASE/config/clamp_list_hsofs.dat
 export YAMLNAME=$CODEBASE/config/int.REANALYSIS.yml
 export OUTROOT=$RUNTIMEDIR/$BASEDIREXTRA/WEEKLY
 export ERRDIR=$OUTROOT/errorfield
-python  iterateKriging.py  --outroot $OUTROOT --yamlname $YAMLNAME --errordir $ERRDIR --clampfile $CLAMPFILE --gridjsonfile $ADCJSON
+python  iterateKriging.py  --cv_kriging --outroot $OUTROOT --yamlname $YAMLNAME --errordir $ERRDIR --clampfile $CLAMPFILE --gridjsonfile $ADCJSON
 mv $RUNTIMEDIR/log $RUNTIMEDIR/$BASEDIREXTRA/log-interpolate
