@@ -165,7 +165,7 @@ def main(args):
         int_yamlname=os.path.join(os.path.dirname(__file__), '../config', 'int.yml')
         #int_config = utilities.load_config(int_yamlname)
         #clampfile=os.path.join(os.path.dirname(__file__), "../config", int_config['DEFAULT']['ClampList'])
-        #clampfile='/home/jtilson/ADCIRCSupportTools/config/clamp_list_hsofs.dat'
+        #clampfile='./ADCIRCSupportTools/config/clamp_list_hsofs.dat'
         # If clampingfile is None then it will be detemrioned from the inpout config
         #krig_object = interpolateScalerField(datafile=inerrorfile, yamlname=int_yamlname, clampingfile=None, metadata=iometadata, rootdir=rootdir)
         krig_object = interpolateScalerField(datafile=inerrorfile, yamlname=int_yamlname, metadata=iometadata, rootdir=rootdir)

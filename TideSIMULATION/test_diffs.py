@@ -266,8 +266,7 @@ rootdir=utilities.fetchBasedir(config['DEFAULT']['RDIR'], basedirExtra='StationT
 # Get HOUR  data. 3 stations are assembled in the obs.yml
 
 #yamlname=os.path.join(os.path.dirname(__file__), '../config', 'obs.yml')
-yamlname='/home/jtilson/ADCIRCSupportTools/TideSIMULATION/obs.yml'
-#yamlname='/home/jtilson/ADCIRCSupportTools/config/obs.yml'
+yamlname='~/ADCIRCSupportTools/TideSIMULATION/obs.yml'
 
 rpl = GetObsStations(product='hourly_height', rootdir=rootdir, yamlname=yamlname, metadata=iometadata)
 stations = rpl.stationListFromYaml()

@@ -20,9 +20,7 @@ python execute_APSVIZ_pipeline.py --url 'http://tds.renci.org:8080/thredds//dods
 # The variableName is help to allow the subsequence PNG assembler to work right
 
 export RUNTIMEDIR='./NEWTEST2'
-python ../get_adcirc/GetADCIRC.py --timeout '2020-10-26 00:00' --writeJson --variableName ADCPrepend --adcYamlname /home/jtilson/ADCIRCSupportTools/config/adc_forecast.yml
+python ../get_adcirc/GetADCIRC.py --timeout '2020-10-26 00:00' --writeJson --variableName ADCPrepend --adcYamlname ~/ADCIRCSupportTools/config/adc_forecast.yml
 
 #
-# Now build the new PNGs
 #
-/home/jtilson/ADCIRCSupportTools/pipelines/NEWTEST2/ADCIRC

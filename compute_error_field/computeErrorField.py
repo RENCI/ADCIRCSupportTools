@@ -382,7 +382,7 @@ def main(args):
     #extraExpDir=''
     rootdir=utilities.fetchBasedir(config['DEFAULT']['RDIR'],basedirExtra=extraExpDir)
     #
-    #dir='/home/jtilson/ADCIRCDataAssimilation/test/errorfield/'
+    #dir='~/ADCIRCDataAssimilation/test/errorfield/'
     #dir='../test/errorfield/'
     if missingFiles:
         dir = os.path.dirname(__file__)+'/ADCIRC'

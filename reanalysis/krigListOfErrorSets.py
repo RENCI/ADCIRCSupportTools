@@ -79,10 +79,6 @@ def main(args):
     # Override config for now
     config = utilities.load_config(yamlname)
 
-    #Fetch Error vector ti perform kriging
-    #finalf = args.errorfile
-    #finalf = '/home/jtilson/ADCIRCSupportTools/ADCIRC/stationSummaryAves_manualtest.csv' 
-
     iometadata=args.iometadata
     inerrorfile = args.errorfile
 
@@ -94,7 +90,6 @@ def main(args):
     clampfile = args.clampfile
 
     if clampfile==None:
-    #    clampfile='/home/jtilson/ADCIRCSupportTools/config/clamp_list_hsofs.dat'
     #    clampfile = os.path.join(os.path.dirname(__file__), "../config", config['DEFAULT']['ClampList'])
         utilities.log.info('No clampfile specified. Grab the one specified in the yaml')
         clampingfile = os.path.join(os.path.dirname(__file__), "../ADCIRCSupportTools/config", self.config['DEFAULT']['ClampList'])
@@ -104,7 +99,7 @@ def main(args):
     if clampfile!='Skip':
         do_adcird_grid=True
 
-    #gridjsonfile='/home/jtilson/ADCIRCSupportTools/get_adcirc/ADCIRC/adc_coord.json'
+    #gridjsonfile='./ADCIRCSupportTools/get_adcirc/ADCIRC/adc_coord.json'
     # gridjson is not really needed if you only want the 2D approximate image
 
     gridjsonfile = args.gridjsonfile
