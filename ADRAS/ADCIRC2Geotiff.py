@@ -425,15 +425,26 @@ def main(args):
         urls = utilities.read_json_file(args.urljson)
         dstr = '00'  # Need to fake these if you input a urljson
         cyc = '00'
+    elif args.url != None:
+        # If here we still need to build a dict for ADCIRC
+        url = args.url
+        dte='placeHolder' # The times will be determined from the real data
+        urls={dte:url}
+        dstr = '00'  # Need to fake these if you input a url
+        cyc = '00'
+        utilities.log.info('Explicit URL provided {}'.format(urls))
     else:
-        utilities.log.info('Executing the getURL process')
-        url, dstr, cyc = construct_url(varname)
-        urls = {'dstr': url}
+        utilities.log.error('No Proper URL specified')
+    #else:
+    #    utilities.log.info('Executing the getURL process')
+    #    url, dstr, cyc = construct_url(varname)
+    #    urls = {'dstr': url}
 
     # if not validate_url(urls):
     #     utilities.log.info('URL is invalid {}'.format(url))
 
     # Now construct filename destination using the dstr, cyc data
+
     iometadata = '_'.join([dstr, cyc])
     utilities.log.info('Attempt building dir name: {}, {}, {}'.format(
                  main_config['DEFAULT']['RDIR'], iometadata, experimentTag))
@@ -534,5 +545,7 @@ if __name__ == '__main__':
                         help='String: zeta_max, vel_max, or inun_max')
     parser.add_argument('--urljson', action='store', dest='urljson', default=None,
                         help='String: Filename with a json of urls to loop over.')
+    parser.add_argument('--url', action='store', dest='url', default=None,
+                        help='String: url.')
     args = parser.parse_args()
     sys.exit(main(args))
