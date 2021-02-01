@@ -315,7 +315,7 @@ def main(args):
         df.index = df.index.astype('int64')    
         df_merged=df_meta.join(df)
         df_merged.drop('stationname',axis=1, inplace=True)
-        df_merged.columns=['lat','lon','Node','mean','state']
+        df_merged.columns=['lat','lon','Node','state','mean']
         df_merged.dropna(inplace=True) # Cannot pass Nans to the kriging system
         df_merged.index.name = None
         #outfilename='_'.join(['stationSummaryLowpassWeekly',midweekstamp])+'.csv'
