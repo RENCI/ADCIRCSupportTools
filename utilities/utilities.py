@@ -137,16 +137,16 @@ class Utilities:
                     sys.exit("Creation of the high level run directory %s failed" % rundir)
         return rundir
 
-    def setBasedir(self, indir, basedirExtra='None'):
+    def setBasedir(self, indir, basedirExtra=None):
         if basedirExtra is not None:
             indir = indir+'/'+basedirExtra
-            if not os.path.exists(indir):
-                #print("Create high level Cycle dir space at "+rundir)
-                try:
-                    #os.mkdir(rundir)
-                    os.makedirs(indir)
-                except OSError:
-                    sys.exit("Creation of the high level run directory %s failed" % indir)
+        if not os.path.exists(indir):
+            #print("Create high level Cycle dir space at "+rundir)
+            try:
+                #os.mkdir(rundir)
+                os.makedirs(indir)
+            except OSError:
+                sys.exit("Creation of the high level run directory %s failed" % indir)
         return indir
 
     def getSubdirectoryFileName(self, basedir, subdir, fname ):
