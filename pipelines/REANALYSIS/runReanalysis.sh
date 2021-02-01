@@ -6,7 +6,7 @@
 #SBATCH -J Reanalysis
 #SBATCH --mem-per-cpu 512000
 
-export PYTHONPATH=/home/jtilson/ADCIRCSupportTools:$PYTHONPATH
+export PYTHONPATH=~/ADCIRCSupportTools:$PYTHONPATH
 export RUNTIMEDIR=.
 
 python yearlyReanalysis.py --urljson reanalysis.json

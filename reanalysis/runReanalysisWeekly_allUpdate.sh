@@ -11,7 +11,7 @@ export YEAR=2018
 export CODEBASE=/projects/sequence_analysis/vol1/prediction_work/CausalInference/CausalNetworking_forKirk/TEST/ADCIRCSupportTools
 export PYTHONPATH=$CODEBASE:$PYTHONPATH
 export RUNTIMEDIR=.
-export BASEDIREXTRA=TESTFULL/YEARLY-$YEAR/KRIG_CV_LONGRANGE
+export BASEDIREXTRA=TESTFULL/STATE/YEARLY-$YEAR/KRIG_CV_LONGRANGE
 
 # Build the yearly error file store in $RUNTIMEDIR/BASEDIREXTRA
 python yearlyReanalysis.py --iosubdir $BASEDIREXTRA --urljson reanalysis.json
@@ -31,5 +31,5 @@ export CLAMPFILE=$CODEBASE/config/clamp_list_hsofs.dat
 export YAMLNAME=$CODEBASE/config/int.REANALYSIS.yml
 export OUTROOT=$RUNTIMEDIR/$BASEDIREXTRA/WEEKLY
 export ERRDIR=$OUTROOT/errorfield
-python  iterateKriging.py  --cv_kriging --outroot $OUTROOT --yamlname $YAMLNAME --errordir $ERRDIR --clampfile $CLAMPFILE --gridjsonfile $ADCJSON
+python  iterateKriging.py --outroot $OUTROOT --yamlname $YAMLNAME --errordir $ERRDIR --clampfile $CLAMPFILE --gridjsonfile $ADCJSON
 mv $RUNTIMEDIR/log $RUNTIMEDIR/$BASEDIREXTRA/log-interpolate

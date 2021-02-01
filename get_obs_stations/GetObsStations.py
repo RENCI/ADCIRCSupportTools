@@ -375,7 +375,7 @@ class GetObsStations(object):
                 # print(stationlist)
                 sys.exit(1)
             df_stationData = df[df['stationid'].isin(self.stationlist)][
-                ['stationid', 'stationname', 'lat', 'lon', 'Node']]
+                ['stationid', 'stationname', 'lat', 'lon', 'Node', 'state']]
         except FileNotFoundError:
             raise IOerror("Failed to read %s" % (config['StationFile']))
         utilities.log.info("Update file dict")
