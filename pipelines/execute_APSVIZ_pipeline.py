@@ -205,7 +205,7 @@ def main(args):
         rootdir = utilities.setBasedir(args.outputDir)
     utilities.log.info('Specified rootdir underwhich all files will be stored. Rootdir is {}'.format(rootdir))
 
-    outfiles['RUNDATE']=dt.datetime.now().strftime('%Y%m%d%H%M')
+    outfiles['OBS_EXECUTE_DATE']=dt.datetime.now().strftime('%Y%m%d%H%M')
     outfiles['OUTPUTDIR']=rootdir
     outfiles['IOSUBDIR']=iosubdir
     outfiles['IOMETADATA']=iometadata
@@ -231,8 +231,8 @@ def main(args):
     ADCfileFore, ADCjsonFore, timestart_forecast, timeend_forecast = exec_adcirc_forecast(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids)
     utilities.log.info('Completed ADCIRC Forecast Read')
     utilities.log.info('Forecast timein={}, timeout={}'.format(timestart_forecast, timeend_forecast))
-    outfiles['ADCIRC_WL_FORECAST_PKL']=ADCfileFore
-    outfiles['ADCIRC_WL_FORECAST_JSON']=ADCjsonFore
+    outfiles['ADCIRC_WL_FORECAST_PKL']=os.path.basename(ADCfileFore)
+    outfiles['ADCIRC_WL_FORECAST_JSON']=os.path.basename(ADCjsonFore)
 
     # 5) Build the nowcast URL
     utilities.log.info('Build a nowcast style url')
@@ -247,8 +247,8 @@ def main(args):
     #adc_config = utilities.load_config(adc_yamlname)
     ADCfile, ADCjson, timestart, timeend = exec_adcirc(timeout.strftime('%Y-%m-%d %H:%M'), rootdir, '_nowcast'+iometadata, adc_yamlname, node_idx, station_ids, doffset=doffset)
     utilities.log.info('Completed ADCIRC nowcast Reads')
-    outfiles['ADCIRC_WL_PKL']=ADCfile
-    outfiles['ADCIRC_WL_JSON']=ADCjson
+    outfiles['ADCIRC_WL_PKL']=os.path.basename(ADCfile)
+    outfiles['ADCIRC_WL_JSON']=os.path.basename(ADCjson)
 
     # 3) Setup OBS specific YML-resident values
     utilities.log.info('Fetch Observations')
@@ -261,38 +261,38 @@ def main(args):
 
     # Could also set stations to None
     detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ = exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdir)
-    outfiles['OBS_DETAILED_PKL']=detailedpkl
-    outfiles['OBS_SMOOTHED_PKL']=smoothedpkl
-    outfiles['OBS_METADATA_PKL']=metapkl
-    outfiles['OBS_NOAA_COOPS_URLS_CSV']=urlcsv
-    outfiles['OBS_EXCLUDED_CSV']=exccsv
-    outfiles['OBS_DETAILED_JSON']=detailedJ
-    outfiles['OBS_SMOOTHED_JSON']=smoothedJ
-    outfiles['OBS_METADATA_JSON']=metaJ
+    outfiles['OBS_DETAILED_PKL']=os.path.basename(detailedpkl)
+    outfiles['OBS_SMOOTHED_PKL']=os.path.basename(smoothedpkl)
+    outfiles['OBS_METADATA_PKL']=os.path.basename(metapkl)
+    outfiles['OBS_NOAA_COOPS_URLS_CSV']=os.path.basename(urlcsv)
+    outfiles['OBS_EXCLUDED_CSV']=os.path.basename(exccsv)
+    outfiles['OBS_DETAILED_JSON']=os.path.basename(detailedJ)
+    outfiles['OBS_SMOOTHED_JSON']=os.path.basename(smoothedJ)
+    outfiles['OBS_METADATA_JSON']=os.path.basename(metaJ)
     utilities.log.info('Completed OBS: Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {} MetaJ {}, DetailedJ {}, SmoothedJ {}'.format(detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv,metaJ, detailedJ, smoothedJ))
 
     # 4) Setup ERR specific YML-resident values
     utilities.log.info('Error computation NOTIDAL corrections')
     err_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'err.yml')
-    meta = outfiles['OBS_METADATA_PKL']
-    obsf = outfiles['OBS_SMOOTHED_PKL']
-    adcf = outfiles['ADCIRC_WL_PKL']
+    meta = metapkl
+    obsf = smoothedpkl
+    adcf = ADCfile 
     errf, finalf, cyclef, metaf, mergedf, jsonf = exec_error(obsf, adcf, meta, err_yamlname, rootdir, iometadata, iosubdir)
-    outfiles['ERR_TIME_PKL']=errf
-    outfiles['ERR_TIME_JSON']=jsonf
-    outfiles['ERR_STATION_AVES_CSV']=errf  # THis would pass to interpolator
-    outfiles['ERR_STATION_PERIOD_AVES_CSV']=cyclef
-    outfiles['ERR_METADATA_CSV']=metaf
-    outfiles['ERR_ADCOBSERR_MERGED_CSV']=mergedf # This is useful for visualization insets of station bahavior
+    outfiles['ERR_TIME_PKL']=os.path.basename(errf)
+    outfiles['ERR_TIME_JSON']=os.path.basename(jsonf)
+    outfiles['ERR_STATION_AVES_CSV']=os.path.basename(errf)  # THis would pass to interpolator
+    outfiles['ERR_STATION_PERIOD_AVES_CSV']=os.path.basename(cyclef)
+    outfiles['ERR_METADATA_CSV']=os.path.basename(metaf)
+    outfiles['ERR_ADCOBSERR_MERGED_CSV']=os.path.basename(mergedf) # This is useful for visualization insets of station bahavior
     utilities.log.info('Completed ERR')
 
 
     # 6) Build a series of station-PNGs.
     # Build input dict for the plotting
     files=dict()
-    files['META']=outfiles['OBS_METADATA_JSON']
-    files['DIFFS']=outfiles['ERR_TIME_JSON']
-    files['FORECAST']=outfiles['ADCIRC_WL_FORECAST_JSON']
+    files['META']=metaJ # outfiles['OBS_METADATA_JSON']
+    files['DIFFS']=jsonf # outfiles['ERR_TIME_JSON']
+    files['FORECAST']=ADCjsonFore # outfiles['ADCIRC_WL_FORECAST_JSON']
     utilities.log.info('PNG plotter dict is {}'.format(files))
     png_dict = exec_pngs(files=files, rootdir=rootdir, iometadata=iometadata, iosubdir=iosubdir)
 

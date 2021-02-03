@@ -88,7 +88,7 @@ class stationPlotter(object):
         lon = df_meta.loc[int(station)]['lon']
         lat = df_meta.loc[int(station)]['lat']
         node = df_meta.loc[int(station)]['Node']
-        return {'STATION':station,'LAT':str(lat), 'LON':str(lon), 'NODE':str(node), 'FILENAME':pngfile}
+        return {'LAT':str(lat), 'LON':str(lon), 'NODE':str(node), 'FILENAME':pngfile}
 
 ## Now a string manipulator to help fiund the proper color
 ## Uses a greedy approach
@@ -160,7 +160,7 @@ class stationPlotter(object):
                     del newDict[station]
                     break
 
-    # Recheck station lisat
+    # Recheck station list
         stations = list(newDict.keys())
         print('Total number of non nan-empty  stations is {}'.format(len(stations)))
 
@@ -182,9 +182,11 @@ class stationPlotter(object):
             #pngfile='_'.join([station,'WL.png'])
             plt.savefig(pngfile)
             # Create a dict of lons,lats,nodes,filenames 
-            runProps[station]=self.makeDict(station, df_meta, pngfile)
+            runProps[station]=self.makeDict(station, df_meta, os.path.basename(pngfile)) # Remove full path
             ##print('{}'.format(runProps))
             #plt.show()
         dictfile='png_stations.json'
-        utilities.write_json_file(runProps, dictfile)
-        return runProps
+        runPropsFull=dict()
+        runPropsFull['STATIONS']=runProps
+        utilities.write_json_file(runPropsFull, dictfile)
+        return runPropsFull
