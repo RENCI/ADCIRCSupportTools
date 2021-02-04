@@ -206,7 +206,7 @@ def main(args):
     utilities.log.info('Specified rootdir underwhich all files will be stored. Rootdir is {}'.format(rootdir))
 
     outfiles['OBS_EXECUTE_DATE']=dt.datetime.now().strftime('%Y%m%d%H%M')
-    outfiles['OUTPUTDIR']=rootdir
+    outfiles['CLUSTER_OUTPUTDIR']=rootdir
     outfiles['IOSUBDIR']=iosubdir
     outfiles['IOMETADATA']=iometadata
    
