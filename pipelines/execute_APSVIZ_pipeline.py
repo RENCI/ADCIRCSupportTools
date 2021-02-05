@@ -92,7 +92,9 @@ def exec_adcirc_forecast(urls, rootdir, iometadata, adc_yamlname, node_idx, stat
     #timeend = adc.T2.strftime('%Y%m%d%H%M')
     timestart = adc.T1
     timeend = adc.T2
-    return ADCfile, ADCjson, timestart, timeend
+    df.index = pd.to_datetime(df.index)
+    rundate = generateRUNTIMEmetadata(df)
+    return ADCfile, ADCjson, timestart, timeend, rundate
 
 def exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdir):
     rpl = GetObsStations(iosubdir=iosubdir, rootdir=rootdir, yamlname=obs_yamlname, metadata=iometadata)
@@ -152,6 +154,16 @@ def buildLocalConfig():
     cfg['fortNumber']= "63"
     return cfg
 
+def generateRUNTIMEmetadata(df):
+    """ 
+    Look for smallest diff and subtract one off from the lowest value
+    """
+    timestart = df.index.min()
+    res = (pd.Series(df.index[1:]) - pd.Series(df.index[:-1])).value_counts()
+    timeinc = res.index.min()
+    timestartMinusIncrement = timestart - timeinc
+    return timestartMinusIncrement.strftime('%Y%m%d%H')
+
 # noinspection PyPep8Naming,DuplicatedCode
 def main(args):
 
@@ -205,7 +217,7 @@ def main(args):
         rootdir = utilities.setBasedir(args.outputDir)
     utilities.log.info('Specified rootdir underwhich all files will be stored. Rootdir is {}'.format(rootdir))
 
-    outfiles['OBS_EXECUTE_DATE']=dt.datetime.now().strftime('%Y%m%d%H%M')
+    outfiles['OBS_CREATIONTIME']=dt.datetime.now().strftime('%Y%m%d%H%M')
     outfiles['CLUSTER_OUTPUTDIR']=rootdir
     outfiles['IOSUBDIR']=iosubdir
     outfiles['IOMETADATA']=iometadata
@@ -228,11 +240,12 @@ def main(args):
     # 4) Get actual ASGS Forecast data from this we can ghet the times
     # Not any need to specify a diff yml since we pass in the url directly
     # This will be appended to the DIFF plots in the final PNGs
-    ADCfileFore, ADCjsonFore, timestart_forecast, timeend_forecast = exec_adcirc_forecast(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids)
+    ADCfileFore, ADCjsonFore, timestart_forecast, timeend_forecast, runDataMetadata = exec_adcirc_forecast(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids)
     utilities.log.info('Completed ADCIRC Forecast Read')
     utilities.log.info('Forecast timein={}, timeout={}'.format(timestart_forecast, timeend_forecast))
     outfiles['ADCIRC_WL_FORECAST_PKL']=os.path.basename(ADCfileFore)
     outfiles['ADCIRC_WL_FORECAST_JSON']=os.path.basename(ADCjsonFore)
+    outfiles['RUNDATE_FORECAST']= runDataMetadata # netCDF4 supplied model initialization time for the forecast
 
     # 5) Build the nowcast URL
     utilities.log.info('Build a nowcast style url')
