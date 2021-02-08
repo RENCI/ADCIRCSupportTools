@@ -11,17 +11,17 @@ export YEAR=2018
 export CODEBASE=/projects/sequence_analysis/vol1/prediction_work/CausalInference/CausalNetworking_forKirk/TEST/ADCIRCSupportTools
 export PYTHONPATH=$CODEBASE:$PYTHONPATH
 export RUNTIMEDIR=.
-export BASEDIREXTRA=TESTFULL/STATE/YEARLY-$YEAR/KRIG_CV_LONGRANGE
+export BASEDIREXTRA=TESTFULL/STATE/YEARLY-$YEAR/KRIG_LONGRANGE
 
 # Build the yearly error file store in $RUNTIMEDIR/BASEDIREXTRA
-python yearlyReanalysis.py --iosubdir $BASEDIREXTRA --urljson reanalysis.json
-mv $RUNTIMEDIR/log $RUNTIMEDIR/$BASEDIREXTRA/log-yearly
+#python yearlyReanalysis.py --iosubdir $BASEDIREXTRA --urljson reanalysis.json
+#mv $RUNTIMEDIR/log $RUNTIMEDIR/$BASEDIREXTRA/log-yearly
 
 # Store files in $RUNTIMEDIR/WEEKLY/errorfield
 export INDIR=$RUNTIMEDIR/$BASEDIREXTRA
 export OUTROOT=$RUNTIMEDIR/$BASEDIREXTRA/WEEKLY
-python weeklyLowpassSampledError.py --inyear 2018 --inDir $INDIR --outroot $OUTROOT
-mv $RUNTIMEDIR/log $RUNTIMEDIR/$BASEDIREXTRA/log-weekly
+#python weeklyLowpassSampledError.py --inyear 2018 --inDir $INDIR --outroot $OUTROOT
+#mv $RUNTIMEDIR/log $RUNTIMEDIR/$BASEDIREXTRA/log-weekly
 
 
 # Interpolate a single specific file

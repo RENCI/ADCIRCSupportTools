@@ -12,7 +12,7 @@ export YEAR=2018
 export CODEBASE=/projects/sequence_analysis/vol1/prediction_work/CausalInference/CausalNetworking_forKirk/TEST/ADCIRCSupportTools
 export PYTHONPATH=$CODEBASE:$PYTHONPATH
 export RUNTIMEDIR=.
-export BASEDIREXTRA=TESTFULL/YEARLY-$YEAR
+export BASEDIREXTRA=TESTFULLSTATE/YEARLY-$YEAR
 
 # Build the yearly error file store in $RUNTIMEDIR/BASEDIREXTRA
 python yearlyReanalysis.py --iosubdir $BASEDIREXTRA --urljson reanalysis.json
