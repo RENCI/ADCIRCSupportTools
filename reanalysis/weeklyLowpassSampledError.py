@@ -255,28 +255,30 @@ def main(args):
     #end = df_err_all.index.max().strftime('%Y-%m')
     start = df_err_all.index.min()
 
-#############
-
     # Construct new .csv files for each mid-week at a single FFT lowpass cutoff
     # FFT Lowpass each station for all time. Then, extract values for all stations every mid week.
     upshift=4
     hourly_cutoffs=[168]
     cutoffs = [x + upshift for x in hourly_cutoffs]
-    intersectedStations=stations
-    fftAllstations=dict()
 
-    # Perform FFT for each stationm oveer the entire time range
-    df_err_all_lowpass=pd.DataFrame()
+    #intersectedStations=stations # These are from the meta data not the data sets
+    intersectedStations=set(df_err_all.columns.to_list()).intersection(stations) # Compares data to metadata lists
+    utilities.log.info('Number of intersected stations is {}'.format(len(intersectedStations)))
+
+    fftAllstations=dict()
+    # Perform FFT for each station over the entire time range
+    df_err_all_lowpass=pd.DataFrame(index=df_err_all.index)
     for station in intersectedStations:
         print('Process station {}'.format(station))
         stationName = df_meta.loc[int(station)]['stationname']
         df_fft=pd.DataFrame()
         for cutoffflank,cutoff in zip(cutoffs,hourly_cutoffs):
             print('Process cutoff {} for station {}'.format(cutoff,station))
-            df_temp = df_err_all[station].dropna()
+            df_temp = df_err_all[station].dropna() # should drop rows (times)
             df_fft[str(cutoff)]=fft_lowpass(df_temp,lowhrs=cutoffflank)
         df_fft.index = df_temp.index
         df_err_all_lowpass[station]=df_fft[str(cutoff)]
+        utilities.log.info('df_err_all_lowpass {} Size after fft {}'.format(station, df_err_all_lowpass.shape))   
 
     # Now pull out weekly data starting at the middle of the first week
     # Build a list of indexes from which to extract data. Start at the first midweek then increment every 168 hours
