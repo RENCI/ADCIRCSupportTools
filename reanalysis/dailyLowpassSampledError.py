@@ -223,9 +223,6 @@ def main(args):
 
     utilities.log.info('Yearly data (with flanks) found in {}'.format(topdir))
     utilities.log.info('Specified rootdir underwhich all files will be stored. Rootdir is {}'.format(rootdir))
-
-    #f='/projects/sequence_analysis/vol1/prediction_work/Reanalysis/2018-Reanalysis-ERR_weeklyMeans/JAN72018/adc_obs_error_merged.json'
-    #meta='/projects/sequence_analysis/vol1/prediction_work/Reanalysis/2018-Reanalysis-ERR_weeklyMeans/JAN72018/obs_water_level_metadata.json'
     f='/'.join([topdir,'adc_obs_error_merged.json'])
     meta='/'.join([topdir,'obs_water_level_metadata.json'])
 
