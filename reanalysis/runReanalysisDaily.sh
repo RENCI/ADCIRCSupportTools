@@ -24,28 +24,13 @@ export OUTROOT=$RUNTIMEDIR/$BASEDIREXTRA/DAILY
 python dailyLowpassSampledError.py --inDir $INDIR --outroot $OUTROOT
 mv $RUNTIMEDIR/log $RUNTIMEDIR/$BASEDIREXTRA/log-weekly
 
-
 # Interpolate a single specific file
-#export ERRFILE=$OUTROOT/errorfield/stationSummaryAves_18-332_2018112800.csv
-#export ADCJSON=$INDIR/adc_coord.json
-#export CLAMPFILE=$CODEBASE/config/clamp_list_hsofs.dat
-#export YAMLNAME=$CODEBASE/config/int.REANALYSIS.yml
-#export OUTROOT=$RUNTIMEDIR/$BASEDIREXTRA/DAILY
-
-# Interpolate a single specific file
-export ADCJSON=$INDIR/adc_coord.json
-export CLAMPFILE=$CODEBASE/config/clamp_list_hsofs.dat
-export YAMLNAME=$CODEBASE/config/int.REANALYSIS.yml
-export OUTROOT=$RUNTIMEDIR/$BASEDIREXTRA/DAILY
-export ERRDIR=$OUTROOT/errorfield
-
 export ERRFILE=$OUTROOT/errorfield/stationSummaryAves_18-332_2018112800.csv
 export ADCJSON=$INDIR/adc_coord.json
 export CLAMPFILE=$CODEBASE/config/clamp_list_hsofs.dat
 export YAMLNAME=$CODEBASE/config/int.REANALYSIS.yml
 export OUTROOT=$RUNTIMEDIR/$BASEDIREXTRA/DAILY
 
-#python krigListOfErrorSets.py  --outroot $OUTROOT --yamlname $YAMLNAME --errorfile $ERRFILE --clampfile $CLAMPFILE --gridjsonfile $ADCJSON
 python krigListOfErrorSets.py  --daily --outroot $OUTROOT --yamlname $YAMLNAME --errorfile $ERRFILE --clampfile $CLAMPFILE --gridjsonfile $ADCJSON
 
 mv $RUNTIMEDIR/log $RUNTIMEDIR/$BASEDIREXTRA/log-interpolate

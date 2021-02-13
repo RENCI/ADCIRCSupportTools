@@ -37,14 +37,25 @@ def genSinglePlot(i, fig, df_data,vmin,vmax,inputMetadata):
     ax.get_yaxis().set_visible(False)
     plt.axis('tight')
 
-def parseDateFilename(infilename):
+def parseWeeklyDateFilename(infilename):
     """
     filename must be of the form stationSummaryAves_01_201801010000_201801070000.csv
     """
+    utilities.log.info('Using WEEKLY form of filenames')
     words=(infilename.split('.')[-2]).split('_') 
     metadata = '_'+words[-3]+'_'+words[-1]+'_'+words[-2]
     return metadata
     
+def parseDateFilename(infilename):
+    """
+    filename must be of the form stationSummaryAves_18-332_2018112800.csv
+    """
+    utilities.log.info('Using DAILY form of filenames')
+    words=(infilename.split('.')[-2]).split('_')
+    metadata = '_'+words[-2]+'_'+words[-1]
+    return metadata
+
+
 def main(args):
     utilities.log.info(args)
 
@@ -82,7 +93,10 @@ def main(args):
     iometadata=args.iometadata
     inerrorfile = args.errorfile
 
-    iometadata =  parseDateFilename(inerrorfile) # This will be used to update all output files
+    if args.daily:
+        iometadata =  parseDateFilename(inerrorfile) # This will be used to update all output files
+    else:
+        iometadata =  parseWeeklyDateFilename(inerrorfile) # This will be used to update all output files
 
     # Fetch clamping nodes to act as boundary for kriging
     # clampfile = os.path.join(os.path.dirname(__file__), "../config", config['DEFAULT']['ClampList'])
@@ -133,9 +147,12 @@ def main(args):
         param_dict, vparams, best_score, full_scores = krig_object.optimize_kriging(krig_object) # , param_dict_list, vparams_dict_list)
         utilities.log.info('Kriging best score is {}'.format(best_score))
         print('List of all scores {}'.format(full_scores))
-        fullScoreDict = {'best_score':best_score,'scores': full_scores, 'params':param_dict,'vparams':vparams}
+        #fullScoreDict = {'best_score':best_score,'scores': full_scores, 'params':param_dict,'vparams':vparams}
+        fullScoreDict = {'best_score':best_score,'params':param_dict,'vparams':vparams}
         ##jsonfilename = '_'.join(['','fullScores.json']) 
         jsonfilename = 'fullCVScores.json'
+        utilities.log.info('Partial CV score {}'.format(fullScoreDict))
+        print('Partial CV score {}'.format(fullScoreDict))
         with open(jsonfilename, 'w') as fp:
             json.dump(fullScoreDict, fp)
         
@@ -251,5 +268,7 @@ if __name__ == '__main__':
                         help='Boolean: Display histograms station only, vis grid errors, and adcirc nodes')
     parser.add_argument('--outroot', action='store', dest='outroot', default=None,
                         help='Available high level output dir directory')
+    parser.add_argument('--daily', action='store_true', dest='daily',
+                        help='Boolean: Choose the DAILY filename nomenclature')
     args = parser.parse_args()
     sys.exit(main(args))

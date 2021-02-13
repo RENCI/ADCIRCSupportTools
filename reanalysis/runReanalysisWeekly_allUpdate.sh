@@ -20,8 +20,8 @@ export BASEDIREXTRA=TESTFULL/STATE/YEARLY-$YEAR/KRIG_LONGRANGE
 # Store files in $RUNTIMEDIR/WEEKLY/errorfield
 export INDIR=$RUNTIMEDIR/$BASEDIREXTRA
 export OUTROOT=$RUNTIMEDIR/$BASEDIREXTRA/WEEKLY
-#python weeklyLowpassSampledError.py --inyear 2018 --inDir $INDIR --outroot $OUTROOT
-#mv $RUNTIMEDIR/log $RUNTIMEDIR/$BASEDIREXTRA/log-weekly
+python weeklyLowpassSampledError.py --inyear 2018 --inDir $INDIR --outroot $OUTROOT
+mv $RUNTIMEDIR/log $RUNTIMEDIR/$BASEDIREXTRA/log-weekly
 
 
 # Interpolate a single specific file
@@ -32,4 +32,4 @@ export YAMLNAME=$CODEBASE/config/int.REANALYSIS.yml
 export OUTROOT=$RUNTIMEDIR/$BASEDIREXTRA/WEEKLY
 export ERRDIR=$OUTROOT/errorfield
 python  iterateKriging.py --outroot $OUTROOT --yamlname $YAMLNAME --errordir $ERRDIR --clampfile $CLAMPFILE --gridjsonfile $ADCJSON
-mv $RUNTIMEDIR/log $RUNTIMEDIR/$BASEDIREXTRA/log-interpolate
+#mv $RUNTIMEDIR/log $RUNTIMEDIR/$BASEDIREXTRA/log-interpolate
