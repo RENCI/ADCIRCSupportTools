@@ -43,7 +43,7 @@ def parseWeeklyDateFilename(infilename):
     """
     utilities.log.info('Using WEEKLY form of filenames')
     words=(infilename.split('.')[-2]).split('_') 
-    metadata = '_'+words[-3]+'_'+words[-1]+'_'+words[-2]
+    metadata = '_'+words[-2]+'_'+words[-1]
     return metadata
     
 def parseDateFilename(infilename):
