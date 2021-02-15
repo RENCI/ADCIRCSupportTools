@@ -254,7 +254,6 @@ def main(args):
     #start = df_err_all.index.min().strftime('%Y-%m')
     #end = df_err_all.index.max().strftime('%Y-%m')
     start = df_err_all.index.min()
-
     # Construct new .csv files for each start-week at a single FFT lowpass cutoff
     # FFT Lowpass each station for all time. Then, extract values for all stations every start week.
     upshift=4
@@ -296,7 +295,8 @@ def main(args):
     # %w Weekday as a decimal number, where 0 is Sunday and 6 is Saturday
 
     # Now what is the neares
-    df_err_all_lowpass_subselect = df_err_all_lowpass[df_err_all_lowpass.index.strftime('%w %H:%m:%S')=='0 00:00:00'] # Grab all available startweeks
+    df_err_all_lowpass_subselect = df_err_all_lowpass[df_err_all_lowpass.index.strftime('%w %H:%M:%S')=='0 00:00:00'] # Grab all available startweeks
+
     julianMetadata = df_err_all_lowpass_subselect.index.strftime('%y-%W').to_list()
 
     iometa = dict()
@@ -307,7 +307,6 @@ def main(args):
     # Store the list of filenames into a dict for krig processing
 
     subdir='errorfield'
-
     datadict = dict()
     for index, df in df_err_all_lowpass_subselect.iterrows():
         midweekstamp=index.strftime("%V")
