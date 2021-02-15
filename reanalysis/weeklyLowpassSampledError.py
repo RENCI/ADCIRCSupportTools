@@ -255,8 +255,8 @@ def main(args):
     #end = df_err_all.index.max().strftime('%Y-%m')
     start = df_err_all.index.min()
 
-    # Construct new .csv files for each mid-week at a single FFT lowpass cutoff
-    # FFT Lowpass each station for all time. Then, extract values for all stations every mid week.
+    # Construct new .csv files for each start-week at a single FFT lowpass cutoff
+    # FFT Lowpass each station for all time. Then, extract values for all stations every start week.
     upshift=4
     hourly_cutoffs=[168]
     cutoffs = [x + upshift for x in hourly_cutoffs]
@@ -282,30 +282,29 @@ def main(args):
 
     # Now pull out weekly data starting at the middle of the first week
     # Build a list of indexes from which to extract data. Start at the first midweek then increment every 168 hours
-    # How to handle leap years?
-    
-    midtime=''.join([inyear,'-01-03 12:00:00']) # This is ALWAYS true 
-    #starttime=start.strftime('%Y-%m-%d %H:%M:%S')
-    starttime=''.join([inyear,'-01-01 00:00:00']) 
-    endtime=''.join([inyear,'-01-07 00:00:00'])
-    #starttime='2018-01-03 12:00:00'
-    listdata = pd.date_range(midtime, periods=52, freq=pd.offsets.Hour(n=168)) #.values
-    startweek=pd.date_range(starttime, periods=52, freq=pd.offsets.Hour(n=168)) #.values
-    endweek=pd.date_range(endtime, periods=52, freq=pd.offsets.Hour(n=168)) #.values
+    # Start from the existing data range. Get the first index value, find its week and day, then determine middle week.
 
-    # Build metadata for the files
-    # FOr every midweek tryt to build a week range as metadfata. This is fraught with weakness
+# %U week number of year, with Sunday as first day of week (00..53).
+# %V ISO week number, with Monday as first day of week (01..53).
+# %W week number of year, with Monday as first day of week (00..53).
+# 
+#    numDays = (endtime-starttime).days
+#    startday=pd.date_range(starttime, periods=numDays) #.values()
+#    julianMetadata = startday.strftime('%y-%j').to_list()
+
+    # Starttime: what is our firsyt data pints and what week are we in?
+    # %w Weekday as a decimal number, where 0 is Sunday and 6 is Saturday
+
+    # Now what is the neares
+    df_err_all_lowpass_subselect = df_err_all_lowpass[df_err_all_lowpass.index.strftime('%w %H:%m:%S')=='0 00:00:00'] # Grab all available startweeks
+    julianMetadata = df_err_all_lowpass_subselect.index.strftime('%y-%W').to_list()
+
     iometa = dict()
-    for mid,start,end in zip(listdata, startweek, endweek):
-        iometa[mid]=weekname = '_'.join([start.strftime('%Y%m%d%H%M'),end.strftime('%Y%m%d%H%M')])
+    for index,week,date in zip(range(len(df_err_all_lowpass)),julianMetadata,df_err_all_lowpass_subselect.index):
+        iometa[date]='_'.join([week,date.strftime('%Y%m%d%H')])
 
-    df_err_all_lowpass_subselect=df_err_all_lowpass.loc[listdata]
-
-    # Now process the Rows and build a new datafile for each
     # df_meta and df report stationids as diff types. Yuk.
-    # Store the list iof filenames into a dict for krig processing
-
-    # Add starttime-endtime to the weekly data nomenclature in additional to week number
+    # Store the list of filenames into a dict for krig processing
 
     subdir='errorfield'
 
@@ -321,12 +320,11 @@ def main(args):
         df_merged.dropna(inplace=True) # Cannot pass Nans to the kriging system
         df_merged.index.name = None
         #outfilename='_'.join(['stationSummaryLowpassWeekly',midweekstamp])+'.csv'
-        outfilename=utilities.writeCsv(df_merged,rootdir=rootdir,subdir=subdir,fileroot='_'.join(['stationSummaryAves',midweekstamp]),iometadata=metadata)
+        outfilename=utilities.writeCsv(df_merged,rootdir=rootdir,subdir=subdir,fileroot='stationSummaryAves',iometadata=metadata)
         datadict[midweekstamp]=outfilename
         df_merged.to_csv(outfilename)
 
     outfilesjson = utilities.writeDictToJson(datadict, rootdir=rootdir,subdir=subdir,fileroot='runProps',iometadata='') # Never change fname
-
 
 # Run the plot pipeline ASSUMES rootdir has been created already
     sns.set(rc={'figure.figsize':(11, 4)}) # Setr gray background and white gird
