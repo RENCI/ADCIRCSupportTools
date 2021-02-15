@@ -278,12 +278,13 @@ def main(args):
         df_err_all_lowpass[station]=df_fft[str(cutoff)]
 
     # Now pull out daily data 
+    utilities.log.info('MANUAL setting of date range'))
     stime=''.join(['2017','-12-20 00:00:00'])
     etime=''.join(['2019','-01-01 00:00:00'])
 
     starttime = dt.datetime.strptime(stime,'%Y-%m-%d %H:%M:%S')
     endtime = dt.datetime.strptime(etime,'%Y-%m-%d %H:%M:%S')
-    numDays = (endtime-starttime).days +1
+    numDays = (endtime-starttime).days + 1
 
     startday=pd.date_range(starttime, periods=numDays) #.values()
     julianMetadata = startday.strftime('%y-%j').to_list()
