@@ -283,10 +283,11 @@ def main(args):
 
     starttime = dt.datetime.strptime(stime,'%Y-%m-%d %H:%M:%S')
     endtime = dt.datetime.strptime(etime,'%Y-%m-%d %H:%M:%S')
+    numDays = (endtime-starttime).days +1
 
-    numDays = (endtime-starttime).days
     startday=pd.date_range(starttime, periods=numDays) #.values()
     julianMetadata = startday.strftime('%y-%j').to_list()
+    utilities.log.info('startdays {}'.format(startday))
     
     # Build metadata for the files
     # Julian dat 
@@ -296,7 +297,14 @@ def main(args):
         iometa[date]='_'.join([day,date.strftime('%Y%m%d%H')])
 
     # Not all startdays are always in the data file. 2017-12-31 00 is missing as is 2018-01-01 00
-    df_err_all_lowpass_subselect=df_err_all_lowpass.loc[startday]
+    # are excluded because the ADC file had no data
+    # Preceding yearly method may have restricted days
+
+    # startday is in yyyy-mm-dd lowpass includes times
+    intersect = [value for value in startday if value in df_err_all_lowpass.index] 
+
+    utilities.log.info('Residual data: intersect list {}'.format(intersect))
+    df_err_all_lowpass_subselect=df_err_all_lowpass.loc[intersect]
 
     # Now process the Rows and build a new datafile for each
     # df_meta and df report stationids as diff types. Yuk.

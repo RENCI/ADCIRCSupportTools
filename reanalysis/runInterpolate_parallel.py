@@ -8,6 +8,28 @@ import json
 import datetime
 from utilities.utilities import utilities
 
+#############################################################################
+# Build a slurm file
+
+def build_slurm(ROOTDIR,YAMLNAME,ERRFILE,CLAMPFILE,ADCJSON):
+    slurm = list()
+    slurm.append('#!/bin/sh')
+    slurm.append('#SBATCH -t 24:00:00')
+    slurm.append('#SBATCH -p batch')
+    slurm.append('#SBATCH -N 1')
+    slurm.append('#SBATCH -n 1')
+    slurm.append('#SBATCH -J Interpolate')
+    slurm.append('#SBATCH --mem-per-cpu 64000')
+    slurm.append('echo "Begin the Interpolation phase" ')
+    slurm.append('export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools:$PYTHONPATH')
+    slurm.append('dir="/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/reanalysis"')
+    slurm.append('python -u $dir/krigListOfErrorSets.py  --daily --outroot "'+ROOTDIR+'" --yamlname "'+YAMLNAME+'" --errorfile "'+ERRFILE+'" --clampfile "'+CLAMPFILE+'" --gridjsonfile "'+ADCJSON+'"' )
+    with open('runSlurm.sh', 'w') as file:
+        for row in slurm:
+            file.write(row+'\n')
+    file.close()
+    return ('runSlurm.sh')
+
 def main(args):
     print('Process the separate reanalysis error files')
     utilities.log.info('Start the iterative interpolation pipeline')
@@ -34,8 +56,7 @@ def main(args):
 
     import random
     #for key, value in dict(random.sample(listedFiles.items(),20)).items(): # listedFiles.items():
-    #for key, value in listedFiles.items():
-    for key, value in dict(random.sample(listedFiles.items(),2)).items(): # listedFiles.items():
+    for key, value in listedFiles.items():
         print(key)
         print(value)
         ERRFILE=value
@@ -47,10 +68,15 @@ def main(args):
         utilities.log.info('ADCJSON {}'.format(ADCJSON))
         utilities.log.info('YAMLNAME {}'.format(YAMLNAME))
         utilities.log.info('ROOTDIR {}'.format(ROOTDIR))
-        if args.daily:
-            os.system('python krigListOfErrorSets.py --daily  --outroot '+ROOTDIR+' --yamlname '+YAMLNAME+'  --errorfile '+ERRFILE+' --clampfile '+CLAMPFILE+' --gridjsonfile '+ADCJSON)
-        else:
-            os.system('python krigListOfErrorSets.py --outroot '+ROOTDIR+' --yamlname '+YAMLNAME+'  --errorfile '+ERRFILE+' --clampfile '+CLAMPFILE+' --gridjsonfile '+ADCJSON)
+        slurmFilename = build_slurm(ROOTDIR,YAMLNAME,ERRFILE,CLAMPFILE,ADCJSON)
+        cmd = 'sbatch ./'+slurmFilename
+        os.system(cmd)
+
+
+        #if args.daily:
+        #    os.system('python krigListOfErrorSets.py --daily  --outroot '+ROOTDIR+' --yamlname '+YAMLNAME+'  --errorfile '+ERRFILE+' --clampfile '+CLAMPFILE+' --gridjsonfile '+ADCJSON)
+        #else:
+        #    os.system('python krigListOfErrorSets.py --outroot '+ROOTDIR+' --yamlname '+YAMLNAME+'  --errorfile '+ERRFILE+' --clampfile '+CLAMPFILE+' --gridjsonfile '+ADCJSON)
     print('Completed ensemble')
 
 if __name__ == '__main__':
