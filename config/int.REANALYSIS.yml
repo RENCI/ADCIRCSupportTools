@@ -19,9 +19,9 @@ KRIGING: &kriging
    PARAMS:
       method: "ordinary"
       variogram_model: "spherical"
-      coordinates_type: "geographic"
+      coordinates_type: "euclidean"
       weight: False
-      nlags: 6
+      nlags: 1
 
 CVKRIGING: &cvkriging
    VPARAMS:

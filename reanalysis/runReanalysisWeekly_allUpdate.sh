@@ -4,10 +4,9 @@
 #SBATCH -N 1
 #SBATCH -n 2 
 #SBATCH -J Reanalysis
-#SBATCH --mem-per-cpu 512000
+#SBATCH --mem-per-cpu 128000
 
 export YEAR=2018
-
 export CODEBASE=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools
 export PYTHONPATH=$CODEBASE:$PYTHONPATH
 export RUNTIMEDIR=.
@@ -29,5 +28,5 @@ export CLAMPFILE=$CODEBASE/config/clamp_list_hsofs.dat
 export YAMLNAME=$CODEBASE/config/int.REANALYSIS.yml
 export OUTROOT=$RUNTIMEDIR/$BASEDIREXTRA/WEEKLY
 export ERRDIR=$OUTROOT/errorfield
-#python  iterateKriging.py --outroot $OUTROOT --yamlname $YAMLNAME --errordir $ERRDIR --clampfile $CLAMPFILE --gridjsonfile $ADCJSON
-#mv $RUNTIMEDIR/log $RUNTIMEDIR/$BASEDIREXTRA/log-interpolate
+python  iterateKriging.py --outroot $OUTROOT --yamlname $YAMLNAME --errordir $ERRDIR --clampfile $CLAMPFILE --gridjsonfile $ADCJSON
+mv $RUNTIMEDIR/log $RUNTIMEDIR/$BASEDIREXTRA/log-interpolate
