@@ -82,6 +82,7 @@ def exec_adcirc_url(urls, rootdir, iometadata, adc_yamlname, node_idx, station_i
     utilities.write_json_file(adc_coords, ADCfilecords)
     timestart = adc.T1
     timeend = adc.T2
+    utilities.log.info('Times returned by get_adcirc {},{}'.format(adc.T1,adc.T2))
     return ADCfile, ADCjson, timestart, timeend
 
 def exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdir):

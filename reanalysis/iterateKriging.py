@@ -34,8 +34,7 @@ def main(args):
 
     import random
     #for key, value in dict(random.sample(listedFiles.items(),20)).items(): # listedFiles.items():
-    #for key, value in listedFiles.items():
-    for key, value in dict(random.sample(listedFiles.items(),2)).items(): # listedFiles.items():
+    for key, value in listedFiles.items():
         print(key)
         print(value)
         ERRFILE=value

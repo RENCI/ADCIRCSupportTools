@@ -522,8 +522,8 @@ class GetObsStations(object):
         window=11
         utilities.log.info('Smoothing will be centered windows of width {}'.format(window))
         df_detailed, count_nan, stationlist, excludelist = self.fetchStationProductFromIDlist(timein, timeout, interval=interval)
-        df_det_filter, newstationlist, excludelist = self.removeMissingProducts(df_detailed, count_nan, 
-            percentage_cutoff=percentage_cutoff) # If none then read from yaml;
+        df_det_filter, newstationlist, excludelist = self.removeMissingProducts(df_detailed, count_nan, percentage_cutoff=percentage_cutoff)
+        #    percentage_cutoff=percentage_cutoff) # If none then read from yaml;
         #df_smoothed = self.smoothVectorProducts( df_detailed, window=11, degree=3 )
         df_smoothed = self.smoothRollingAveProducts( df_det_filter, window=window)
         df_smoothed = df_smoothed.loc[df_smoothed.index.strftime('%M:%S')=='00:00'] # Is this sufficient ?
@@ -662,7 +662,8 @@ class GetObsStations(object):
             percentage_cutoff = self.nanthresh # Grabs from config yaml
         if not self.ex_thresh:
             utilities.log.info('removeMissingness called by EX_THRESH set to False: Ignore')
-            return df_in, self.stationlist
+            emptyList = []
+            return df_in, self.stationlist, emptyList
         exclude_stations = list(counts.loc[counts['Percent'] > percentage_cutoff].index.values)
         utilities.log.info("Removing {} stations based on a percent cutoff of {}.".format(len(exclude_stations), percentage_cutoff))
         utilities.log.info('Removing the following stations because of Max Nan %: '+str(exclude_stations))
