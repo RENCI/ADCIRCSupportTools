@@ -46,10 +46,13 @@ def main(args):
         utilities.log.info('ADCJSON {}'.format(ADCJSON))
         utilities.log.info('YAMLNAME {}'.format(YAMLNAME))
         utilities.log.info('ROOTDIR {}'.format(ROOTDIR))
+        addstring=' '
+        if args.inrange is not None:
+            addstring='--inrange '+str(args.inrange)
         if args.daily:
-            os.system('python krigListOfErrorSets.py --daily  --outroot '+ROOTDIR+' --yamlname '+YAMLNAME+'  --errorfile '+ERRFILE+' --clampfile '+CLAMPFILE+' --gridjsonfile '+ADCJSON)
+            os.system('python krigListOfErrorSets.py --daily '+addstring+'  --outroot '+ROOTDIR+' --yamlname '+YAMLNAME+'  --errorfile '+ERRFILE+' --clampfile '+CLAMPFILE+' --gridjsonfile '+ADCJSON)
         else:
-            os.system('python krigListOfErrorSets.py --outroot '+ROOTDIR+' --yamlname '+YAMLNAME+'  --errorfile '+ERRFILE+' --clampfile '+CLAMPFILE+' --gridjsonfile '+ADCJSON)
+            os.system('python krigListOfErrorSets.py '+addstring+' --outroot '+ROOTDIR+' --yamlname '+YAMLNAME+'  --errorfile '+ERRFILE+' --clampfile '+CLAMPFILE+' --gridjsonfile '+ADCJSON)
     print('Completed ensemble')
 
 if __name__ == '__main__':
@@ -66,5 +69,6 @@ if __name__ == '__main__':
                         help='Boolean: specify DAILY to the krig method')
     parser.add_argument('--outroot', action='store', dest='outroot', default=None,
                         help='Available high level output dir directory')
+    parser.add_argument('--inrange', action='store', dest='inrange',default=None, help='If specified then an internal config is constructed', type=int)
     args = parser.parse_args()
     sys.exit(main(args))
