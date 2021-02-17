@@ -80,15 +80,20 @@ def main(args):
     #yamlname=os.path.join(os.path.dirname(__file__), '../ADCIRCSupportTools/config', 'int.yml')
     utilities.log.info('Use longer range terms: Same as the OceanRise work')
     #yamlname=os.path.join(os.path.dirname(__file__), '../ADCIRCSupportTools/config', 'int.REANALYSIS.yml ')
+
+    #if args.inrange is not None:
+    #    config=buildLocalConfig(n_range=args.inrange)
+    #else:
+
     if args.yamlname==None:
         yamlname='/projects/sequence_analysis/vol1/prediction_work/Reanalysis/ADCIRCSupportTools/config/int.REANALYSIS.yml'
     else:
         yamlname=args.yamlname
-
     utilities.log.info('INT YAM: NAME IS {}'.format(yamlname))
-
-    # Override config for now
     config = utilities.load_config(yamlname)
+    if args.inrange is not None:
+        config['KRIGING']['VPARAMS']['range']=args.inrange
+        utilities.log.info('Modified int.yml configuration dict containing {}'.format(config))
 
     iometadata=args.iometadata
     inerrorfile = args.errorfile
@@ -132,7 +137,11 @@ def main(args):
 
     # Start the kriging
     utilities.log.info('Begin Kriging')
-    krig_object = interpolateScalerField(datafile=inerrorfile, yamlname=yamlname, clampingfile=clampfile, metadata=iometadata, rootdir=rootdir)
+    adddata=None
+    if args.inrange is not None:
+        krig_object = interpolateScalerField(datafile=inerrorfile, inputcfg=config,  clampingfile=clampfile, metadata=iometadata, rootdir=rootdir)
+    else:
+        krig_object = interpolateScalerField(datafile=inerrorfile, yamlname=yamlname, clampingfile=clampfile, metadata=iometadata, rootdir=rootdir)
 
     if cv_kriging:
         extraFilebit='_CV_'
@@ -270,5 +279,6 @@ if __name__ == '__main__':
                         help='Available high level output dir directory')
     parser.add_argument('--daily', action='store_true', dest='daily',
                         help='Boolean: Choose the DAILY filename nomenclature')
+    parser.add_argument('--inrange', action='store', dest='inrange',default=None, help='If specified then an internal config is constructed', type=int)
     args = parser.parse_args()
     sys.exit(main(args))
