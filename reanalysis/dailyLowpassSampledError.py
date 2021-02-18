@@ -285,6 +285,7 @@ def main(args):
 
     timein = '-'.join(['2017','12','20'])   
     timeout = '-'.join(['2019','1','1'])
+
     utilities.log.info('Input data chosen range is {}, {}'.format(timein, timeout))
 
     # Metadata
@@ -301,7 +302,7 @@ def main(args):
 
     # FFT Lowpass each station for entire range time. Then, extract values for all stations every day
     upshift=0
-    hourly_cutoff=168
+    hourly_cutoff=48 # 168
     cutoff = hourly_cutoff+upshift
     utilities.log.info('FFT hourly_cutoff {}, actual_cutoff {}'.format(hourly_cutoff,cutoff))
 
@@ -344,7 +345,7 @@ def main(args):
     #etime=''.join(['2019','-01-01 00:00:00'])
 
     stime=''.join(['2018','-01-01 00:00:00'])
-    etime=''.join(['2018','-04-01 00:00:00'])
+    etime=''.join(['2018','-05-01 00:00:00'])
 
     starttime = dt.datetime.strptime(stime,'%Y-%m-%d %H:%M:%S')
     endtime = dt.datetime.strptime(etime,'%Y-%m-%d %H:%M:%S')

@@ -256,7 +256,8 @@ def main(args):
     start = df_err_all.index.min()
     # Construct new .csv files for each start-week at a single FFT lowpass cutoff
     # FFT Lowpass each station for all time. Then, extract values for all stations every start week.
-    upshift=4
+
+    upshift=0
     hourly_cutoffs=[168]
     cutoffs = [x + upshift for x in hourly_cutoffs]
 
@@ -296,7 +297,6 @@ def main(args):
 
     # Now what is the neares
     df_err_all_lowpass_subselect = df_err_all_lowpass[df_err_all_lowpass.index.strftime('%w %H:%M:%S')=='0 00:00:00'] # Grab all available startweeks
-
     julianMetadata = df_err_all_lowpass_subselect.index.strftime('%y-%W').to_list()
 
     iometa = dict()
@@ -306,6 +306,7 @@ def main(args):
     # df_meta and df report stationids as diff types. Yuk.
     # Store the list of filenames into a dict for krig processing
 
+    print('POOP {}'.format(df_err_all_lowpass_subselect))
     subdir='errorfield'
     datadict = dict()
     for index, df in df_err_all_lowpass_subselect.iterrows():
@@ -341,7 +342,6 @@ def main(args):
 if __name__ == '__main__':
     from argparse import ArgumentParser
     import sys
-
     parser = ArgumentParser()
     parser.add_argument('--inDir', action='store', dest='inDir', default=None,
                         help='directory for yearly data')

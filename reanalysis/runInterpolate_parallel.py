@@ -38,7 +38,7 @@ def main(args):
     ADCJSON=args.gridjsonfile
     YAMLNAME=args.yamlname
     ROOTDIR=args.outroot
-    RANGE=args.inrange
+    RANGE=str(args.inrange)
     utilities.log.info('ERRDIR {}'.format(ERRDIR))
     utilities.log.info('CLAMPFILE {}'.format(CLAMPFILE))
     utilities.log.info('ADCJSON {}'.format(ADCJSON))
