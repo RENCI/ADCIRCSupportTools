@@ -115,7 +115,7 @@ def dictToDataFrame(dataDict, src):
     df.index = pd.to_datetime(df.index)
     return df
 
-def makePlot(start, end, station, src, stationName, dfs, dfs_7d, dfs_weekly_mean, dfs_monthly_mean, odir): 
+def makePlot(start, end, station, src, stationName, dfs, dfs_7d, dfs_weekly_mean, dfs_monthly_mean, odir):
     sns.set(rc={'figure.figsize':(11, 4)}) # Setr gray background and white gird
     # Plot daily, weekly resampled, and 7-day rolling mean time series together
     fig, ax = plt.subplots()
@@ -325,7 +325,6 @@ def main(args):
         outfilename=utilities.writeCsv(df_merged,rootdir=rootdir,subdir=subdir,fileroot='stationSummaryAves',iometadata=metadata)
         datadict[iometa[index]]=outfilename
         df_merged.to_csv(outfilename)
-
     outfilesjson = utilities.writeDictToJson(datadict, rootdir=rootdir,subdir=subdir,fileroot='runProps',iometadata='') # Never change fname
 
 # Run the plot pipeline ASSUMES rootdir has been created already
@@ -337,6 +336,13 @@ def main(args):
         stationName = df_meta.loc[int(station)]['stationname']
         makePlot(start, end, station, 'ERR', stationName, dfs, dfs_7d, dfs_weekly_mean, dfs_monthly_mean, rootdir) 
 
+    sns.set(rc={'figure.figsize':(11, 4)}) # Set gray background and white gird
+    for station in stations:
+        dfs, dfs_weekly_mean, dfs_monthly_mean, dfs_7d = station_level_means(df_obs_all, df_adc_all, df_err_all, station)
+        start=dfs.index.min().strftime('%Y-%m')
+        end=dfs.index.max().strftime('%Y-%m')
+        stationName = df_meta.loc[int(station)]['stationname']
+        makePlot(start, end, station, 'ERR', stationName, dfs, dfs_7d, dfs_weekly_mean, dfs_monthly_mean, rootdir) 
 
     utilities.log.info('Wrote pipeline Dict data to {}'.format(outfilesjson))
     print('Finished generating daily lowpass data files')
