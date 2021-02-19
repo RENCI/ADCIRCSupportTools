@@ -248,6 +248,78 @@ class computeErrorField(object):
             self.df_merged.drop(drop_stationlist,axis=1,inplace=True)
             print(str(self.diff.shape))
             #print(self.diff)
+
+    def _computeAndARIMAErrors(self, arima_order=(12,1,4)):
+        """
+        This experimental method takes the raw error data and attempt to build a fit. We currently do not
+        lowpass the data because 48 hours data set may not be long enough. So, simply fit the data and optionally
+        render it stationary then predict values 1 hour beyond.
+        We will assume homoscedasiticity (variance) but not assume stationary in the mean.
+        """
+        from statsmodels.tsa.arima.model import ARIMA
+        from pandas.plotting import register_matplotlib_converters
+        
+        import warnings
+        warnings.filterwarnings("ignore")
+
+        unconvergedStations=list()
+        stripNans=False
+        self.diff = self.df_adc_wl - self.df_obs_wl
+        ## Look for outliers now and construct adc/obs moving forward as needed
+        self.df_merged = self._combineDataFrames(self.df_adc_wl.copy(), self.df_obs_wl.copy(), self.diff.copy())
+        diff = self.diff.copy()  # We want to manipulate inplace so do not disturb the real errro object
+        # NANs at this level are prob coming foem the ADC data set
+        # We will fit the entire data set ( perstation) and then predict the final time
+        utilities.log.info('ARIMA order is set to {}'.format(arima_order))
+        # Get maximum value on the nearest (low) hour 
+        # finaltime = df.index.floor('h').max()
+        finaltime = diff.index.max()
+        utilities.log.info('ARIMA prediction time is set to {}'.format(finaltime.strftime('%Y-%m-%d %H:%M:%S')))
+        dataDict = dict()
+        detailedDataDict=dict()
+        for station in diff.columns:
+            try:
+                df_arima=diff[station].to_frame() # Required for ARIMA
+                df_arima.columns=df_arima.columns.astype(str) # Also required by ARIMA
+                utilities.log.info('Processing ARIMA for station {}'.format(station))
+                if df_arima.isnull().any().sum() == 0:
+                    model = ARIMA(df_arima, order=arima_order)
+                    model_fit = model.fit()
+                    dataDict[station]=model_fit.predict(start=finaltime,end=finaltime, typ='levels')[0] 
+                    detailedDataDict[station]=model_fit.predict()
+                    # But predict will only work on an exact index match
+                else:
+                    utilities.log.info('ARIMA: station has nulls: Must be excluded {}'.format(station))
+            except:
+                unconvergedStations.append(station)
+                utilities.log.info('ARIMA didnt converge - skip station')
+
+        utilities.log.info('Station not converged are {}'.format(unconvergedStations))
+        self.df_final=pd.DataFrame([dataDict]).T
+        self.df_final.columns=['mean']
+        self.df_final = pd.concat([self.df_meta[['lon','lat','Node']], self.df_final],axis=1)
+        df_detailed_dict = pd.DataFrame(detailedDataDict)
+        #df_detailed_dict.to_pickle('detailedARIMA.pkl')
+        detailedName=utilities.writePickle(df_detailed_dict,rootdir=self.rootdir,subdir='errorfield-ARIMA',fileroot='ARIMApredictedErrors',iometadata='ARIMA')
+
+        # Merge lon,lat values into the final data product
+        # Must remove stations in the final and period resulots that have nans
+        if stripNans:
+            utilities.log.info('Removing potential NANS from summary data')
+            if self.df_final.isnull().any().sum() != 0:
+                utilities.log.info('Nans found in the summary means: those stations will be removed')
+                print('Original summary size was '+str(self.df_final.shape))
+                self.df_final.dropna(axis=0, inplace=True) # Only if ALL columns are nan
+                print('Post summary size was '+str(self.df_final.shape))
+        if self.config['ERRORFIELD']['EX_OUTLIER']:
+            utilities.log.info('Check for ARIMA station outliers')
+            drop_stationlist = self._findStationOutliers()
+            ## Remove from all summary and period statistics
+            utilities.log.info('ARIMA Removing outlier stations from summary statistics')
+            utilities.log.info('ARIMA List of stations removed is {}.'.format(str(drop_stationlist)))
+            self.df_final.drop(drop_stationlist,inplace=True) 
+            utilities.log.info('Removing outlier stations from ADC, OBS and ERR, time data')
+            self.diff.drop(drop_stationlist,axis=1,inplace=True)
         
     @staticmethod
     def _combineDataFrames(adc,obs,err):
@@ -359,6 +431,32 @@ class computeErrorField(object):
         #self._tidalCorrectData()
         self._applyTimeBounds()
         self._computeAndAverageErrors()
+        ##self._generateDICTdata()
+        self.merged_dict = utilities.convertTimeseriesToDICTdata(self.df_merged, variables=['ADC','OBS','ERR'])
+        self._outputDataToFiles(metadata=metadata,subdir=subdir)
+        errf, finalf, cyclef, metaf, mergedf, jsonf = self._fetchOutputFilenames()
+        return errf, finalf, cyclef, metaf, mergedf, jsonf
+
+    def executePipelineNoTidalTransform_arima(self, metadata = 'Nometadata',subdir=''):
+        self._intersectionStations()
+        self._intersectionTimes()
+        #self._tidalCorrectData()
+        self._applyTimeBounds()
+        self._computeAndAverageErrors() # This ensure the cycle averages are computeds
+        self._computeAndARIMAErrors() # This will overwrite df_final
+        ##self._generateDICTdata()
+        self.merged_dict = utilities.convertTimeseriesToDICTdata(self.df_merged, variables=['ADC','OBS','ERR'])
+        self._outputDataToFiles(metadata=metadata,subdir=subdir)
+        errf, finalf, cyclef, metaf, mergedf, jsonf = self._fetchOutputFilenames()
+        return errf, finalf, cyclef, metaf, mergedf, jsonf
+
+    def executePipeline_arima(self, metadata = 'Nometadata',subdir=''):
+        self._intersectionStations()
+        self._intersectionTimes()
+        self._tidalCorrectData()
+        self._applyTimeBounds()
+        self._computeAndAverageErrors() # This ensure the cycle averages are computeds
+        self._computeAndARIMAErrors() # This will overwrite df_final
         ##self._generateDICTdata()
         self.merged_dict = utilities.convertTimeseriesToDICTdata(self.df_merged, variables=['ADC','OBS','ERR'])
         self._outputDataToFiles(metadata=metadata,subdir=subdir)
