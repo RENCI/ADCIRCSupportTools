@@ -274,6 +274,7 @@ class computeErrorField(object):
         # Get maximum value on the nearest (low) hour 
         # finaltime = df.index.floor('h').max()
         finaltime = diff.index.max()
+        #finaltime= diff.index.max()+np.timedelta64(6,'h')
         utilities.log.info('ARIMA prediction time is set to {}'.format(finaltime.strftime('%Y-%m-%d %H:%M:%S')))
         dataDict = dict()
         detailedDataDict=dict()
@@ -286,7 +287,7 @@ class computeErrorField(object):
                     model = ARIMA(df_arima, order=arima_order)
                     model_fit = model.fit()
                     dataDict[station]=model_fit.predict(start=finaltime,end=finaltime, typ='levels')[0] 
-                    detailedDataDict[station]=model_fit.predict()
+                    detailedDataDict[station]=model_fit.predict(typ='levels')
                     # But predict will only work on an exact index match
                 else:
                     utilities.log.info('ARIMA: station has nulls: Must be excluded {}'.format(station))
