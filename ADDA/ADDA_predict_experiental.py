@@ -224,7 +224,8 @@ def main(args):
     #errf, finalf, cyclef, metaf, mergedf, jsonf = compError.executePipelineNoTidalTransform( metadata = iometadata, subdir='errorfield' )
     #utilities.log.info('prerarima output files '+errf+' '+finalf+' '+cyclef+' '+metaf+' '+mergedf+' '+jsonf)
     # Now perform the alternative ARIMA fit
-    errf, finalf, cyclef, metaf, mergedf, jsonf = compError.executePipelineNoTidalTransform_arima( metadata = iometadata, subdir='errorfield-ARIMA' )
+    #errf, finalf, cyclef, metaf, mergedf, jsonf = compError.executePipelineNoTidalTransform_arima( metadata = iometadata, subdir='errorfield-ARIMA' )
+    errf, finalf, cyclef, metaf, mergedf, jsonf = compError.executePipeline_arima( metadata = iometadata, subdir='errorfield-ARIMA' )
     utilities.log.info('ARIMA output files '+errf+' '+finalf+' '+cyclef+' '+metaf+' '+mergedf+' '+jsonf)
 
     ###########################################################################
