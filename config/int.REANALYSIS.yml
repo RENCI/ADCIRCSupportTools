@@ -19,7 +19,7 @@ KRIGING: &kriging
    PARAMS:
       method: "ordinary"
       variogram_model: "spherical"
-      coordinates_type: "euclidean"
+      coordinates_type: "geographic"
       weight: False
       nlags: 1
 
@@ -31,7 +31,7 @@ CVKRIGING: &cvkriging
    PARAMS:
       method: ["ordinary"] # Note ordinary and universal have different variables
       variogram_model: ["spherical", "gaussian"]
-      coordinates_type: ["euclidean"]
+      coordinates_type: ["geographic"]
       anisotropy_scaling: [1]
       anisotropy_angle: [0]
       weight: [False,True]

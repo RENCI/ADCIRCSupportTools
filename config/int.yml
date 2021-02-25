@@ -17,7 +17,7 @@ REGRID: &regrid
 KRIGING: &kriging
    VPARAMS:
       sill: 2
-      range: 2
+      range: 2 
       nugget: 0.1
    PARAMS:
       method: "ordinary"
