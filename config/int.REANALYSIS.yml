@@ -14,13 +14,13 @@ REGRID: &regrid
 KRIGING: &kriging
    VPARAMS:
       sill: 0.2
-      range: 20 
+      range: 2 
       nugget: 0.1 
    PARAMS:
       method: "ordinary"
-      variogram_model: "spherical"
-      coordinates_type: "euclidean"
-      weight: False
+      variogram_model: "gaussian"
+      coordinates_type: "geographic"
+      weight: True 
       nlags: 1
 
 CVKRIGING: &cvkriging
@@ -31,7 +31,7 @@ CVKRIGING: &cvkriging
    PARAMS:
       method: ["ordinary"] # Note ordinary and universal have different variables
       variogram_model: ["spherical", "gaussian"]
-      coordinates_type: ["euclidean"]
+      coordinates_type: ["geographic"]
       anisotropy_scaling: [1]
       anisotropy_angle: [0]
       weight: [False,True]
