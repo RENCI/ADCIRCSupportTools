@@ -49,10 +49,14 @@ def main(args):
         addstring=' '
         if args.inrange is not None:
             addstring='--inrange '+str(args.inrange)
+        if args.insill is not None:
+            addstringSill='--insill '+str(args.insill)
         if args.daily:
-            os.system('python krigListOfErrorSets.py --daily '+addstring+'  --outroot '+ROOTDIR+' --yamlname '+YAMLNAME+'  --errorfile '+ERRFILE+' --clampfile '+CLAMPFILE+' --gridjsonfile '+ADCJSON)
+            os.system('python krigListOfErrorSets.py --daily '+addstring+' '+addstringSill+'  --outroot '+ROOTDIR+' --yamlname '+YAMLNAME+'  --errorfile '+ERRFILE+' --clampfile '+CLAMPFILE+' --gridjsonfile '+ADCJSON)
         else:
             os.system('python krigListOfErrorSets.py '+addstring+' --outroot '+ROOTDIR+' --yamlname '+YAMLNAME+'  --errorfile '+ERRFILE+' --clampfile '+CLAMPFILE+' --gridjsonfile '+ADCJSON)
+        sys.exit('Manual exit')
+
     print('Completed ensemble')
 
 if __name__ == '__main__':
@@ -70,5 +74,6 @@ if __name__ == '__main__':
     parser.add_argument('--outroot', action='store', dest='outroot', default=None,
                         help='Available high level output dir directory')
     parser.add_argument('--inrange', action='store', dest='inrange',default=None, help='If specified then an internal config is constructed', type=int)
+    parser.add_argument('--insill', action='store', dest='insill',default=None, help='If specified then an internal config is constructed', type=float)
     args = parser.parse_args()
     sys.exit(main(args))

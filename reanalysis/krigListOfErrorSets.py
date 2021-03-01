@@ -60,7 +60,6 @@ def main(args):
     utilities.log.info(args)
 
     cv_kriging = args.cv_kriging
-
     ###########################################################################
     # Interpolate adcirc node data using the previously generated error matrix
     # Get clamping data and prepare to merge with error file
@@ -93,7 +92,9 @@ def main(args):
     config = utilities.load_config(yamlname)
     if args.inrange is not None:
         config['KRIGING']['VPARAMS']['range']=args.inrange
-        utilities.log.info('Modified int.yml configuration dict containing {}'.format(config))
+    if args.insill is not None:
+        config['KRIGING']['VPARAMS']['sill']=args.insill
+    utilities.log.info('Current internal yml configuration dict containing {}'.format(config))
 
     iometadata=args.iometadata
     inerrorfile = args.errorfile
@@ -138,7 +139,7 @@ def main(args):
     # Start the kriging
     utilities.log.info('Begin Kriging')
     adddata=None
-    if args.inrange is not None:
+    if args.inrange is not None or args.insill is not None:
         krig_object = interpolateScalerField(datafile=inerrorfile, inputcfg=config,  clampingfile=clampfile, metadata=iometadata, rootdir=rootdir)
     else:
         krig_object = interpolateScalerField(datafile=inerrorfile, yamlname=yamlname, clampingfile=clampfile, metadata=iometadata, rootdir=rootdir)
@@ -175,21 +176,33 @@ def main(args):
     #############################################################################
     # Start predictions
 
-    # First: test on a simple 2D grid for generating visualization work
+    # Pull out the krid predicted values at the stations
+    #station_gridx,station_gridy =krig_object.fetchRawInputData() # lons and lats
+    df_interpolate_stations = pd.read_csv(inerrorfile, index_col=0, header=0).dropna(axis=0)
+    lons=df_interpolate_stations['lon'].to_list()
+    lats=df_interpolate_stations['lat'].to_list()
+    utilities.log.info('Station points:Number of lons {} number of lats {}'.format(len(lons), len(lats)))
+
+    Allvalues = krig_object.krigingTransform(lons, lats, style='points', filename='interpolate_model'+extraFilebit+iometadata+'.h5')
+
+    df_interpolate_stations['krig']=Allvalues['value'].to_list()
+    krigfilename=utilities.writeCsv(df_interpolate_stations,rootdir=rootdir,subdir='interpolated',fileroot='stationSummaryKrig',iometadata=iometadata)
+    utilities.log.info('Wrote Station krig values to {}'.format(krigfilename))
+
+    # Second: test on a simple 2D grid for generating visualization work
     # Write this data to disk using a PKL simple format (lon,lat,val, Fortran order)
 
     gridx, gridy = krig_object.input_grid() # Grab from the config file
     df_grid = krig_object.krigingTransform(gridx, gridy,style='grid',filename = 'interpolate_model'+extraFilebit+iometadata+'.h5')
 
     # Pass dataframe for the plotter
-
     gridz = df_grid['value'].values
     n=gridx.shape[0]
     gridz = gridz.reshape(-1, n)
     krig_object.plot_model(gridx, gridy, gridz, keepfile=True, filename='image'+iometadata+'.png', metadata=iometadata)
     krig_interfilename = krig_object.writeTransformedDataToDisk(df_grid)
 
-    # Second: now using the real adcirc data adcirc_gridx, and adcirc_gridy 
+    # Third: now using the real adcirc data adcirc_gridx, and adcirc_gridy 
     # NOTE these are styled as "points" not "grid"
     # Write this data to disk using an ADCIRC format. lon,lat,val F order
 
@@ -280,5 +293,6 @@ if __name__ == '__main__':
     parser.add_argument('--daily', action='store_true', dest='daily',
                         help='Boolean: Choose the DAILY filename nomenclature')
     parser.add_argument('--inrange', action='store', dest='inrange',default=None, help='If specified then an internal config is constructed', type=int)
+    parser.add_argument('--insill', action='store', dest='insill',default=None, help='If specified then an internal config is constructed', type=float)
     args = parser.parse_args()
     sys.exit(main(args))
