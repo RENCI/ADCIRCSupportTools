@@ -56,12 +56,13 @@ import sys, os
 import random
 import pandas as pd
 import numpy as np
+from sklearn.model_selection import GridSearchCV
 import pykrige.kriging_tools as kt
-from compute_error_field.KrigeReimplemented import Krige as newKrige
+##from compute_error_field.KrigeReimplemented import Krige as newKrige
 from pykrige.ok import OrdinaryKriging
 from pykrige.uk import UniversalKriging
-from pykrige.rk import Krige
-from pykrige.compat import GridSearchCV
+from pykrige.rk import Krige as newKrige
+##from pykrige.compat import GridSearchCV
 ##from sklearn.externals import joblib
 ##from sklearn.externals.joblib import Parallel, delayed
 import joblib
@@ -269,11 +270,11 @@ class interpolateScalerField(object):
         if method == 'ordinary':
             utilities.log.info('Ordinary kriging method selected')
             model = OrdinaryKriging(self.X, self.Y, self.Values, **param_dict,
-                                 variogram_parameters=vparams, verbose=False, enable_plotting=False)
+                                 variogram_parameters=vparams, verbose=False, enable_plotting=False, exact_values=False)
         else:
             utilities.log.info('Universal kriging method selected: is data not stationary ?')
             model = UniversalKriging(self.X, self.Y, self.Values, **param_dict,
-                                  variogram_parameters=vparams, verbose=False, enable_plotting=False)
+                                  variogram_parameters=vparams, verbose=False, enable_plotting=False, exact_values=False)
         imgdir = self.rootdir # fetchBasedir(self.config['DEFAULT']['RDIR'].replace('$',''))# Yaml call to be subsequently removed except:
         newfilename = utilities.getSubdirectoryFileName(imgdir, subdir, filename)
         try:
@@ -444,9 +445,11 @@ class interpolateScalerField(object):
         param_dict['variogram_model'] = model_list
         utilities.log.info('Params for current CV {}'.format(param_dict))
  
+        scoring='r2'
         #scoring='accuracy'
-        estimator = GridSearchCV(newKrige(variogram_parameters=vparams), param_dict, error_score='raise', scoring='r2',verbose=True, iid=True,
-                                 return_train_score=True, cv=10)
+        # estimator = GridSearchCV(newKrige(variogram_parameters=vparams), param_dict, error_score='raise', scoring='r2',verbose=True, # Remove iid=True
+        #                         return_train_score=True, cv=10)
+        estimator = GridSearchCV(newKrige(variogram_parameters=vparams), param_dict, error_score='raise', scoring=scoring, verbose=True, return_train_score=True, cv=5)
         data = np.concatenate((self.X.reshape(-1, 1), self.Y.reshape(-1, 1)), axis=1)
         estimator.fit(X=data, y=self.Values)
         # This doesn't help print('Print fixed vparams estimator {}'.format(estimator))
