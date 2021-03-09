@@ -531,9 +531,6 @@ def main(args):
     starttime=''.join([inyear,'-01-01 00:00:00'])
     endtime=''.join([inyear,'-12-31 18:00:00'])
     df_data_lowpass_subselect = df_lowpass[starttime:endtime]
-    print('POOP {}'.format(df_lowpass))
-    print('CRAP')
-    print('POOP {}'.format(df_data_lowpass_subselect))
 
     # Now standardize each station using mean=0,var=1 
     scaler = StandardScaler()
@@ -598,8 +595,6 @@ def main(args):
     graph = coo_matrix(adj).tocsr()
     perm = reverse_cuthill_mckee(graph, None)
     # Return perm the reordered set of indices. Now need to reorder df_corr_matrix
-    print('POOP C{}'.format(type(perm)))
-    print('POOP {}'.format(perm))
 
     df_test = df_corr_matrix.iloc[perm,perm] # Reorder the row and columns
     plt.close()
@@ -608,7 +603,6 @@ def main(args):
     plt.savefig('heatmap_rcm.png')
 
     df_adj = (df_test > threshold).astype(int)
-    print('POOP ADFJ {}'.format(df_adj))
     plt.close()
     sns.set(rc={'figure.figsize':(11, 6)})
     sns.heatmap(df_adj)
@@ -617,10 +611,6 @@ def main(args):
     # Lastly build a new object that associates those that 
     # TSNE or UMAP cluster the data into groups to identify 
     # new groupIDs for stratified cluster CVs.
-
-    print('try to join df_state to df_corr_matrix')
-    print('POOP 1{}'.format(df_corr_matrix.shape))
-    print('POOP 2{}'.format(df_state))
 
     df_corr_matrix.to_pickle('df_corr_matrix.pkl')
     df_state.to_pickle('df_state.pkl')
