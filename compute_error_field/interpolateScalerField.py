@@ -228,6 +228,9 @@ class interpolateScalerField(object):
             inX: numpy.ndarray of lons (no clamp)
             inY: numpy.ndarray of lats (no clamp)
             inZ: numpy.ndarray of vals (no clamp)
+            zeroX: numpy.ndarray of lons for clamp
+            zeroY: numpy.ndarray of lats for clamp
+            zeroV: numpy.ndarray of Values for clamp
         """
         indataAll = pd.read_csv(f, header=0)
         indataAll.dropna(axis=0, inplace=True) # Need this incase we save summaries with nana
@@ -240,12 +243,12 @@ class interpolateScalerField(object):
         np.random.shuffle(data) # incase we want to do CV studies
         Xpoints, Ypoints, Valuepoints = data[:,0], data[:, 1], data[:, 2]
         inX, inY, inV = indata[:,0], indata[:, 1], indata[:, 2]
+        zeroX,zeroY,zeroV = zeros[:,0], zeros[:, 1], zeros[:, 2]
         if not np.isnan(Xpoints).any() and not np.isnan(Ypoints).any() and not np.isnan(Valuepoints).any():
-            return Xpoints, Ypoints, Valuepoints, inX, inY, inV
+            return Xpoints, Ypoints, Valuepoints, inX, inY, inV, zeroX, zeroY, zeroV
         else:
             utilities.log.error('Some of the input data are nans: Aborting ')
             sys.exit('Some of the input data are nans: Aborting ')
-        return Xpoints, Ypoints, Valuepoints, inX, inY, inV
 
 ##
 ## Modify this to accept param,vprams and a filename on input
