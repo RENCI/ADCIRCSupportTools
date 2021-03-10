@@ -143,7 +143,7 @@ class interpolateScalerField(object):
             Values: numpy.ndarray list of krigevalues
         """
         return self.X, self.Y, self.Values
-x
+
     def fetchClamp(self):
         """
         Return the X,Y,Value for the clamped data only.
