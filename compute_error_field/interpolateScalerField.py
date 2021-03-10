@@ -124,7 +124,7 @@ class interpolateScalerField(object):
         self.c = clampingfile
         self.f = datafile # Input error field of long,lat,values including clamping zeros
         if datafile != None and clampingfile != None:
-            self.X, self.Y, self.Values, self.inX, self.inY, self.inV = self.readAndProcessData( self.f, self.c )
+            self.X, self.Y, self.Values, self.inX, self.inY, self.inV, self.zeroX, self.zeroY, self.zeroV = self.readAndProcessData( self.f, self.c )
         else:
             utilities.log.error('interpolateScalerField initialized with no input file nor clamping file: Abort')
             sys.exit('Abort interpolatrion job')
@@ -143,6 +143,17 @@ class interpolateScalerField(object):
             Values: numpy.ndarray list of krigevalues
         """
         return self.X, self.Y, self.Values
+x
+    def fetchClamp(self):
+        """
+        Return the X,Y,Value for the clamped data only.
+
+        Results:
+            X: numpy.ndarray list of lons
+            Y: numpy.ndarray list of lats
+            Values: numpy.ndarray list of clamp values (=0.0)
+        """
+        return self.zeroX, self.zeroY, self.zeroV
 
     def fetchRawInputData(self):
         """
