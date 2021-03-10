@@ -306,7 +306,6 @@ def main(args):
     # df_meta and df report stationids as diff types. Yuk.
     # Store the list of filenames into a dict for krig processing
 
-    print('POOP {}'.format(df_err_all_lowpass_subselect))
     subdir='errorfield'
     datadict = dict()
     for index, df in df_err_all_lowpass_subselect.iterrows():
