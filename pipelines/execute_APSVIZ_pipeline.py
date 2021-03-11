@@ -164,6 +164,21 @@ def generateRUNTIMEmetadata(df):
     timestartMinusIncrement = timestart - timeinc
     return timestartMinusIncrement.strftime('%Y%m%d%H')
 
+def buildCSV(dataDict):
+    """
+    For APSVIZ convenience, construcyt an alternativer format of the 
+    png data: Namely, 
+    StationId,StationName,Lat,Lon,Node,Filename
+    No quotes around Lat and Lon.
+    This method is highly specific to the APSVIZ work
+    """
+    df=pd.DataFrame(dataDict['STATIONS']).T
+    df.columns=('Lat','Lon','Node','State','StationName','Filename')
+    df.index.name='StationId'
+    df['Lat'] = df['Lat'].astype(float)
+    df['Lon'] = df['Lon'].astype(float)
+    return df[['StationName','State','Lat','Lon','Node','Filename']]
+
 # noinspection PyPep8Naming,DuplicatedCode
 def main(args):
 
@@ -308,6 +323,12 @@ def main(args):
     files['FORECAST']=ADCjsonFore # outfiles['ADCIRC_WL_FORECAST_JSON']
     utilities.log.info('PNG plotter dict is {}'.format(files))
     png_dict = exec_pngs(files=files, rootdir=rootdir, iometadata=iometadata, iosubdir=iosubdir)
+
+    # 6b) Build a CSV version of png_dict special for the APSVIZ work
+    df_png_csv = buildCSV(png_dict)
+    outfilecsv = utilities.writeCsv(df_png_csv, rootdir=rootdir,subdir=iosubdir,fileroot='stationProps',iometadata='')  
+    utilities.log.info('Wrote pipeline StationMetadata to {}'.format(outfilecsv))
+    files['STATIONMETADATA']=outfilecsv
 
     # Merge dict from plotter and finish up
     outfiles.update(png_dict)

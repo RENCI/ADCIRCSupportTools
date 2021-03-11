@@ -89,7 +89,8 @@ class stationPlotter(object):
         lat = df_meta.loc[int(station)]['lat']
         node = df_meta.loc[int(station)]['Node']
         stname = df_meta.loc[int(station)]['stationname']
-        return {'LAT':str(lat), 'LON':str(lon), 'NODE':str(node), 'STATIONNAME': stname, 'FILENAME':pngfile}
+        state = df_meta.loc[int(station)]['state']
+        return {'LAT':str(lat), 'LON':str(lon), 'NODE':str(node), 'STATE': state, 'STATIONNAME': stname, 'FILENAME':pngfile}
 
 ## Now a string manipulator to help fiund the proper color
 ## Uses a greedy approach
