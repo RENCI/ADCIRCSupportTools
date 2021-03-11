@@ -94,8 +94,6 @@ if __name__ == '__main__':
     parser.add_argument('--cv_kriging', action='store_true', dest='cv_kriging',
                         help='Boolean: Invoke a CV procedure prior to fitting kriging model')
     parser.add_argument('--yamlname', action='store', dest='yamlname', default=None)
-    parser.add_argument('--daily', action='store_true', dest='daily',
-                        help='Boolean: specify DAILY to the krig method')
     parser.add_argument('--inrange', action='store', dest='inrange',default=None, help='If specified then an internal config is constructed', type=int)
     parser.add_argument('--insill', action='store', dest='insill',default=None, help='If specified then an internal config is constructed', type=float)
     parser.add_argument('--outroot', action='store', dest='outroot', default=None,
