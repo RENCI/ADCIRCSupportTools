@@ -21,6 +21,52 @@ from scipy.signal import butter, lfilter, savgol_filter
 import datetime as dt
 from utilities.utilities import utilities
 
+from statsmodels.tsa.stattools import adfuller
+
+def check_stationarity(timeseries): # pd.Series on input
+    # rolling statistics
+    rolling_mean = timeseries.rolling(window=12).mean()
+    rolling_std = timeseries.rolling(window=12).std()
+    # rolling statistics plot
+    original = plt.plot(timeseries, color='blue', label='Original')
+    mean = plt.plot(rolling_mean, color='red', label='Rolling Mean')
+    std = plt.plot(rolling_std, color='black', label='Rolling Std')
+    plt.legend(loc='best')
+    plt.title('Rolling Mean & Standard Deviation')
+    plt.show(block=False)
+    # Dickey–Fuller test:
+    result = adfuller(timeseries)
+    print('ADF Statistic: {}'.format(result[0]))
+    print('p-value: {}'.format(result[1]))
+    print('Critical Values:')
+    for key, value in result[4].items():
+        print('\t{}: {}'.format(key, value))
+    stats={'ADF Statistic': result[0]}
+    return stats
+
+def make_log_stationary(df_raw,logshift=0.1):
+    """
+    Missing data in df_raw will effectively get interpolated over
+    """
+    global rolling_mean
+    global rmin
+    rmin = np.abs(df_raw.min())
+    df = df_raw+(rmin+logshift)
+    df_log = np.log(df)
+    rolling_mean = df_log.rolling(window=11).mean()
+    df_log_minus_mean = df_log - rolling_mean
+    df_log_minus_mean.dropna(inplace=True)
+    rolling_mean.dropna(inplace=True)
+    #stats=check_stationarity(df_log_minus_mean)
+    return df_log_minus_mean
+
+# Why the extra .loc? because ARIMA drops the first time index value - awesome
+def invert_make_log_stationary(df_log_minus_mean, logshift=0.1):
+    commontimes = df_log_minus_mean.index & rolling_mean.index
+    df_nolog = np.exp(df_log_minus_mean.loc[commontimes]+rolling_mean.loc[commontimes])-rmin-logshift
+    #stats=check_stationarity(df_nolog)
+    return df_nolog
+
 def butter_lowpass_filter(df_data,filterOrder=10, numHours=200):
     """
     Note. Need to drop nans from the data set
@@ -77,7 +123,7 @@ def fft_lowpass(signal, lowhrs):
     return np.fft.irfft(result, len(signal))
 
 # The means are proper means for the month./week. The offset simply changes the index underwhich it will be stored
-# The weekly means index at starting week +3 days.
+# The dfaily means index at starting week +3 days.
 def station_level_means(df_obs, df_adc, df_err, station):
     dfs = pd.DataFrame()
     dfs['OBS']=df_obs[station]
@@ -216,21 +262,13 @@ def main(args):
         utilities.log.error('Need outroot on command line: --inDir <inDir>')
         return 1
     rootdir = args.outroot.strip()
-    if not args.inyear:
-        utilities.log.error('Need compatible year on command line: --year <year>')
-        return 1
-    inyear = args.inyear.strip()
     #rootdir = '/'.join([outroot,'WEEKLY'])
 
     # Ensure the destination is created
     ##rootdir = utilities.fetchBasedir(rootdir,basedirExtra='')
 
     utilities.log.info('Yearly data (with flanks) found in {}'.format(topdir))
-    utilities.log.info('Actual year to process is {}'.format(inyear))
     utilities.log.info('Specified rootdir underwhich all files will be stored. Rootdir is {}'.format(rootdir))
-
-    #f='/projects/sequence_analysis/vol1/prediction_work/Reanalysis/2018-Reanalysis-ERR_weeklyMeans/JAN72018/adc_obs_error_merged.json'
-    #meta='/projects/sequence_analysis/vol1/prediction_work/Reanalysis/2018-Reanalysis-ERR_weeklyMeans/JAN72018/obs_water_level_metadata.json'
     f='/'.join([topdir,'adc_obs_error_merged.json'])
     meta='/'.join([topdir,'obs_water_level_metadata.json'])
 
@@ -238,8 +276,17 @@ def main(args):
     stations = list(dataDict.keys()) # For subsequent naming - are we sure order is maintained?
 
     # Build time ranges
-    timein = '-'.join([inyear,'01','01'])
-    timeout = '-'.join([inyear,'12'])
+    #timein = '-'.join([inyear,'01','01'])
+    #timeout = '-'.join([inyear,'12'])
+
+    #timein=args.timein
+    #timeout=args.timeout
+    # A total hack on specifying the times. We need to deal with this later
+
+    timein = '-'.join(['2017','12','20'])   
+    timeout = '-'.join(['2019','1','1'])
+
+    utilities.log.info('Input data chosen range is {}, {}'.format(timein, timeout))
 
     # Metadata
     df_meta=pd.DataFrame(metaDict)
@@ -251,66 +298,90 @@ def main(args):
     df_adc_all = dictToDataFrame(dataDict, 'ADC').loc[timein:timeout]
     df_err_all = dictToDataFrame(dataDict, 'ERR').loc[timein:timeout]
 
-    #start = df_err_all.index.min().strftime('%Y-%m')
-    #end = df_err_all.index.max().strftime('%Y-%m')
     start = df_err_all.index.min()
-    # Construct new .csv files for each start-week at a single FFT lowpass cutoff
-    # FFT Lowpass each station for all time. Then, extract values for all stations every start week.
 
+    # FFT Lowpass each station for entire range time. Then, extract values for all stations every day
     upshift=0
-    hourly_cutoffs=[168]
-    cutoffs = [x + upshift for x in hourly_cutoffs]
+    hourly_cutoff=48 # 168
+    cutoff = hourly_cutoff+upshift
+    utilities.log.info('FFT hourly_cutoff {}, actual_cutoff {}'.format(hourly_cutoff,cutoff))
 
-    #intersectedStations=stations # These are from the meta data not the data sets
     intersectedStations=set(df_err_all.columns.to_list()).intersection(stations) # Compares data to metadata lists
     utilities.log.info('Number of intersected stations is {}'.format(len(intersectedStations)))
 
-    fftAllstations=dict()
     # Perform FFT for each station over the entire time range
     df_err_all_lowpass=pd.DataFrame(index=df_err_all.index)
+
+    fftAllstations=dict()
+    # Perform FFT for each stationm oveer the entire time range
+    if args.stationarity: 
+        utilities.log.info('Will attempt to render data stationary pre FFT')
+
     for station in intersectedStations:
         print('Process station {}'.format(station))
         stationName = df_meta.loc[int(station)]['stationname']
         df_fft=pd.DataFrame()
-        for cutoffflank,cutoff in zip(cutoffs,hourly_cutoffs):
-            print('Process cutoff {} for station {}'.format(cutoff,station))
-            df_temp = df_err_all[station].dropna() # should drop rows (times)
-            df_fft[str(cutoff)]=fft_lowpass(df_temp,lowhrs=cutoffflank)
-        df_fft.index = df_temp.index
+        df_low = pd.DataFrame()
+
+        #for cutoffflank,cutoff in zip(cutoffs,hourly_cutoffs):
+
+        print('Process cutoff {} for station {}'.format(cutoff,station))
+        df_temp = df_err_all[station].dropna()
+        if args.stationarity:
+            df_temp = make_log_stationary(df_temp) # Note beginning times get wiped out 
+        df_low['low'] = fft_lowpass(df_temp,lowhrs=cutoff)
+        df_low.index=df_temp.index # Need this if doing invert_stationarity
+        if args.stationarity:
+            df_inv=invert_make_log_stationary(df_low['low'])
+            df_fft[str(cutoff)] = df_inv
+        else:
+            df_fft[str(cutoff)]=df_low['low']
+        #df_fft.index = df_inv.index # df_temp.index
         df_err_all_lowpass[station]=df_fft[str(cutoff)]
-        utilities.log.info('df_err_all_lowpass {} Size after fft {}'.format(station, df_err_all_lowpass.shape))   
 
-    # Now pull out weekly data starting at the middle of the first week
-    # Build a list of indexes from which to extract data. Start at the first midweek then increment every 168 hours
-    # Start from the existing data range. Get the first index value, find its week and day, then determine middle week.
+    # Now pull out daily data 
+    utilities.log.info('MANUAL setting of date range')
+    #stime=''.join(['2017','-12-20 00:00:00'])
+    #etime=''.join(['2019','-01-01 00:00:00'])
 
-# %U week number of year, with Sunday as first day of week (00..53).
-# %V ISO week number, with Monday as first day of week (01..53).
-# %W week number of year, with Monday as first day of week (00..53).
-# 
-#    numDays = (endtime-starttime).days
-#    startday=pd.date_range(starttime, periods=numDays) #.values()
-#    julianMetadata = startday.strftime('%y-%j').to_list()
+    stime=''.join(['2018','-01-01 00:00:00'])
+    etime=''.join(['2018','-05-01 00:00:00'])
 
-    # Starttime: what is our firsyt data pints and what week are we in?
-    # %w Weekday as a decimal number, where 0 is Sunday and 6 is Saturday
+    starttime = dt.datetime.strptime(stime,'%Y-%m-%d %H:%M:%S')
+    endtime = dt.datetime.strptime(etime,'%Y-%m-%d %H:%M:%S')
+    numDays = (endtime-starttime).days + 1
 
-    # Now what is the neares
-    df_err_all_lowpass_subselect = df_err_all_lowpass[df_err_all_lowpass.index.strftime('%w %H:%M:%S')=='0 00:00:00'] # Grab all available startweeks
-    julianMetadata = df_err_all_lowpass_subselect.index.strftime('%y-%W').to_list()
-
+    startday=pd.date_range(starttime, periods=numDays) #.values()
+    julianMetadata = startday.strftime('%y-%j').to_list()
+    utilities.log.info('startdays {}'.format(startday))
+    
+    # Build metadata for the files
+    # Julian dat 
     iometa = dict()
-    for index,week,date in zip(range(len(df_err_all_lowpass)),julianMetadata,df_err_all_lowpass_subselect.index):
-        iometa[date]='_'.join([week,date.strftime('%Y%m%d%H')])
+    for index,day,date in zip(range(len(startday)),julianMetadata,startday):
+        #iometa[index]='_'.join([day,date.strftime('%Y%m%d%H')])
+        iometa[date]='_'.join([day,date.strftime('%Y%m%d%H')])
 
+    # Not all startdays are always in the data file. 2017-12-31 00 is missing as is 2018-01-01 00
+    # are excluded because the ADC file had no data
+    # Preceding yearly method may have restricted days
+
+    # startday is in yyyy-mm-dd lowpass includes times
+    # ALl Nans
+    intersect = [value for value in startday if value in df_err_all_lowpass.index] 
+
+    utilities.log.info('Residual data: intersect list {}'.format(intersect))
+    df_err_all_lowpass_subselect=df_err_all_lowpass.loc[intersect]
+
+    # Now process the Rows and build a new datafile for each
     # df_meta and df report stationids as diff types. Yuk.
     # Store the list of filenames into a dict for krig processing
 
     subdir='errorfield'
+
+
     datadict = dict()
     for index, df in df_err_all_lowpass_subselect.iterrows():
-        midweekstamp=index.strftime("%V")
-        #metadata='_'+index.strftime("%Y-%m-%d")
         metadata='_'+iometa[index]
         df.index = df.index.astype('int64')    
         df_merged=df_meta.join(df)
@@ -318,15 +389,14 @@ def main(args):
         df_merged.columns=['lat','lon','Node','state','mean']
         df_merged.dropna(inplace=True) # Cannot pass Nans to the kriging system
         df_merged.index.name = None
-        #outfilename='_'.join(['stationSummaryLowpassWeekly',midweekstamp])+'.csv'
         outfilename=utilities.writeCsv(df_merged,rootdir=rootdir,subdir=subdir,fileroot='stationSummaryAves',iometadata=metadata)
-        datadict[midweekstamp]=outfilename
+        datadict[iometa[index]]=outfilename
         df_merged.to_csv(outfilename)
 
     outfilesjson = utilities.writeDictToJson(datadict, rootdir=rootdir,subdir=subdir,fileroot='runProps',iometadata='') # Never change fname
 
 # Run the plot pipeline ASSUMES rootdir has been created already
-    sns.set(rc={'figure.figsize':(11, 4)}) # Setr gray background and white gird
+    sns.set(rc={'figure.figsize':(11, 4)}) # Set gray background and white gird
     for station in stations:
         dfs, dfs_weekly_mean, dfs_monthly_mean, dfs_7d = station_level_means(df_obs_all, df_adc_all, df_err_all, station)
         start=dfs.index.min().strftime('%Y-%m')
@@ -336,20 +406,20 @@ def main(args):
 
 
     utilities.log.info('Wrote pipeline Dict data to {}'.format(outfilesjson))
-    print('Finished generating weekly lowpass data files')
+    print('Finished generating daily lowpass data files')
 
 if __name__ == '__main__':
     from argparse import ArgumentParser
     import sys
+
     parser = ArgumentParser()
     parser.add_argument('--inDir', action='store', dest='inDir', default=None,
                         help='directory for yearly data')
     parser.add_argument('--outroot', action='store', dest='outroot', default=None,
                         help='directory for yearly data')
-    parser.add_argument('--inyear ', action='store', dest='inyear', default=None,
-                        help='year to keep from the data ( removes anyu flanking months )')
     parser.add_argument('--iometadata', action='store', dest='iometadata',default='', help='Used to further annotate output files', type=str)
     parser.add_argument('--iosubdir', action='store', dest='iosubdir',default='', help='Used to locate output files into subdir', type=str)
+    parser.add_argument('--stationarity', help="Apply RMean Stationarity pre FFT", action='store_true')
     args = parser.parse_args()
     sys.exit(main(args))
 

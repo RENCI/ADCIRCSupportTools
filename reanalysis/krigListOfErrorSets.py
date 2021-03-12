@@ -37,19 +37,29 @@ def genSinglePlot(i, fig, df_data,vmin,vmax,inputMetadata):
     ax.get_yaxis().set_visible(False)
     plt.axis('tight')
 
-def parseDateFilename(infilename):
+def parseWeeklyDateFilename(infilename):
     """
     filename must be of the form stationSummaryAves_01_201801010000_201801070000.csv
     """
+    utilities.log.info('Using WEEKLY form of filenames')
     words=(infilename.split('.')[-2]).split('_') 
-    metadata = '_'+words[-3]+'_'+words[-1]+'_'+words[-2]
+    metadata = '_'+words[-2]+'_'+words[-1]
     return metadata
     
+def parseDateFilename(infilename):
+    """
+    filename must be of the form stationSummaryAves_18-332_2018112800.csv
+    """
+    utilities.log.info('Using DAILY form of filenames')
+    words=(infilename.split('.')[-2]).split('_')
+    metadata = '_'+words[-2]+'_'+words[-1]
+    return metadata
+
+
 def main(args):
     utilities.log.info(args)
 
     cv_kriging = args.cv_kriging
-
     ###########################################################################
     # Interpolate adcirc node data using the previously generated error matrix
     # Get clamping data and prepare to merge with error file
@@ -69,20 +79,30 @@ def main(args):
     #yamlname=os.path.join(os.path.dirname(__file__), '../ADCIRCSupportTools/config', 'int.yml')
     utilities.log.info('Use longer range terms: Same as the OceanRise work')
     #yamlname=os.path.join(os.path.dirname(__file__), '../ADCIRCSupportTools/config', 'int.REANALYSIS.yml ')
+
+    #if args.inrange is not None:
+    #    config=buildLocalConfig(n_range=args.inrange)
+    #else:
+
     if args.yamlname==None:
         yamlname='/projects/sequence_analysis/vol1/prediction_work/Reanalysis/ADCIRCSupportTools/config/int.REANALYSIS.yml'
     else:
         yamlname=args.yamlname
-
     utilities.log.info('INT YAM: NAME IS {}'.format(yamlname))
-
-    # Override config for now
     config = utilities.load_config(yamlname)
+    if args.inrange is not None:
+        config['KRIGING']['VPARAMS']['range']=args.inrange
+    if args.insill is not None:
+        config['KRIGING']['VPARAMS']['sill']=args.insill
+    utilities.log.info('Current internal yml configuration dict containing {}'.format(config))
 
     iometadata=args.iometadata
     inerrorfile = args.errorfile
 
-    iometadata =  parseDateFilename(inerrorfile) # This will be used to update all output files
+    if args.daily:
+        iometadata =  parseDateFilename(inerrorfile) # This will be used to update all output files
+    else:
+        iometadata =  parseWeeklyDateFilename(inerrorfile) # This will be used to update all output files
 
     # Fetch clamping nodes to act as boundary for kriging
     # clampfile = os.path.join(os.path.dirname(__file__), "../config", config['DEFAULT']['ClampList'])
@@ -118,7 +138,11 @@ def main(args):
 
     # Start the kriging
     utilities.log.info('Begin Kriging')
-    krig_object = interpolateScalerField(datafile=inerrorfile, yamlname=yamlname, clampingfile=clampfile, metadata=iometadata, rootdir=rootdir)
+    adddata=None
+    if args.inrange is not None or args.insill is not None:
+        krig_object = interpolateScalerField(datafile=inerrorfile, inputcfg=config,  clampingfile=clampfile, metadata=iometadata, rootdir=rootdir)
+    else:
+        krig_object = interpolateScalerField(datafile=inerrorfile, yamlname=yamlname, clampingfile=clampfile, metadata=iometadata, rootdir=rootdir)
 
     if cv_kriging:
         extraFilebit='_CV_'
@@ -133,9 +157,12 @@ def main(args):
         param_dict, vparams, best_score, full_scores = krig_object.optimize_kriging(krig_object) # , param_dict_list, vparams_dict_list)
         utilities.log.info('Kriging best score is {}'.format(best_score))
         print('List of all scores {}'.format(full_scores))
-        fullScoreDict = {'best_score':best_score,'scores': full_scores, 'params':param_dict,'vparams':vparams}
+        #fullScoreDict = {'best_score':best_score,'scores': full_scores, 'params':param_dict,'vparams':vparams}
+        fullScoreDict = {'best_score':best_score,'params':param_dict,'vparams':vparams}
         ##jsonfilename = '_'.join(['','fullScores.json']) 
         jsonfilename = 'fullCVScores.json'
+        utilities.log.info('Partial CV score {}'.format(fullScoreDict))
+        print('Partial CV score {}'.format(fullScoreDict))
         with open(jsonfilename, 'w') as fp:
             json.dump(fullScoreDict, fp)
         
@@ -149,21 +176,33 @@ def main(args):
     #############################################################################
     # Start predictions
 
-    # First: test on a simple 2D grid for generating visualization work
+    # Pull out the krid predicted values at the stations
+    #station_gridx,station_gridy =krig_object.fetchRawInputData() # lons and lats
+    df_interpolate_stations = pd.read_csv(inerrorfile, index_col=0, header=0).dropna(axis=0)
+    lons=df_interpolate_stations['lon'].to_list()
+    lats=df_interpolate_stations['lat'].to_list()
+    utilities.log.info('Station points:Number of lons {} number of lats {}'.format(len(lons), len(lats)))
+
+    Allvalues = krig_object.krigingTransform(lons, lats, style='points', filename='interpolate_model'+extraFilebit+iometadata+'.h5')
+
+    df_interpolate_stations['krig']=Allvalues['value'].to_list()
+    krigfilename=utilities.writeCsv(df_interpolate_stations,rootdir=rootdir,subdir='interpolated',fileroot='stationSummaryKrig',iometadata=iometadata)
+    utilities.log.info('Wrote Station krig values to {}'.format(krigfilename))
+
+    # Second: test on a simple 2D grid for generating visualization work
     # Write this data to disk using a PKL simple format (lon,lat,val, Fortran order)
 
     gridx, gridy = krig_object.input_grid() # Grab from the config file
     df_grid = krig_object.krigingTransform(gridx, gridy,style='grid',filename = 'interpolate_model'+extraFilebit+iometadata+'.h5')
 
     # Pass dataframe for the plotter
-
     gridz = df_grid['value'].values
     n=gridx.shape[0]
     gridz = gridz.reshape(-1, n)
     krig_object.plot_model(gridx, gridy, gridz, keepfile=True, filename='image'+iometadata+'.png', metadata=iometadata)
     krig_interfilename = krig_object.writeTransformedDataToDisk(df_grid)
 
-    # Second: now using the real adcirc data adcirc_gridx, and adcirc_gridy 
+    # Third: now using the real adcirc data adcirc_gridx, and adcirc_gridy 
     # NOTE these are styled as "points" not "grid"
     # Write this data to disk using an ADCIRC format. lon,lat,val F order
 
@@ -251,5 +290,9 @@ if __name__ == '__main__':
                         help='Boolean: Display histograms station only, vis grid errors, and adcirc nodes')
     parser.add_argument('--outroot', action='store', dest='outroot', default=None,
                         help='Available high level output dir directory')
+    parser.add_argument('--daily', action='store_true', dest='daily',
+                        help='Boolean: Choose the DAILY filename nomenclature')
+    parser.add_argument('--inrange', action='store', dest='inrange',default=None, help='If specified then an internal config is constructed', type=int)
+    parser.add_argument('--insill', action='store', dest='insill',default=None, help='If specified then an internal config is constructed', type=float)
     args = parser.parse_args()
     sys.exit(main(args))

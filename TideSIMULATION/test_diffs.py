@@ -265,8 +265,8 @@ rootdir=utilities.fetchBasedir(config['DEFAULT']['RDIR'], basedirExtra='StationT
 
 # Get HOUR  data. 3 stations are assembled in the obs.yml
 
-#yamlname=os.path.join(os.path.dirname(__file__), '../config', 'obs.yml')
-yamlname='~/ADCIRCSupportTools/TideSIMULATION/obs.yml'
+yamlname=os.path.join(os.path.dirname(__file__), '../config', 'obs.yml')
+#yamlname='~/ADCIRCSupportTools/TideSIMULATION/obs.yml'
 
 rpl = GetObsStations(product='hourly_height', rootdir=rootdir, yamlname=yamlname, metadata=iometadata)
 stations = rpl.stationListFromYaml()
@@ -320,52 +320,52 @@ cutoffs = [x + upshift for x in hourly_cutoffs]
 # Do we need to carry colors ?
 # Create a station df with columns of cutoffs
 
-filterOrder=10
-lowpassAllstations=dict()
-for station in intersectedStations:
-    print('Process station {}'.format(station))
-    stationName = df_stationData.loc[int(station)]['stationname']
-    lowpassdata = dict() # Carry all stations in the order processed buty first add the OBS and detided
-    lowpassdata['OBS']=df_hourlyOBS[station] # Data to interpret
-    lowpassdata['DETIDE']=df_diff[station] # Actual detided data set
-    df_lowpass=pd.DataFrame()
-    for cutoffflank,cutoff in zip(cutoffs,hourly_cutoffs):
-        print('Process cutoff {} for station {}'.format(cutoff,station))
-        df_temp = df_hourlyOBS[station].dropna()
-        df_lowpass[str(cutoff)]=butter_lowpass_filter(df_temp,filterOrder=10, numHours=cutoffflank)
-    df_lowpass.index = df_temp.index
-    lowpassdata['LP']=df_lowpass
-    lowpassAllstations[station]=lowpassdata
-    lowpassAllstations['station']=station
-    lowpassAllstations['stationName']=stationName
-    # For each station plot. OBS,explicit detided, cutoffs
-    makeLowpassPlot(plot_timein, plot_timeout, lowpassAllstations, filterOrder=filterOrder)
-    makeLowpassHist(plot_timein, plot_timeout, lowpassAllstations, filterOrder=filterOrder)
+#filterOrder=10
+#lowpassAllstations=dict()
+#for station in intersectedStations:
+#    print('Process station {}'.format(station))
+#    stationName = df_stationData.loc[int(station)]['stationname']
+#    lowpassdata = dict() # Carry all stations in the order processed buty first add the OBS and detided
+#    lowpassdata['OBS']=df_hourlyOBS[station] # Data to interpret
+#    lowpassdata['DETIDE']=df_diff[station] # Actual detided data set
+#    df_lowpass=pd.DataFrame()
+#    for cutoffflank,cutoff in zip(cutoffs,hourly_cutoffs):
+#        print('Process cutoff {} for station {}'.format(cutoff,station))
+#        df_temp = df_hourlyOBS[station] #.dropna()
+#        df_lowpass[str(cutoff)]=butter_lowpass_filter(df_temp,filterOrder=10, numHours=cutoffflank)
+#    df_lowpass.index = df_temp.index
+#    lowpassdata['LP']=df_lowpass
+#    lowpassAllstations[station]=lowpassdata
+#    lowpassAllstations['station']=station
+#    lowpassAllstations['stationName']=stationName
+#    # For each station plot. OBS,explicit detided, cutoffs
+#    makeLowpassPlot(plot_timein, plot_timeout, lowpassAllstations, filterOrder=filterOrder)
+#    makeLowpassHist(plot_timein, plot_timeout, lowpassAllstations, filterOrder=filterOrder)
 
 print('Start filterOrder sweep')
 filterOrders=[1,2,3,4,5,6,50,7,8,9,10]
 
-lowpassFOAllstations=dict()
-cutoff=24+4 # 24 hours plus a 4 hour flank
-hourly_cutoff=24
-for station in intersectedStations:
-    print('Process station {}'.format(station))
-    stationName = df_stationData.loc[int(station)]['stationname']
-    lowpassFOdata = dict() # Carry all stations in the order processed buty first add the OBS and detided
-    lowpassFOdata['OBS']=df_hourlyOBS[station] # Data to interpret
-    lowpassFOdata['DETIDE']=df_diff[station] # Actual detided data set
-    df_lowpass=pd.DataFrame()
-    for filterOrder in filterOrders:
-        print('Process cutoff {} for station {} filterOrder {}'.format(cutoff,station,filterOrder))
-        df_temp = df_hourlyOBS[station].dropna()
-        df_lowpass[str(filterOrder)]=butter_lowpass_filter(df_temp,filterOrder=filterOrder, numHours=cutoff)
-    df_lowpass.index = df_temp.index
-    lowpassFOdata['LP']=df_lowpass
-    lowpassFOAllstations[station]=lowpassFOdata
-    lowpassFOAllstations['station']=station
-    lowpassFOAllstations['stationName']=stationName
-    # For each station plot. OBS,explicit detided, cutoffs
-    makeLowpassFOPlot(plot_timein, plot_timeout, hourly_cutoff, lowpassFOAllstations)
+#lowpassFOAllstations=dict()
+#cutoff=24+4 # 24 hours plus a 4 hour flank
+#hourly_cutoff=24
+#for station in intersectedStations:
+#    print('Process station {}'.format(station))
+#    stationName = df_stationData.loc[int(station)]['stationname']
+#    lowpassFOdata = dict() # Carry all stations in the order processed buty first add the OBS and detided
+#    lowpassFOdata['OBS']=df_hourlyOBS[station] # Data to interpret
+#    lowpassFOdata['DETIDE']=df_diff[station] # Actual detided data set
+#    df_lowpass=pd.DataFrame()
+#    for filterOrder in filterOrders:
+#        print('Process cutoff {} for station {} filterOrder {}'.format(cutoff,station,filterOrder))
+#        df_temp = df_hourlyOBS[station].dropna()
+#        df_lowpass[str(filterOrder)]=butter_lowpass_filter(df_temp,filterOrder=filterOrder, numHours=cutoff)
+#    df_lowpass.index = df_temp.index
+#    lowpassFOdata['LP']=df_lowpass
+#    lowpassFOAllstations[station]=lowpassFOdata
+#    lowpassFOAllstations['station']=station
+#    lowpassFOAllstations['stationName']=stationName
+#    # For each station plot. OBS,explicit detided, cutoffs
+#    makeLowpassFOPlot(plot_timein, plot_timeout, hourly_cutoff, lowpassFOAllstations)
 
 #
 # Try the FFT lowpass
@@ -375,8 +375,8 @@ upshift=4
 hourly_cutoffs=[12,24,48,168]
 cutoffs = [x + upshift for x in hourly_cutoffs]
 
-hourly_cutoffs=[12]
-cutoffs=[12]
+#hourly_cutoffs=[12]
+#cutoffs=[12]
 
 fftAllstations=dict()
 for station in intersectedStations:

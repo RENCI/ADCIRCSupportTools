@@ -8,6 +8,28 @@ import json
 import datetime
 from utilities.utilities import utilities
 
+#############################################################################
+# Build a slurm file
+
+def build_slurm(ROOTDIR,YAMLNAME,ERRFILE,CLAMPFILE,ADCJSON,RANGE,SILL):
+    slurm = list()
+    slurm.append('#!/bin/sh')
+    slurm.append('#SBATCH -t 24:00:00')
+    slurm.append('#SBATCH -p batch')
+    slurm.append('#SBATCH -N 1')
+    slurm.append('#SBATCH -n 1')
+    slurm.append('#SBATCH -J Interpolate')
+    slurm.append('#SBATCH --mem-per-cpu 64000')
+    slurm.append('echo "Begin the Interpolation phase" ')
+    slurm.append('export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools:$PYTHONPATH')
+    slurm.append('dir="/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/reanalysis"')
+    slurm.append('python -u $dir/krigListOfErrorSets.py  --daily --inrange "'+RANGE+'" --insill "'+SILL+'" --outroot "'+ROOTDIR+'" --yamlname "'+YAMLNAME+'" --errorfile "'+ERRFILE+'" --clampfile "'+CLAMPFILE+'" --gridjsonfile "'+ADCJSON+'"' )
+    with open('runSlurm.sh', 'w') as file:
+        for row in slurm:
+            file.write(row+'\n')
+    file.close()
+    return ('runSlurm.sh')
+
 def main(args):
     print('Process the separate reanalysis error files')
     utilities.log.info('Start the iterative interpolation pipeline')
@@ -16,11 +38,15 @@ def main(args):
     ADCJSON=args.gridjsonfile
     YAMLNAME=args.yamlname
     ROOTDIR=args.outroot
+    RANGE=str(args.inrange)
+    SILL=str(args.insill)
     utilities.log.info('ERRDIR {}'.format(ERRDIR))
     utilities.log.info('CLAMPFILE {}'.format(CLAMPFILE))
     utilities.log.info('ADCJSON {}'.format(ADCJSON))
     utilities.log.info('YAMLNAME {}'.format(YAMLNAME))
     utilities.log.info('ROOTDIR {}'.format(ROOTDIR))
+    utilities.log.info('RANGE {}'.format(RANGE))
+    utilities.log.info('SILL {}'.format(SILL))
 
     # Set of all files belonging to this ensemble
     errfileJson=ERRDIR+'/runProps.json'
@@ -46,17 +72,16 @@ def main(args):
         utilities.log.info('ADCJSON {}'.format(ADCJSON))
         utilities.log.info('YAMLNAME {}'.format(YAMLNAME))
         utilities.log.info('ROOTDIR {}'.format(ROOTDIR))
-        addstring=' '
-        if args.inrange is not None:
-            addstring='--inrange '+str(args.inrange)
-        if args.insill is not None:
-            addstringSill='--insill '+str(args.insill)
-        if args.daily:
-            os.system('python krigListOfErrorSets.py --daily '+addstring+' '+addstringSill+'  --outroot '+ROOTDIR+' --yamlname '+YAMLNAME+'  --errorfile '+ERRFILE+' --clampfile '+CLAMPFILE+' --gridjsonfile '+ADCJSON)
-        else:
-            os.system('python krigListOfErrorSets.py '+addstring+' --outroot '+ROOTDIR+' --yamlname '+YAMLNAME+'  --errorfile '+ERRFILE+' --clampfile '+CLAMPFILE+' --gridjsonfile '+ADCJSON)
-        sys.exit('Manual exit')
+        utilities.log.info('RANGE {}'.format(RANGE))
+        utilities.log.info('SILL {}'.format(SILL))
+        slurmFilename = build_slurm(ROOTDIR,YAMLNAME,ERRFILE,CLAMPFILE,ADCJSON,RANGE,SILL)
+        cmd = 'sbatch ./'+slurmFilename
+        os.system(cmd)
 
+        #if args.daily:
+        #    os.system('python krigListOfErrorSets.py --daily  --outroot '+ROOTDIR+' --yamlname '+YAMLNAME+'  --errorfile '+ERRFILE+' --clampfile '+CLAMPFILE+' --gridjsonfile '+ADCJSON)
+        #else:
+        #    os.system('python krigListOfErrorSets.py --outroot '+ROOTDIR+' --yamlname '+YAMLNAME+'  --errorfile '+ERRFILE+' --clampfile '+CLAMPFILE+' --gridjsonfile '+ADCJSON)
     print('Completed ensemble')
 
 if __name__ == '__main__':
@@ -71,9 +96,9 @@ if __name__ == '__main__':
     parser.add_argument('--yamlname', action='store', dest='yamlname', default=None)
     parser.add_argument('--daily', action='store_true', dest='daily',
                         help='Boolean: specify DAILY to the krig method')
-    parser.add_argument('--outroot', action='store', dest='outroot', default=None,
-                        help='Available high level output dir directory')
     parser.add_argument('--inrange', action='store', dest='inrange',default=None, help='If specified then an internal config is constructed', type=int)
     parser.add_argument('--insill', action='store', dest='insill',default=None, help='If specified then an internal config is constructed', type=float)
+    parser.add_argument('--outroot', action='store', dest='outroot', default=None,
+                        help='Available high level output dir directory')
     args = parser.parse_args()
     sys.exit(main(args))
