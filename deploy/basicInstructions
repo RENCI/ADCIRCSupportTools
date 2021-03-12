@@ -1,17 +1,24 @@
 
+# List images
+sudo docker image ls
 
+# Remove existing images
+
+sudo docker image rm -f adcirc_supp
+sudo docker image rm -f renciorg/adcirc_supp
 
 # Build an image
 sudo docker build -t adcirc_supp:latest .
 
 # Reset the tag ID
-docker image tag adcirc_supp:latest renciorg/adcirc_supp:latest
+sudo docker image tag adcirc_supp:latest renciorg/adcirc_supp:latest
 
 # Push the image to docker 
 
 sudo docker login
 # Give your userid/passwd
 
+# Load for actual cluster usage
 sudo docker push renciorg/adcirc_supp:latest
 
 # Start an interactive shell to the image
