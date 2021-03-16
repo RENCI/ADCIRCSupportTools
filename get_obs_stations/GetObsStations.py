@@ -146,7 +146,7 @@ class GetObsStations(object):
         config['OBSERVATIONS']['EX_THRESH'].
         float(config['OBSERVATIONS']['THRESH']).
     """
-    def __init__(self, datum='MSL', unit='metric', product='water_level', yamlname=os.path.join(os.path.dirname(__file__), '../config', 'obs.yml'),timezone='gmt', metadata='',rootdir='None', iosubdir='obspkl'):
+    def __init__(self, datum='MSL', unit='metric', product='water_level', stationFile=None, yamlname=os.path.join(os.path.dirname(__file__), '../config', 'obs.yml'),timezone='gmt', metadata='',rootdir='None', iosubdir='obspkl'):
         """
         get_obs_stations constructor
 
@@ -158,7 +158,10 @@ class GetObsStations(object):
             metadata: str, filename extra naming.
             rootdir: str, high level output directory.
             iosubdir: Subdirectory under trootdir
+   
+        stationFile defaulting to None indicates to try and get name from the obs.yml file as before; else it must be a FQFN
         """
+        self.stationFile=stationFile
         self.excludeStationID = pd.DataFrame() # will carry the following stationid (index), enum(missing,nan,outlier)
         self.stationlist = list()
         self.datum = datum.upper() if datum.upper() in datums else 'None'
@@ -305,13 +308,20 @@ class GetObsStations(object):
             Return dataframe ('stationid','Node','lon','lat']). 
         """
         config = self.config['DEFAULT']
-        stafile = os.path.join(os.path.dirname(__file__), "../config", config['StationFile'])
+        if self.stationFile==None:
+            stafile = os.path.join(os.path.dirname(__file__), "../config", config['StationFile'])
+            utilities.log.info('No grid specified read stafile from obs.yml. Name is {}'.format(stafile))
+        else:
+            stafile = os.path.join(os.path.dirname(__file__), "../config", self.stationFile)
+            utilities.log.info('grid file specified at the CLI. Attempt to use {}'.format(stafile))
+
+        ##stafile = os.path.join(os.path.dirname(__file__), "../config", config['StationFile'])
         try:
             # NOTE datafile format in flux Need to skip the 2nd row
             df = pd.read_csv(stafile, index_col=0, header=0, skiprows=[1], sep=',')
             stationNodelist = df[['stationid','Node','lon','lat']] # Which long/lat do you want
         except FileNotFoundError:
-            raise IOerror("Failed to read %s" % (config['StationFile']))
+            raise OSError("Failed to read %s" % (config['StationFile']))
         return stationNodelist
 
     def checkDuplicateTimeEntries(self, station, stationdata):
@@ -353,7 +363,13 @@ class GetObsStations(object):
         config = self.config
 
         tempstationlist = stationlist
-        stafile = os.path.join(os.path.dirname(__file__), "../config", config['DEFAULT']['StationFile'])
+        if self.stationFile==None:
+            stafile = os.path.join(os.path.dirname(__file__), "../config", config['DEFAULT']['StationFile'])
+            utilities.log.info('No grid specified read stafile from obs.yml. Name is {}'.format(stafile))
+        else:
+            stafile = os.path.join(os.path.dirname(__file__), "../config", self.stationFile)
+            utilities.log.info('grid file specified. Attempt to use {}'.format(stafile))
+
         try:
             # NOTE datafile format in flux Need ot skip the 2nd row
             df = pd.read_csv(stafile, index_col=0, header=0, skiprows=[1], sep=',')
@@ -792,18 +808,30 @@ def main(args):
     Only ../config/main.yaml file is required
     Some extra steps are included (such as adding/removing stations
     to demonstrate their use
+    Modified to expect a frid argument to point to the proper node file. Those files are 
     """
     from get_obs_stations.GetObsStations import GetObsStations
 
     utilities.log.info("ProductLevel Working in {}.".format(os.getcwd()))
     timein = pd.Timestamp(args.timein)
     timeout = pd.Timestamp(args.timeout)
+    chosengrid=args.grid
+    utilities.log.info('Input grid choice is {}'.format(chosengrid))
     config = utilities.load_config() # Defaults to main.yml as sapecified in the config
     rootdir=utilities.fetchBasedir(config['DEFAULT']['RDIR'], basedirExtra='StationTest')
     # NOTE: we add a presumtive delimited to our metadata. That way we can send a blank
     iometadata = '_'+timein.strftime('%Y%m%d%H%M')+'_'+timeout.strftime('%Y%m%d%H%M')
     iometadata=''
-    rpl = GetObsStations(rootdir=rootdir, yamlname=os.path.join(os.path.dirname(__file__), '../config', 'obs.yml'), metadata=iometadata)
+    #
+    # Fetch the new grid specification and pass the FQFN for the station-node inputfile
+    # Read from the MAIN yml: main.yml. It is possible to let GetObsStations get this file info from obs.yml as well by passing in StationFile=None.
+    try:
+        stationFile=config['STATIONS'][args.grid.upper()]
+    except KeyError as e:
+        utilities.log.error('Error specifying grid. Uppercase version Not found in the main.yml {}'.format(args.grid))
+        utilities.log.error(e)
+
+    rpl = GetObsStations(rootdir=rootdir, stationFile=stationFile, yamlname=os.path.join(os.path.dirname(__file__), '../config', 'obs.yml'), metadata=iometadata)
     detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ = rpl.executeBasicPipeline(timein, timeout)
     utilities.log.info('Finished')
 
@@ -811,5 +839,6 @@ if __name__ == '__main__':
     parser = ArgumentParser(description=main.__doc__)
     parser.add_argument('--timein', default="'2020-08-01 12:00'", help='Timein string', type=str)
     parser.add_argument('--timeout', default="'2020-08-05 12:00'", help='Timeout string', type=str)
+    parser.add_argument('--grid', default='hsofs',help='Choose name of available grid',type=str)
     args = parser.parse_args()
     sys.exit(main(args))
