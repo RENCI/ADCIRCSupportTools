@@ -29,6 +29,7 @@ from siphon.catalog import TDSCatalog
 # noinspection PyPep8Naming,DuplicatedCode
 
 instance={2020: 'hsofs-nam-bob', 2021: 'hsofs-nam-bob-2021'}
+gridinstance={'ec95b': 'ec95d-nam-bob-rptest'}
 
 def main(args):
     # Possible override YML defaults
@@ -289,12 +290,17 @@ class Adcirc:
             for i, d in enumerate(dates_in_range):
                 dstr = dt.datetime.strftime(d, "%Y%m%d%H")
                 subdir=dt.datetime.strftime(d, "%Y")
+                # Overwrite some path data for alternative grids
+                if self.grid=='ec95d':
+                    instanceValue=gridinstance['ec95d']
+                else:
+                    instanceValue=instance[year]
                 url = cfg["baseurl"] + \
                       cfg["dodsCpart"] % (subdir,
                                       dstr,
                                       cfg["AdcircGrid"],
                                       cfg["Machine"],
-                                      cfg["Instance"]%(instance[year]),
+                                      cfg["Instance"]%(instanceValue),
                                       cfg["fortNumber"])
                 #print('NEW URL {}'.format(url))
                 try:
@@ -306,6 +312,50 @@ class Adcirc:
                     utilities.log.info("Could not access {}. It will be skipped.".format(url))
                     url2add = None
                 urls[d] = url2add
+        self.urls = urls
+
+    def get_urls_noyaml(self, in_forecast, num6houroffsets=-4):
+        """
+        Gets a dict of URLs for the time range and other parameters from the specified
+        THREDDS server, using siphon. Parameters are determined from the input url nomenclature.
+        A representative url is:
+        {time: http://tds.renci.org:8080/thredds/dodsC/2021/nam/2021031600/hsofs/hatteras.renci.org/hsofs-nam-bob-2021/namforecast/fort.63.nc}
+
+        the value in the field containing namforecast is converted to the constant nowcast. and the forecasat starting date
+        is used to fetch nowcasts.
+
+        perhaps we need to loop over all possible years spanned by the adc.T1 and adc.T2
+
+        :return: dict of datecycles ("YYYYMMDDHH") entries and corresponding url.
+        
+        We now support changing chosengrid on input. Add a sanity check here 
+        """
+        # Pass the URL to get the forecast date. Then decrement back 6 hours * num6houroffsets to build a list
+        # Missingness and having too many entries is okay as the errorCOmpute code will limit the list later
+        if num6houroffsets>0:
+            utilities.log.warning('num6houroffsets should be < 0 {}'.format(num6houroffsets))
+        urls = {} # dict of datecycles and corresponding nowcast urls
+        for key, forecast in in_forecast.items():
+            words=forecast.split('/')
+            time2=dt.datetime.strptime(words[-6],'%Y%m%d%H')
+            times=list()
+            for shift in range(0,abs(num6houroffsets)):
+                times.append(time2+timedelta(hours=shift*12)) # WQant 4 12 poeriods for error computation later on 
+            # Build a new list of urls and add appropriate time key to the dict
+            words[-2]='nowcast' # This is constant for all grids
+            for time in times:
+                words[-6]=dt.datetime.strftime(time, "%Y%m%d%H")
+                url = '/'.join(words)
+                try:
+                    nc = nc4.Dataset(url)
+                    # test access
+                    z = nc['zeta'][:, 0]
+                    url2add = url
+                    utilities.log.info('Grabbed url {}'.format(url))
+                    #urls[word[-6]]=url
+                    urls[words[-6]]=url
+                except:
+                    utilities.log.info("Could not access {}. It will be skipped.".format(url))
         self.urls = urls
 
 def writeToJSON(df, rootdir, iometadata, fileroot='adc_wl', variableName=None):
