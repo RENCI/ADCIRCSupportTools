@@ -9,6 +9,13 @@ python  ../GetADCIRC.py --ignore_pkl --timeout='2020-09-21 18:00' --doffset=-2
 
 python ../GetADCIRC.py --ignore_pkl --urljson data1.json
 
+
+# Run a different grid
+python ../GetADCIRC.py --ignore_pkl --urljson ec95d_data1.json 
+
+# Run a different greid forecast
+python ../GetADCIRC.py --ignore_pkl --urljson ec95d_data1_forecast.json
+
 # MODIFY defauilt filenames and subdirs
 
 python  ../GetADCIRC.py --ignore_pkl --timeout='2020-09-21 18:00' --doffset=-2 --iometadata='_myfile' --iosubdir='MYDIR'
