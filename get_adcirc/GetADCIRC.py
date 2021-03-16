@@ -332,6 +332,7 @@ class Adcirc:
         """
         # Pass the URL to get the forecast date. Then decrement back 6 hours * num6houroffsets to build a list
         # Missingness and having too many entries is okay as the errorCOmpute code will limit the list later
+        # TODO change thios doffset
         if num6houroffsets>0:
             utilities.log.warning('num6houroffsets should be < 0 {}'.format(num6houroffsets))
         urls = {} # dict of datecycles and corresponding nowcast urls
@@ -340,7 +341,7 @@ class Adcirc:
             time2=dt.datetime.strptime(words[-6],'%Y%m%d%H')
             times=list()
             for shift in range(0,abs(num6houroffsets)):
-                times.append(time2+timedelta(hours=shift*12)) # WQant 4 12 poeriods for error computation later on 
+                times.append(time2-timedelta(hours=shift*6)) # Want 4 6 periods for error computation later on 
             # Build a new list of urls and add appropriate time key to the dict
             words[-2]='nowcast' # This is constant for all grids
             for time in times:
