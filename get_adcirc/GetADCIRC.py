@@ -26,6 +26,7 @@ from utilities.utilities import utilities
 from utilities import CurrentDateCycle as cdc
 from siphon.catalog import TDSCatalog
 
+
 # noinspection PyPep8Naming,DuplicatedCode
 
 instance={2020: 'hsofs-nam-bob', 2021: 'hsofs-nam-bob-2021'}
@@ -314,7 +315,7 @@ class Adcirc:
                 urls[d] = url2add
         self.urls = urls
 
-    def get_urls_noyaml(self, in_forecast, num6houroffsets=-4):
+    def get_urls_noyaml(self, in_forecast, doffset=-4):
         """
         Gets a dict of URLs for the time range and other parameters from the specified
         THREDDS server, using siphon. Parameters are determined from the input url nomenclature.
@@ -333,18 +334,19 @@ class Adcirc:
         # Pass the URL to get the forecast date. Then decrement back 6 hours * num6houroffsets to build a list
         # Missingness and having too many entries is okay as the errorCOmpute code will limit the list later
         # TODO change thios doffset
-        if num6houroffsets>0:
-            utilities.log.warning('num6houroffsets should be < 0 {}'.format(num6houroffsets))
+        if doffset>0:
+            utilities.log.warning('doffset should normally be < 0 {}'.format(doffset))
         urls = {} # dict of datecycles and corresponding nowcast urls
+        num6hourTimes=(4*abs(doffset)+1)
         for key, forecast in in_forecast.items():
             words=forecast.split('/')
             time2=dt.datetime.strptime(words[-6],'%Y%m%d%H')
             times=list()
-            for shift in range(0,abs(num6houroffsets)):
+            for shift in range(0,num6hourTimes):
                 times.append(time2-timedelta(hours=shift*6)) # Want 4 6 periods for error computation later on 
             # Build a new list of urls and add appropriate time key to the dict
             words[-2]='nowcast' # This is constant for all grids
-            for time in times:
+            for time in times[::-1]:
                 words[-6]=dt.datetime.strftime(time, "%Y%m%d%H")
                 url = '/'.join(words)
                 try:
@@ -353,7 +355,6 @@ class Adcirc:
                     z = nc['zeta'][:, 0]
                     url2add = url
                     utilities.log.info('Grabbed url {}'.format(url))
-                    #urls[word[-6]]=url
                     urls[words[-6]]=url
                 except:
                     utilities.log.info("Could not access {}. It will be skipped.".format(url))
@@ -384,7 +385,7 @@ def get_water_levels63(urls, nodes, stationids):
     initialtime = None
     finaltime = None # Update class times to reflect actual data set fetched
     for datecyc, url in urls.items():
-        utilities.log.info("{} : ".format(datecyc))
+        utilities.log.info("datecyc {} : ".format(datecyc))
         if url is None:
             utilities.log.info("   Skipping. No url.")
         else:
@@ -401,8 +402,12 @@ def get_water_levels63(urls, nodes, stationids):
                 t = nc4.num2date(time_var[:], time_var.units)
                 data = np.empty([len(t), 0])
                 for i, n in enumerate(nodes):
-                    z = nc['zeta'][:, n-1]
-                    data = np.hstack((data, z))
+                    try:
+                        z = nc['zeta'][:, n-1]
+                        data = np.hstack((data, z))
+                    except IndexError as e:
+                        utilities.log.error('Error: This is usually caused by accessing non-hsofs data but forgetting to specify the proper --grid {}'.format(e))
+                        sys.exit()
                 np.place(data, data < -1000, np.nan)
                 df_sub = pd.DataFrame(data, columns=stationids, index=t)
                 utilities.log.debug(" df_sub time range = {} -> {}" .format(df_sub.index[0], df_sub.index[-1]))
