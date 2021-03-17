@@ -45,12 +45,15 @@ def fetchNOW():
     tdt = dt.datetime.now()
     return tdt
 
-def exec_adcirc(dtime2, rootdir, iometadata, adc_yamlname, node_idx, station_ids, doffset=-4):
+def exec_adcirc(dtime2, rootdir, iometadata, adc_yamlname, node_idx, station_ids, grid, doffset=-4):
     """
     dtime2 arrives as a string in the format YYYY-mm-dd MM:SS 
+    This step is a little tricky for multiple grids. Because the "time semantics" tells the code
+    to construct URLS based on parameters in the json. SO we need to intercept some pof those params and change
+    them if the input grid is not hsofs.
     """
     # Start the fetch of ADCIRC data
-    adc = Adcirc(adc_yamlname)
+    adc = Adcirc(adc_yamlname, grid=grid)
     adc.set_times(dtime2=dtime2, doffset=doffset) # Global time get set for use by get_urls
     utilities.log.info("T1 (start) = {}".format(adc.T1))
     utilities.log.info("T2 (end)   = {}".format(adc.T2))
@@ -73,8 +76,11 @@ def exec_adcirc(dtime2, rootdir, iometadata, adc_yamlname, node_idx, station_ids
     timeend = adc.T2
     return ADCfile, ADCjson, timestart, timeend
 
-def exec_adcirc_forecast(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids):
-    adc = Adcirc(adc_yamlname)
+def exec_adcirc_forecast(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids, grid):
+    """
+    This step is always passed actual URLs to fetch the forecast data. So changing grid names here is easy
+    """
+    adc = Adcirc(adc_yamlname, grid=grid)
     adc.urls = urls
     utilities.log.info("List of available urls input specification:")
     ## Meaningless utilities.log.info('Observed TIMES are T1 {}, T2 {}'.format(adc.T1.strftime('%Y%m%d%H%M'), adc.T2.strftime('%Y%m%d%H%M')))
@@ -96,8 +102,35 @@ def exec_adcirc_forecast(urls, rootdir, iometadata, adc_yamlname, node_idx, stat
     rundate = generateRUNTIMEmetadata(df)
     return ADCfile, ADCjson, timestart, timeend, rundate
 
-def exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdir):
-    rpl = GetObsStations(iosubdir=iosubdir, rootdir=rootdir, yamlname=obs_yamlname, metadata=iometadata)
+def exec_adcirc_nowcast(inurls, rootdir, iometadata, adc_yamlname, node_idx, station_ids, grid, doffset=-4):
+    """
+    This step is always passed an actual forecast URL. nowcast urs are built from it
+    """
+    adc = Adcirc(adc_yamlname, grid=grid)
+    adc.get_urls_noyaml(inurls, doffset) # doofset in -days internally will be converted to 6hours periods (+1)
+    #adc.urls = nc_urls
+    utilities.log.info("New: List of available urls input specification:")
+    ADCfile = rootdir+'/adc_wl'+iometadata+'.pkl'
+    ADCjson = rootdir+'/adc_wl'+iometadata+'.json'
+    df = get_water_levels63(adc.urls, node_idx, station_ids) # Gets ADCIRC water levels
+    adc.T1 = df.index[0] # Optional update to actual times fetched form ADC
+    adc.T2 = df.index[-1]
+    ADCfile = utilities.writePickle(df, rootdir=rootdir,subdir='',fileroot='adc_wl_forecast',iometadata=iometadata)
+    ##df.to_pickle(ADCfile)
+    ####df.to_json(ADCjson)
+    print('write new json')
+    ADCjson=writeToJSON(df, rootdir, iometadata,fileroot='adc_wl_forecast')
+    #timestart = adc.T1.strftime('%Y%m%d%H%M')
+    #timeend = adc.T2.strftime('%Y%m%d%H%M')
+    timestart = adc.T1
+    timeend = adc.T2
+    df.index = pd.to_datetime(df.index)
+    rundate = generateRUNTIMEmetadata(df)
+    return ADCfile, ADCjson, timestart, timeend
+
+
+def exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdir, stationFile):
+    rpl = GetObsStations(iosubdir=iosubdir, rootdir=rootdir, yamlname=obs_yamlname, metadata=iometadata, stationFile=stationFile)
     df_stationNodelist = rpl.fetchStationNodeList()
     stations = df_stationNodelist['stationid'].to_list()
     utilities.log.info('Grabing station list from OBS YML')
@@ -138,20 +171,32 @@ def buildNowcast(urls):
         print('key{} url{}'.format(key,url))
     return urls
     
-def buildLocalConfig():
+def buildLocalConfig(grid='hsofs'):
     """
     Temporary function to build a config object that can be passed to an ADCIRC nowcast
     We need to beable to update Instance and year
+    We need to insert, temporarily, some code to account for an alternative grid
     """
     cfg = dict() 
-    cfg['AdcircGrid']= "hsofs"
-    cfg['Machine']= "hatteras.renci.org"
-    cfg['NodeList']= "adcirc_test_nodes.dat"
-    cfg['Instance']= "%s"
-    cfg['baseurl']= "http://tds.renci.org:8080/thredds/"
-    cfg['catPart']= "/catalog/%s/nam/catalog.xml"
-    cfg['dodsCpart']= "/dodsC/%s/nam/%s/%s/%s/%s/nowcast/fort.%s.nc"
-    cfg['fortNumber']= "63"
+    if grid=='hsofs':
+        cfg['AdcircGrid']= "hsofs"
+        cfg['Machine']= "hatteras.renci.org"
+        cfg['Instance']= "%s"
+        cfg['baseurl']= "http://tds.renci.org:8080/thredds/"
+        cfg['catPart']= "/catalog/%s/nam/catalog.xml"
+        cfg['dodsCpart']= "/dodsC/%s/nam/%s/%s/%s/%s/nowcast/fort.%s.nc"
+        cfg['fortNumber']= "63"
+    elif grid=='ec95d':
+        cfg['AdcircGrid']= "ec95d"
+        cfg['Machine']= "hatteras.renci.org"
+        cfg['Instance']= "%s"
+        cfg['baseurl']= "http://tds.renci.org:8080/thredds/"
+        cfg['catPart']= "/catalog/%s/nam/catalog.xml"
+        cfg['dodsCpart']= "/dodsC/%s/nam/%s/%s/%s/%s/nowcast/fort.%s.nc"
+        cfg['fortNumber']= "63" 
+    else:
+        utilities.log.error('Only hsofs and ec95d grids allowed at this time. {}'.format(grid))
+        sys.exit()
     return cfg
 
 def generateRUNTIMEmetadata(df):
@@ -186,6 +231,8 @@ def main(args):
     outfiles = dict()
 
     doffset = args.doffset
+    chosengrid=args.grid
+    utilities.log.info('Grid specified was {}'.format(chosengrid))
 
     # Get input adcirc url and check for existance
     if args.urljson != None:
@@ -237,15 +284,23 @@ def main(args):
     outfiles['IOSUBDIR']=iosubdir
     outfiles['IOMETADATA']=iometadata
    
-    # 2) Setup OBS specific YML-resident inputs
     # FETCH ADCIRC NODEIDs and station_IDs
     # Such as node_idx data required for the ADCIRC calls
-    utilities.log.info('Fetch OBS station data')
-    obs_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'obs.yml')
-    obs_config = utilities.load_config(obs_yamlname)
-    station_df = utilities.get_station_list()
-    station_ids = station_df["stationid"].values.reshape(-1,)
-    node_idx = station_df["Node"].values
+
+    utilities.log.info('Fetch station data for grid {}'.format(chosengrid))
+    try:
+        stationFile=main_config['STATIONS'][chosengrid.upper()]
+        stationFile=os.path.join(os.path.dirname(__file__), "../config", stationFile)
+    except KeyError as e:
+        utilities.log.error('ADDA: Error specifying grid. Uppercase version Not found in the main.yml {}'.format(chosengrid))
+        utilities.log.error(e)
+        sys.exit()
+
+    # Read the stationids and nodeid data
+    df = pd.read_csv(stationFile, index_col=0, header=0, skiprows=[1], sep=',')
+    station_ids = df["stationid"].values.reshape(-1,)
+    node_idx = df["Node"].values.reshape(-1,1) # had to slightly change the shaping here
+    utilities.log.info('Retrived stations and nodeids from {}'.format(stationFile))
 
     # 3) Setup ADCIRC specific YML-resident inputs
     utilities.log.info('Fetch ADCIRC-FORECAST')
@@ -255,7 +310,7 @@ def main(args):
     # 4) Get actual ASGS Forecast data from this we can ghet the times
     # Not any need to specify a diff yml since we pass in the url directly
     # This will be appended to the DIFF plots in the final PNGs
-    ADCfileFore, ADCjsonFore, timestart_forecast, timeend_forecast, runDataMetadata = exec_adcirc_forecast(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids)
+    ADCfileFore, ADCjsonFore, timestart_forecast, timeend_forecast, runDataMetadata = exec_adcirc_forecast(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids, chosengrid)
     utilities.log.info('Completed ADCIRC Forecast Read')
     utilities.log.info('Forecast timein={}, timeout={}'.format(timestart_forecast, timeend_forecast))
     outfiles['ADCIRC_WL_FORECAST_PKL']=os.path.basename(ADCfileFore)
@@ -263,9 +318,9 @@ def main(args):
     outfiles['RUNDATE_FORECAST']= runDataMetadata # netCDF4 supplied model initialization time for the forecast
 
     # 5) Build the nowcast URL
-    utilities.log.info('Build a nowcast style url')
-    urlnow = buildNowcast(urls)
-    utilities.log.info('Resulting nowcast style url {}'.format(urlnow))
+    #utilities.log.info('Build a nowcast style url')
+    #urlnow = buildNowcast(urls)
+    #utilities.log.info('Resulting nowcast style url {}'.format(urlnow))
 
     # 6) Get the ADCIRC nowcast with a final time of 
     timeout = timestart_forecast
@@ -273,7 +328,8 @@ def main(args):
     utilities.log.info('Fetch ADCIRC')
     adc_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'adc.yml')
     #adc_config = utilities.load_config(adc_yamlname)
-    ADCfile, ADCjson, timestart, timeend = exec_adcirc(timeout.strftime('%Y-%m-%d %H:%M'), rootdir, '_nowcast'+iometadata, adc_yamlname, node_idx, station_ids, doffset=doffset)
+    #ADCfile, ADCjson, timestart, timeend = exec_adcirc(timeout.strftime('%Y-%m-%d %H:%M'), rootdir, '_nowcast'+iometadata, adc_yamlname, node_idx, station_ids, doffset=doffset)
+    ADCfile, ADCjson, timestart, timeend = exec_adcirc_nowcast(urls, rootdir, '_nowcast'+iometadata, adc_yamlname, node_idx, station_ids, chosengrid, doffset=doffset)
     utilities.log.info('Completed ADCIRC nowcast Reads')
     outfiles['ADCIRC_WL_PKL']=os.path.basename(ADCfile)
     outfiles['ADCIRC_WL_JSON']=os.path.basename(ADCjson)
@@ -287,8 +343,17 @@ def main(args):
     timeout = timeend.strftime('%Y%m%d %H:%M')
     utilities.log.info('ADC provided times are {} and {}'.format(timein, timeout))
 
-    # Could also set stations to None
-    detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ = exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdir)
+    # New approach to account for the changing grid names
+    try:
+        stationFile=main_config['STATIONS'][args.grid.upper()]
+    except KeyError as e:
+        utilities.log.error('Error specifying grid. Uppercase version Not found in the main.yml {}'.format(args.grid))
+        utilities.log.error(e)
+    obs_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'obs.yml')
+    obs_config = utilities.load_config(obs_yamlname)
+    detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ = exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdir, stationFile)
+    outfiles['OBS_GRID']=args.grid
+    outfiles['OBS_STATIONFILE']=stationFile
     outfiles['OBS_DETAILED_PKL']=os.path.basename(detailedpkl)
     outfiles['OBS_SMOOTHED_PKL']=os.path.basename(smoothedpkl)
     outfiles['OBS_METADATA_PKL']=os.path.basename(metapkl)
@@ -363,6 +428,7 @@ if __name__ == '__main__':
                         help='String: Filename with a json of urls to loop over.')
     parser.add_argument('--inputURL', action='store', dest='inputURL', default=None,
                         help='String: url.')
+    parser.add_argument('--grid', default='hsofs',help='Choose name of available grid',type=str)
     args = parser.parse_args()
     sys.exit(main(args))
 
