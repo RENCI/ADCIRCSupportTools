@@ -9,20 +9,20 @@
 export YEAR=2018
 
 
-export CODEBASE=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools
+export CODEBASE=/projects/sequence_analysis/vol1/prediction_work/CausalInference/CausalNetworking_forKirk/TEST/ADCIRCSupportTools
 export PYTHONPATH=$CODEBASE:$PYTHONPATH
 export RUNTIMEDIR=.
-export BASEDIREXTRA=REANALYSIS/YEARLY-$YEAR/KRIG_LONGRANGE
+export BASEDIREXTRA=TESTFULL/STATE/YEARLY-2018/KRIG_LONGRANGE
 
 # Build the yearly error file store in $RUNTIMEDIR/BASEDIREXTRA
-python yearlyReanalysis.py --iosubdir $BASEDIREXTRA --urljson reanalysis.json
-mv $RUNTIMEDIR/log $RUNTIMEDIR/$BASEDIREXTRA/log-yearly
+#python yearlyReanalysis.py --iosubdir $BASEDIREXTRA --urljson reanalysis.json
+#mv $RUNTIMEDIR/log $RUNTIMEDIR/$BASEDIREXTRA/log-yearly
 
 # Store files in $RUNTIMEDIR/DAILY/errorfield
 export INDIR=$RUNTIMEDIR/$BASEDIREXTRA
 export OUTROOT=$RUNTIMEDIR/$BASEDIREXTRA/DAILY
 python dailyLowpassSampledError.py --inDir $INDIR --outroot $OUTROOT
-mv $RUNTIMEDIR/log $RUNTIMEDIR/$BASEDIREXTRA/log-daily
+mv $RUNTIMEDIR/log $RUNTIMEDIR/$BASEDIREXTRA/log-weekly
 
 # Interpolate a single specific file
 export ERRFILE=$OUTROOT/errorfield/stationSummaryAves_18-332_2018112800.csv
@@ -32,4 +32,5 @@ export YAMLNAME=$CODEBASE/config/int.REANALYSIS.yml
 export OUTROOT=$RUNTIMEDIR/$BASEDIREXTRA/DAILY
 
 python krigListOfErrorSets.py  --daily --outroot $OUTROOT --yamlname $YAMLNAME --errorfile $ERRFILE --clampfile $CLAMPFILE --gridjsonfile $ADCJSON
+
 mv $RUNTIMEDIR/log $RUNTIMEDIR/$BASEDIREXTRA/log-interpolate

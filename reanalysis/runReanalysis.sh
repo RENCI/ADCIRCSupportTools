@@ -4,7 +4,7 @@
 #SBATCH -N 1
 #SBATCH -n 4 
 #SBATCH -J Reanalysis
-#SBATCH --mem-per-cpu 512000
+#SBATCH --mem-per-cpu 256000
 
 export PYTHONPATH=export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/Reanalysis/ADCIRCSupportTools:$PYTHONPATH
 export RUNTIMEDIR=./YEARLY
