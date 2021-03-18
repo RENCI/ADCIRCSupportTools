@@ -396,7 +396,7 @@ def get_water_levels63(urls, nodes, stationids):
             # netCDF files written with v1.8 of HDF5.
             if "zeta" not in nc.variables.keys():
                 utilities.log.error("zeta not found in netCDF for {}.".format(datecyc))
-                sys.exit(1)
+                # okay to have a missing one sys.exit(1)
             else:
                 time_var = nc.variables['time']
                 t = nc4.num2date(time_var[:], time_var.units)
