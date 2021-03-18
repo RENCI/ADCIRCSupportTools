@@ -21,6 +21,55 @@ from scipy.signal import butter, lfilter, savgol_filter
 import datetime as dt
 from utilities.utilities import utilities
 
+from statsmodels.tsa.stattools import adfuller
+
+def check_stationarity(timeseries): # pd.Series on input
+    # rolling statistics
+    rolling_mean = timeseries.rolling(window=12).mean()
+    rolling_std = timeseries.rolling(window=12).std()
+    # rolling statistics plot
+    original = plt.plot(timeseries, color='blue', label='Original')
+    mean = plt.plot(rolling_mean, color='red', label='Rolling Mean')
+    std = plt.plot(rolling_std, color='black', label='Rolling Std')
+    plt.legend(loc='best')
+    plt.title('Rolling Mean & Standard Deviation')
+    plt.show(block=False)
+    # Dickey–Fuller test:
+    result = adfuller(timeseries)
+    print('ADF Statistic: {}'.format(result[0]))
+    print('p-value: {}'.format(result[1]))
+    print('Critical Values:')
+    for key, value in result[4].items():
+        print('\t{}: {}'.format(key, value))
+    stats={'ADF Statistic': result[0]}
+    return stats
+
+def make_log_stationary(df_raw,logshift=0.1):
+    """
+    Missing data in df_raw will effectively get interpolated over
+    """
+    global rolling_mean
+    global rmin
+    window=49
+    utilities.log.info('Apply stationarity transform: window is {}'.format(window))
+    rmin = np.abs(df_raw.min())
+    df = df_raw+(rmin+logshift)
+    df_log = np.log(df)
+    rolling_mean = df_log.rolling(window=window).mean()
+    df_log_minus_mean = df_log - rolling_mean
+    df_log_minus_mean.dropna(inplace=True)
+    rolling_mean.dropna(inplace=True)
+    #stats=check_stationarity(df_log_minus_mean)
+    return df_log_minus_mean
+
+# Why the extra .loc? because ARIMA drops the first time index value - awesome
+def invert_make_log_stationary(df_log_minus_mean, logshift=0.1):
+    utilities.log.info('Apply inverse stationarity transform')
+    commontimes = df_log_minus_mean.index & rolling_mean.index
+    df_nolog = np.exp(df_log_minus_mean.loc[commontimes]+rolling_mean.loc[commontimes])-rmin-logshift
+    #stats=check_stationarity(df_nolog)
+    return df_nolog
+
 def butter_lowpass_filter(df_data,filterOrder=10, numHours=200):
     """
     Note. Need to drop nans from the data set
@@ -74,6 +123,8 @@ def fft_lowpass(signal, lowhrs):
     # Insert ramp into factor.
     factor[sl] = a
     result = result * factor
+    print('Freqs {}'.format(result))
+    print('FREQ TYPEW {}'.format(type(result)))
     return np.fft.irfft(result, len(signal))
 
 # The means are proper means for the month./week. The offset simply changes the index underwhich it will be stored
@@ -207,6 +258,7 @@ def fetch_data_metadata(f, meta):
 def main(args):
     t0 = tm.time()
 
+
     if not args.inDir:
         utilities.log.error('Need inDir on command line: --inDir <inDir>')
         return 1
@@ -239,6 +291,7 @@ def main(args):
 
     timein = '-'.join(['2017','12','20'])   
     timeout = '-'.join(['2019','1','1'])
+
     utilities.log.info('Input data chosen range is {}, {}'.format(timein, timeout))
 
     # Metadata
@@ -254,39 +307,70 @@ def main(args):
     start = df_err_all.index.min()
 
     # FFT Lowpass each station for entire range time. Then, extract values for all stations every day
-    upshift=4
-    hourly_cutoffs=[168]
-    cutoffs = [x + upshift for x in hourly_cutoffs]
+    upshift=0
+    hourly_cutoff=48 # 168 # 48 # 6 # 168 #48
+    cutoff = hourly_cutoff+upshift
+    utilities.log.info('FFT hourly_cutoff {}, actual_cutoff {}'.format(hourly_cutoff,cutoff))
 
     intersectedStations=set(df_err_all.columns.to_list()).intersection(stations) # Compares data to metadata lists
     utilities.log.info('Number of intersected stations is {}'.format(len(intersectedStations)))
 
     # Perform FFT for each station over the entire time range
     df_err_all_lowpass=pd.DataFrame(index=df_err_all.index)
+    ##df_err_all_lowpass_stationarity=pd.DataFrame(index=df_err_all.index)
 
     fftAllstations=dict()
     # Perform FFT for each stationm oveer the entire time range
+    ##if args.stationarity: 
+    ##    utilities.log.info('Will attempt to render data stationary pre FFT')
+
+    utilities.writePickle(df_err_all, rootdir=rootdir,subdir='',fileroot='df_err_all',iometadata='')
+
+    # Compare FFTs with and without using stationarity
     for station in intersectedStations:
-        print('Process station {}'.format(station))
-        stationName = df_meta.loc[int(station)]['stationname']
-        df_fft=pd.DataFrame()
-        for cutoffflank,cutoff in zip(cutoffs,hourly_cutoffs):
+        try:
+            print('Process station {}'.format(station))
+            stationName = df_meta.loc[int(station)]['stationname']
+            df_fft=pd.DataFrame()
+            ##df_fft_stationarity=pd.DataFrame()
+            df_low = pd.DataFrame()
+            ##df_low_stationarity = pd.DataFrame()
             print('Process cutoff {} for station {}'.format(cutoff,station))
             df_temp = df_err_all[station].dropna()
-            df_fft[str(cutoff)]=fft_lowpass(df_temp,lowhrs=cutoffflank)
-        df_fft.index = df_temp.index
-        df_err_all_lowpass[station]=df_fft[str(cutoff)]
+            df_low['low'] = fft_lowpass(df_temp,lowhrs=cutoff)
+            df_low.index=df_temp.index 
+            df_fft[str(cutoff)]=df_low['low']
+            #
+            ##df_temp_stationarity= df_err_all[station].dropna()
+            ## df_temp_stationarity= make_log_stationary(df_temp_stationarity) # Note beginning times get wiped out 
+            ##df_low_stationarity['low'] = fft_lowpass(df_temp_stationarity,lowhrs=cutoff)
+            ##df_low_stationarity.index=df_temp_stationarity.index # Need this if doing invert_stationarity
+            ##df_inv=invert_make_log_stationary(df_low_stationarity['low'])
+            ##df_fft_stationarity[str(cutoff)] = df_inv
+            #
+            df_err_all_lowpass[station]=df_fft[str(cutoff)]
+            ##df_err_all_lowpass_stationarity[station]=df_fft_stationarity[str(cutoff)]
+        except:
+            utilities.log.info('FFT failed for stastion {}'.format(station))
+
+    utilities.writePickle(df_err_all_lowpass, rootdir=rootdir,subdir='',fileroot='df_err_all_lowpass',iometadata='')
+    ##utilities.writePickle(df_err_all_lowpass_stationarity, rootdir=rootdir,subdir='',fileroot='df_err_all_lowpass_stationarity',iometadata='')
 
     # Now pull out daily data 
-    stime=''.join(['2017','-12-20 00:00:00'])
-    etime=''.join(['2019','-01-01 00:00:00'])
+    utilities.log.info('MANUAL setting of date range')
+    #stime=''.join(['2017','-12-20 00:00:00'])
+    #etime=''.join(['2019','-01-01 00:00:00'])
+
+    stime=''.join(['2018','-01-01 00:00:00'])
+    etime=''.join(['2018','-05-01 00:00:00'])
 
     starttime = dt.datetime.strptime(stime,'%Y-%m-%d %H:%M:%S')
     endtime = dt.datetime.strptime(etime,'%Y-%m-%d %H:%M:%S')
+    numDays = (endtime-starttime).days + 1
 
-    numDays = (endtime-starttime).days
     startday=pd.date_range(starttime, periods=numDays) #.values()
     julianMetadata = startday.strftime('%y-%j').to_list()
+    utilities.log.info('startdays {}'.format(startday))
     
     # Build metadata for the files
     # Julian dat 
@@ -296,13 +380,22 @@ def main(args):
         iometa[date]='_'.join([day,date.strftime('%Y%m%d%H')])
 
     # Not all startdays are always in the data file. 2017-12-31 00 is missing as is 2018-01-01 00
-    df_err_all_lowpass_subselect=df_err_all_lowpass.loc[startday]
+    # are excluded because the ADC file had no data
+    # Preceding yearly method may have restricted days
+
+    # startday is in yyyy-mm-dd lowpass includes times
+    # ALl Nans
+    intersect = [value for value in startday if value in df_err_all_lowpass.index] 
+
+    utilities.log.info('Residual data: intersect list {}'.format(intersect))
+    df_err_all_lowpass_subselect=df_err_all_lowpass.loc[intersect]
 
     # Now process the Rows and build a new datafile for each
     # df_meta and df report stationids as diff types. Yuk.
     # Store the list of filenames into a dict for krig processing
 
     subdir='errorfield'
+
 
     datadict = dict()
     for index, df in df_err_all_lowpass_subselect.iterrows():
@@ -343,6 +436,7 @@ if __name__ == '__main__':
                         help='directory for yearly data')
     parser.add_argument('--iometadata', action='store', dest='iometadata',default='', help='Used to further annotate output files', type=str)
     parser.add_argument('--iosubdir', action='store', dest='iosubdir',default='', help='Used to locate output files into subdir', type=str)
+    parser.add_argument('--stationarity', help="Apply RMean Stationarity pre FFT", action='store_true')
     args = parser.parse_args()
     sys.exit(main(args))
 
