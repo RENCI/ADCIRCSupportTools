@@ -6,8 +6,17 @@ python ../GetADCIRC.py --ignore_pkl --timein='2020-09-17 12:00' --timeout='2020-
 python  ../GetADCIRC.py --ignore_pkl --timeout='2020-09-21 18:00' --doffset=-2
 
 # input json of url(s)
-
 python ../GetADCIRC.py --ignore_pkl --urljson data1.json
+
+# input json of url(s)
+python ../GetADCIRC.py --grid 'hsofs' --ignore_pkl --urljson data1.json
+
+
+# Run a different grid
+python ../GetADCIRC.py --ignore_pkl --grid 'ec95d' --urljson ec95d_data1.json 
+
+# Run a different greid forecast
+python ../GetADCIRC.py --ignore_pkl --grid 'ec95d' --urljson ec95d_data1_forecast.json
 
 # MODIFY defauilt filenames and subdirs
 

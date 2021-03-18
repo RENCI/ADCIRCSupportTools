@@ -6,6 +6,13 @@
 ## Folded get_water_levels63 and 61 into the class
 ##
 
+## Allow the user to specify an alternative grid BUT, must alsao pair with
+## the correct associated URL.
+## adc.yml can only be used to ghet nowcasts of the hsofs grid. - backward support of ADDA
+##
+
+## Specifying grid =hsofs stiull supports either getting data from the adc.yml or reading in a url
+
 import sys
 import os
 import datetime as dt
@@ -19,12 +26,13 @@ from utilities.utilities import utilities
 from utilities import CurrentDateCycle as cdc
 from siphon.catalog import TDSCatalog
 
+
 # noinspection PyPep8Naming,DuplicatedCode
 
 instance={2020: 'hsofs-nam-bob', 2021: 'hsofs-nam-bob-2021'}
-    
-def main(args):
+gridinstance={'ec95b': 'ec95d-nam-bob-rptest'}
 
+def main(args):
     # Possible override YML defaults
     indtime1 = args.timein
     indtime2 = args.timeout
@@ -36,17 +44,38 @@ def main(args):
     writeJson = args.writeJson
     adcyamlfile=args.adcYamlname
 
-    config = utilities.load_config() # Get main comnfig. RUNTIMEDIR, etc
+    config = utilities.load_config() # Get main config. RUNTIMEDIR, etc
     rootdir = utilities.fetchBasedir(config['DEFAULT']['RDIR'], basedirExtra=iosubdir)
     utilities.log.info("Working in {}.".format(os.getcwd()))
 
-# get station-to-node indices for grid
-    obsyamlname=os.path.join(os.path.dirname(__file__), '../config', 'obs.yml')
-    obs_utilities = utilities.load_config(obsyamlname)
-    station_df = utilities.get_station_list()
-    station_ids = station_df["stationid"].values.reshape(-1,)
-    node_idx = station_df["Node"].values
+    # Note this is true for hsopfs grids as well. But, you can enforce histoprical behavior by not setting the grid, at all
+    if args.grid!='hsofs' and args.urljson is None:
+        utilities.log.error("Specifying a grid not hsofs, only works with specifying the URL")
+        sys.exit()
 
+    # Fetch filename for grid,nodeids
+    chosengrid=args.grid
+    utilities.log.info('ADCIRC: Input grid choice is {}'.format(chosengrid))
+
+    # Fetch the new grid specification and pass the FQFN for the station-node inputfile
+    # Read from the MAIN yml: main.yml. It is possible to let GetObsStations get this file info from obs.yml as well by passing in StationFile=None.
+    #if grid==-None .....
+
+    try:
+        stationFile=config['STATIONS'][chosengrid.upper()]
+        stationFile=os.path.join(os.path.dirname(__file__), "../config", stationFile)
+    except KeyError as e:
+        utilities.log.error('ADCIRC: Error specifying grid. Uppercase version Not found in the main.yml {}'.format(chosengrid))
+        utilities.log.error(e)
+        sys.exit()
+
+    # Read the stationids and nodeid data
+    df = pd.read_csv(stationFile, index_col=0, header=0, skiprows=[1], sep=',')
+    station_ids = df["stationid"].values.reshape(-1,)
+    node_idx = df["Node"].values.reshape(-1,1) # had to slightly change the shaping here
+    utilities.log.info('Retrived stations and nodeids from {}'.format(stationFile))
+
+    # Original code follows
     urljson = args.urljson
     if urljson is not None:
         if not os.path.exists(args.urljson):
@@ -61,7 +90,7 @@ def main(args):
     if adcyamlfile==None:
         adcyamlfile = os.path.join(os.path.dirname(__file__), '../config', 'adc.yml')
     utilities.log.info('Choose a config file of the name {}'.format(adcyamlfile))
-    adc = Adcirc(dtime1=indtime1, dtime2=indtime2, doffset=indoffset, metadata=iometadata,yamlname=adcyamlfile)
+    adc = Adcirc(dtime1=indtime1, dtime2=indtime2, grid=chosengrid, doffset=indoffset, metadata=iometadata,yamlname=adcyamlfile)
 
     if urljson is None:
         # Then generate URL list from time ranges
@@ -69,7 +98,6 @@ def main(args):
         adc.set_times( adc.dtime1, adc.dtime2, adc.doffset)
         utilities.log.info("T1 (start) = {}".format(adc.T1))
         utilities.log.info("T2 (end)   = {}".format(adc.T2))
-        print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
         adc.get_urls()
         utilities.log.info("List of available urls from time conditions:")
     else:
@@ -91,10 +119,8 @@ def main(args):
     if adc.config["ADCIRC"]["fortNumber"] == "63":
         if args.ignore_pkl or not os.path.exists(ADCfile):
             utilities.log.info("Building model matrix from fort.63.nc files...")
-            ##df = get_water_levels63(adc.urls, node_idx, station_ids)
             df = get_water_levels63(adc.urls, node_idx, station_ids)
             df = df.sort_index()
-            df.to_pickle(ADCfile)
             utilities.write_json_file(adc_coords, ADCfilecords)
         else:
             utilities.log.info(ADCfile+" exists.  Using that...")
@@ -125,7 +151,7 @@ def main(args):
 
 # TODO rename doffset to dlag
 class Adcirc:
-    def __init__(self, metadata='', dtime1=None, dtime2=None, doffset=None, yamlname=os.path.join(os.path.dirname(__file__), '../config', 'adc.yml')):
+    def __init__(self, metadata='', grid=None, dtime1=None, dtime2=None, doffset=None, yamlname=os.path.join(os.path.dirname(__file__), '../config', 'adc.yml')):
         """
         Parameters: 
             datum: str, product reference.
@@ -138,6 +164,7 @@ class Adcirc:
         self.urls = {}
         self.T1 = ()
         self.T2 = ()
+        self.grid=grid
         self.gridx = ()
         self.gridy = ()
         self.dtime1 = dtime1
@@ -146,7 +173,6 @@ class Adcirc:
         self.iometadata = metadata
         self.set_times(dtime1=self.dtime1, dtime2=self.dtime2, doffset=self.doffset)
         self.config = utilities.load_config(yamlname)
-
 
     def orig_set_times(self, dtime1=None, dtime2=None, doffset=None):
         """
@@ -227,12 +253,19 @@ class Adcirc:
         perhaps we need to loop over all possible years spanned by the adc.T1 and adc.T2
 
         :return: dict of datecycles ("YYYYMMDDHH") entries and corresponding url.
+        
+        We now support changing chosengrid on input. Add a sanity check here 
         """
         setYears=fetchYears(self.T1, self.T2)
         urls = {}   # dict of datecycles and corresponding urls
         for year in setYears:
             print('year {}'.format(year))
             cfg = self.config["ADCIRC"] if inconfig==None else inconfig
+            if cfg["AdcircGrid"]!=self.grid:
+                utilities.log.error('To use the adc.yml form of the code, grid must be hsofs. It is {}'.format(self.grid))
+                sys.exit()
+            #cfg['AdcircGrid']=self.grid if self.grid is not None else cfg['AdcircGrid']
+            utilities.log.info("Selected ADCIRC grid object is {}".format(cfg))
             urls = {}   # dict of datecycles and corresponding urls
             maincat = cfg["baseurl"] + cfg["catPart"]%(year)
             utilities.log.info('Check out cat {}'.format(maincat))
@@ -252,15 +285,23 @@ class Adcirc:
                 utilities.log.error('dates_in_range is empty. No ADCIRC data within specified bounds %s' % (year))
                 sys.exit('dates_in_range is empty. exit')
             #utilities.log.info('dates in range year {} dates {}'.format(year,dates_in_range))
+            if cfg["AdcircGrid"]!=self.grid:
+                utilities.log.error('To use the adc.yml form of the code, grid must be hsofs. It is {}'.format(self.grid))
+                sys.exit()
             for i, d in enumerate(dates_in_range):
                 dstr = dt.datetime.strftime(d, "%Y%m%d%H")
                 subdir=dt.datetime.strftime(d, "%Y")
+                # Overwrite some path data for alternative grids
+                if self.grid=='ec95d':
+                    instanceValue=gridinstance['ec95d']
+                else:
+                    instanceValue=instance[year]
                 url = cfg["baseurl"] + \
                       cfg["dodsCpart"] % (subdir,
                                       dstr,
                                       cfg["AdcircGrid"],
                                       cfg["Machine"],
-                                      cfg["Instance"]%(instance[year]),
+                                      cfg["Instance"]%(instanceValue),
                                       cfg["fortNumber"])
                 #print('NEW URL {}'.format(url))
                 try:
@@ -272,6 +313,51 @@ class Adcirc:
                     utilities.log.info("Could not access {}. It will be skipped.".format(url))
                     url2add = None
                 urls[d] = url2add
+        self.urls = urls
+
+    def get_urls_noyaml(self, in_forecast, doffset=-4):
+        """
+        Gets a dict of URLs for the time range and other parameters from the specified
+        THREDDS server, using siphon. Parameters are determined from the input url nomenclature.
+        A representative url is:
+        {time: http://tds.renci.org:8080/thredds/dodsC/2021/nam/2021031600/hsofs/hatteras.renci.org/hsofs-nam-bob-2021/namforecast/fort.63.nc}
+
+        the value in the field containing namforecast is converted to the constant nowcast. and the forecasat starting date
+        is used to fetch nowcasts.
+
+        perhaps we need to loop over all possible years spanned by the adc.T1 and adc.T2
+
+        :return: dict of datecycles ("YYYYMMDDHH") entries and corresponding url.
+        
+        We now support changing chosengrid on input. Add a sanity check here 
+        """
+        # Pass the URL to get the forecast date. Then decrement back 6 hours * num6houroffsets to build a list
+        # Missingness and having too many entries is okay as the errorCOmpute code will limit the list later
+        # TODO change thios doffset
+        if doffset>0:
+            utilities.log.warning('doffset should normally be < 0 {}'.format(doffset))
+        urls = {} # dict of datecycles and corresponding nowcast urls
+        num6hourTimes=(4*abs(doffset)+1)
+        for key, forecast in in_forecast.items():
+            words=forecast.split('/')
+            time2=dt.datetime.strptime(words[-6],'%Y%m%d%H')
+            times=list()
+            for shift in range(0,num6hourTimes):
+                times.append(time2-timedelta(hours=shift*6)) # Want 4 6 periods for error computation later on 
+            # Build a new list of urls and add appropriate time key to the dict
+            words[-2]='nowcast' # This is constant for all grids
+            for time in times[::-1]:
+                words[-6]=dt.datetime.strftime(time, "%Y%m%d%H")
+                url = '/'.join(words)
+                try:
+                    nc = nc4.Dataset(url)
+                    # test access
+                    z = nc['zeta'][:, 0]
+                    url2add = url
+                    utilities.log.info('Grabbed url {}'.format(url))
+                    urls[words[-6]]=url
+                except:
+                    utilities.log.info("Could not access {}. It will be skipped.".format(url))
         self.urls = urls
 
 def writeToJSON(df, rootdir, iometadata, fileroot='adc_wl', variableName=None):
@@ -299,7 +385,7 @@ def get_water_levels63(urls, nodes, stationids):
     initialtime = None
     finaltime = None # Update class times to reflect actual data set fetched
     for datecyc, url in urls.items():
-        utilities.log.info("{} : ".format(datecyc))
+        utilities.log.info("datecyc {} : ".format(datecyc))
         if url is None:
             utilities.log.info("   Skipping. No url.")
         else:
@@ -308,7 +394,6 @@ def get_water_levels63(urls, nodes, stationids):
             nc = nc4.Dataset(url)
             # we need to test access to the netCDF variables, due to infrequent issues with
             # netCDF files written with v1.8 of HDF5.
-
             if "zeta" not in nc.variables.keys():
                 utilities.log.error("zeta not found in netCDF for {}.".format(datecyc))
                 sys.exit(1)
@@ -317,8 +402,12 @@ def get_water_levels63(urls, nodes, stationids):
                 t = nc4.num2date(time_var[:], time_var.units)
                 data = np.empty([len(t), 0])
                 for i, n in enumerate(nodes):
-                    z = nc['zeta'][:, n-1]
-                    data = np.hstack((data, z))
+                    try:
+                        z = nc['zeta'][:, n-1]
+                        data = np.hstack((data, z))
+                    except IndexError as e:
+                        utilities.log.error('Error: This is usually caused by accessing non-hsofs data but forgetting to specify the proper --grid {}'.format(e))
+                        sys.exit()
                 np.place(data, data < -1000, np.nan)
                 df_sub = pd.DataFrame(data, columns=stationids, index=t)
                 utilities.log.debug(" df_sub time range = {} -> {}" .format(df_sub.index[0], df_sub.index[-1]))
@@ -412,7 +501,6 @@ def first_true(iterable, default=False, pred=None):
     """
     return next(filter(pred, iterable), default)
 
-
 if __name__ == '__main__':
     from argparse import ArgumentParser
     import sys
@@ -439,7 +527,7 @@ if __name__ == '__main__':
                         help='String: Name used in DICT/JSon to identify ADCIRC type (eg nowcast,forecast)')
     parser.add_argument('--adcYamlname', action='store', dest='adcYamlname', default=None,
                         help='String: FQFN  of alternative config to adc.yml')
-
+    parser.add_argument('--grid', default='hsofs',help='Choose name of available grid',type=str) 
     args = parser.parse_args()
 
     sys.exit(main(args))
