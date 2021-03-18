@@ -16,26 +16,24 @@ REGRID: &regrid
 
 KRIGING: &kriging
    VPARAMS:
-      sill: 0.1
-      range: 6 
-      nugget: 0.05
+      sill: 0.015 # 2
+      range: 8 # 2 
+      nugget: 0.05 # 0.1
    PARAMS:
       method: "ordinary"
       variogram_model: "gaussian"
       coordinates_type: "geographic"
       weight: True
-      nlags: 10  
+      nlags: 6 
 
 CVKRIGING: &cvkriging
    VPARAMS:
-      sill: [.1, .2, .3]
-      range: [6,10,20]
+      sill: [0.05, 0.1, 0.2]
+      range: [2, 10, 20]
       nugget: [0.05, 0.1, 0.2, 0.3]
    PARAMS:
       method: ["ordinary"]
       variogram_model: ["gaussian", "spherical"]
       coordinates_type: ["geographic"]
-      anisotropy_scaling: [1]
-      anisotropy_angle: [0]
       weight: [True, False]
-      nlags: [5, 10, 20]
+      nlags: [6, 10, 20]

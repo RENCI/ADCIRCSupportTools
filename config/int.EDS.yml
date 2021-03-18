@@ -16,24 +16,22 @@ KRIGING: &kriging
    VPARAMS:
       sill: 0.2
       range: 20 
-      nugget: 0.1
+      nugget: 0.1 
    PARAMS:
       method: "ordinary"
-      variogram_model: "gaussian"
+      variogram_model: "spherical"
       coordinates_type: "geographic"
-      weight: False 
+      weight: False
       nlags: 6
 
 CVKRIGING: &cvkriging
    VPARAMS:
-      sill: [.1, .2, .3]
-      range: [6,10,20]
-      nugget: [0.05, 0.1, 0.2, 0.3]
+      sill: [.1, .2, .3, .5]
+      range: [2,10, 20, 30, 40]
+      nugget: [0.1,0.2,0.3]
    PARAMS:
-      method: ["ordinary"]
-      variogram_model: ["gaussian", "spherical"]
+      method: ["ordinary"] # Note ordinary and universal have different variables
+      variogram_model: ["spherical", "gaussian"]
       coordinates_type: ["geographic"]
-      anisotropy_scaling: [1]
-      anisotropy_angle: [0]
-      weight: [True, False]
-      nlags: [5, 10, 20]
+      weight: [False]
+      nlags: [6,10,20]
