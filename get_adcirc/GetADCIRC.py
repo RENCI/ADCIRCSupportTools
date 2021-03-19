@@ -32,6 +32,24 @@ from siphon.catalog import TDSCatalog
 instance={2020: 'hsofs-nam-bob', 2021: 'hsofs-nam-bob-2021'}
 gridinstance={'ec95b': 'ec95d-nam-bob-rptest'}
 
+def checkAdvisory(value):
+    """
+    Try to ensure a typical advisaory number was passed
+    """
+    utilities.log.debug('Input advisory {}'.format(value))
+    try:
+        test=dt.datetime.strptime(value,'%Y%m%d%H')
+        utilities.log.error('A real data was found where an advisory was expected. Was this a Hurricane URL ? {}'.format(test))
+        sys.exit()
+    except ValueError:
+        try:
+            outid = int(value)
+        except ValueError:
+            utilities.log.error('Expected an Advisory value but could convert to int {}'.format(value))
+            sys.exit()
+    utilities.log.info('Got advisory number for hurricane {}'.format(outid))
+    return outid
+
 def main(args):
     # Possible override YML defaults
     indtime1 = args.timein
@@ -358,6 +376,68 @@ class Adcirc:
                     urls[words[-6]]=url
                 except:
                     utilities.log.info("Could not access {}. It will be skipped.".format(url))
+        self.urls = urls
+
+# Attempt here to customize for actual hurricane syntax
+# Here no actual dates are used just advisory numbers. Eg
+# http://tds.renci.org:8080/thredds/dodsC/2020/sally/15/LA_v20a-WithUpperAtch_chk/hatteras.renci.org/LAv20a_al192020_jgf/nhcConsensus/fort.63.nc"
+# So we need to do two things:
+#   1) decrement the advisory number to fetch nowcasts -- this list may be spoarse or noneexistant.
+#   2) Find actual dates for use bny downstream methods
+#
+    def get_urls_hurricane_noyaml(self, in_forecast, doffset=-4):
+        """
+        Gets a dict of URLs for the time range and other parameters from the specified
+        THREDDS server, using siphon. Parameters are determined from the input url nomenclature.
+        A representative url is:
+        {advisory: http://tds.renci.org:8080/thredds/dodsC/2020/sally/15/LA_v20a-WithUpperAtch_chk/hatteras.renci.org/LAv20a_al192020_jgf/nhcConsensus/fort.63.nc}
+
+        the value in the field containing nhcConsensus is converted to the constant nowcast. 
+
+        At the end, we query the data assembled data to set adc.T1 and adc.T2
+
+        :return: dict of datecycles ("YYYYMMDDHH") entries and corresponding url.
+        
+        We now support changing chosengrid on input. Add a sanity check here 
+        """
+        # Pass the URL to get the forecast date. Then decrement back 6 hours * num6houroffsets to build a list
+        # Missingness and having too many entries is okay as the errorCOmpute code will limit the list later
+        # TODO change thios doffset
+        utilities.log.info('Assuming input URL is for a Hurricane: switching to an advisory number nomenclature')
+        if doffset>0:
+            utilities.log.warning('doffset should normally be < 0 {}'.format(doffset))
+        urls = {} # dict of datecycles and corresponding nowcast urls
+
+        # For an advisory we ASSUME each decrement corresponds to 6 hours. But not all indexes may be avail
+        num6hourTimes=4*abs(doffset)
+        for key, forecast in in_forecast.items():
+            words=forecast.split('/')
+            advisory = checkAdvisory(words[-6])
+            ###time2=dt.datetime.strptime(words[-6],'%Y%m%d%H')
+            advisories=list()
+            # Still not working
+            print('POOP advi {}'.format(advisory))
+            for adv in range(advisory,max(1,advisory-num6hourTimes),-1):
+            #for shift in range(num6hourTimes,1,-1):
+                advisories.append(adv) # Want at most 4 6 periods for error computation later on 
+
+            # Build a new list of urls and add appropriate time key to the dict
+            words[-2]='nowcast' # This is constant for all grids
+            for adv in advisories:
+                words[-6]=str(adv)
+                url = '/'.join(words)
+                try:
+                    nc = nc4.Dataset(url)
+                    # test access
+                    z = nc['zeta'][:, 0]
+                    url2add = url
+                    utilities.log.info('Grabbed url {}'.format(url))
+                    urls[words[-6]]=url
+                except:
+                    utilities.log.info("Could not access {}. It will be skipped.".format(url))
+        if len(urls)==0:
+            utilities.log.error('No nowcast urls were found for advisory {}'.format(advisory))
+            sys.exit()
         self.urls = urls
 
 def writeToJSON(df, rootdir, iometadata, fileroot='adc_wl', variableName=None):
