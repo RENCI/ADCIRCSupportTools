@@ -40,6 +40,7 @@ def main(args):
     ROOTDIR=args.outroot
     RANGE=str(args.inrange)
     SILL=str(args.insill)
+    grid=args.grid
     utilities.log.info('ERRDIR {}'.format(ERRDIR))
     utilities.log.info('CLAMPFILE {}'.format(CLAMPFILE))
     utilities.log.info('ADCJSON {}'.format(ADCJSON))
@@ -47,6 +48,7 @@ def main(args):
     utilities.log.info('ROOTDIR {}'.format(ROOTDIR))
     utilities.log.info('RANGE {}'.format(RANGE))
     utilities.log.info('SILL {}'.format(SILL))
+    utilities.log.info('GRID {}'.format(grid))
 
     # Set of all files belonging to this ensemble
     errfileJson=ERRDIR+'/runProps.json'
@@ -98,5 +100,6 @@ if __name__ == '__main__':
     parser.add_argument('--insill', action='store', dest='insill',default=None, help='If specified then an internal config is constructed', type=float)
     parser.add_argument('--outroot', action='store', dest='outroot', default=None,
                         help='Available high level output dir directory')
+    parser.add_argument('--grid', default='hsofs',help='Choose name of available grid',type=str)
     args = parser.parse_args()
     sys.exit(main(args))
