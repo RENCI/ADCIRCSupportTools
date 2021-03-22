@@ -13,3 +13,7 @@ GRAPHICS: &graphics
   VMAX: 0.5
   MAPRES: "i"
 
+STATIONS: &stations
+  HSOFS: "CERA_NOAA_HSOFS_stations_V2.csv"
+  EC95D: "ec95d_stations.V1.csv"
+

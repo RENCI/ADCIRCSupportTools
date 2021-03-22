@@ -33,7 +33,7 @@ RUN git clone https://github.com/RENCI/ADCIRCSupportTools.git
 RUN git clone https://github.com/GClunies/noaa_coops.git
                
 # move to the install directory
-WORKDIR ADCIRCSupportTools/INSTALL
+WORKDIR ADCIRCSupportTools/deploy
 
 # install the conda requirements
 RUN conda install --yes --file conda_requirements.txt

@@ -59,8 +59,8 @@ def fetchNOW():
     tdt = dt.datetime.now()
     return tdt
 
-def exec_adcirc_url(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids):
-    adc = Adcirc(adc_yamlname)
+def exec_adcirc_url(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids, grid):
+    adc = Adcirc(adc_yamlname, grid=grid)
     #rootdir = utilities.fetchBasedir(inrootdir) # Ensure the directory exists
     adc.urls = urls
     adc.get_grid_coords()
@@ -134,6 +134,7 @@ def main(args):
     outfiles = dict()
 
     doffset = args.doffset
+    chosengrid=args.grid
 
     # Get input adcirc url and check for existance
     if args.urljson != None:
@@ -176,26 +177,34 @@ def main(args):
     outfiles['IOSUBDIR']=iosubdir
     outfiles['IOMETADATA']=iometadata
    
-    # 2) Setup ADCIRC specific YML-resident inputs
     # Such as node_idx data
-    utilities.log.info('Fetch OBS station data')
-    obs_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'obs.yml')
-    obs_config = utilities.load_config(obs_yamlname)
-    station_df = utilities.get_station_list()
-    station_ids = station_df["stationid"].values.reshape(-1,)
-    node_idx = station_df["Node"].values
+
+    utilities.log.info('Fetch station data for grid {}'.format(chosengrid))
+    try:
+        stationFile=main_config['STATIONS'][chosengrid.upper()]
+        stationFile=os.path.join(os.path.dirname(__file__), "../config", stationFile)
+    except KeyError as e:
+        utilities.log.error('ADDA: Error specifying grid. Uppercase version Not found in the main.yml {}'.format(chosengrid))
+        utilities.log.error(e)
+        sys.exit()
+
+    # Read the stationids and nodeid data
+    df = pd.read_csv(stationFile, index_col=0, header=0, skiprows=[1], sep=',')
+    station_ids = df["stationid"].values.reshape(-1,)
+    node_idx = df["Node"].values.reshape(-1,1) # had to slightly change the shaping here
+    utilities.log.info('Retrived stations and nodeids from {}'.format(stationFile))
 
     # NOTE using inrootdir here
     utilities.log.info('Fetch ADCIRC')
     adc_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'adc.yml')
-    ADCfile, ADCjson, timestart, timeend = exec_adcirc_url(urls, inrootdir, iometadata, adc_yamlname, node_idx, station_ids)
+    ADCfile, ADCjson, timestart, timeend = exec_adcirc_url(urls, inrootdir, iometadata, adc_yamlname, node_idx, station_ids, chosengrid)
     utilities.log.info('Completed ADCIRC nowcast Reads')
     outfiles['ADCIRC_WL_PKL']=ADCfile
     outfiles['ADCIRC_WL_JSON']=ADCjson
 
     # 3) Setup OBS specific YML-resident values
     utilities.log.info('Fetch Observations')
-    #obs_yamlname = os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'obs.yml')
+    obs_yamlname = os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'obs.yml')
 
     # Grab time Range and tentative station list from the ADCIRC fetch  (stations may still be filtered out)
     timein = timestart.strftime('%Y%m%d %H:%M')
@@ -271,6 +280,7 @@ if __name__ == '__main__':
                         help='String: Filename with a json of urls to loop over.')
     parser.add_argument('--url', action='store', dest='url', default=None,
                         help='String: url.')
+    parser.add_argument('--grid', default='hsofs',help='Choose name of available grid',type=str)
     args = parser.parse_args()
     sys.exit(main(args))
 

@@ -56,12 +56,13 @@ import sys, os
 import random
 import pandas as pd
 import numpy as np
+from sklearn.model_selection import GridSearchCV
 import pykrige.kriging_tools as kt
-from compute_error_field.KrigeReimplemented import Krige as newKrige
+##from compute_error_field.KrigeReimplemented import Krige as newKrige
 from pykrige.ok import OrdinaryKriging
 from pykrige.uk import UniversalKriging
-from pykrige.rk import Krige
-from pykrige.compat import GridSearchCV
+from pykrige.rk import Krige as newKrige
+##from pykrige.compat import GridSearchCV
 ##from sklearn.externals import joblib
 ##from sklearn.externals.joblib import Parallel, delayed
 import joblib
@@ -123,7 +124,7 @@ class interpolateScalerField(object):
         self.c = clampingfile
         self.f = datafile # Input error field of long,lat,values including clamping zeros
         if datafile != None and clampingfile != None:
-            self.X, self.Y, self.Values, self.inX, self.inY, self.inV = self.readAndProcessData( self.f, self.c )
+            self.X, self.Y, self.Values, self.inX, self.inY, self.inV, self.zeroX, self.zeroY, self.zeroV = self.readAndProcessData( self.f, self.c )
         else:
             utilities.log.error('interpolateScalerField initialized with no input file nor clamping file: Abort')
             sys.exit('Abort interpolatrion job')
@@ -142,6 +143,17 @@ class interpolateScalerField(object):
             Values: numpy.ndarray list of krigevalues
         """
         return self.X, self.Y, self.Values
+
+    def fetchClamp(self):
+        """
+        Return the X,Y,Value for the clamped data only.
+
+        Results:
+            X: numpy.ndarray list of lons
+            Y: numpy.ndarray list of lats
+            Values: numpy.ndarray list of clamp values (=0.0)
+        """
+        return self.zeroX, self.zeroY, self.zeroV
 
     def fetchRawInputData(self):
         """
@@ -216,6 +228,9 @@ class interpolateScalerField(object):
             inX: numpy.ndarray of lons (no clamp)
             inY: numpy.ndarray of lats (no clamp)
             inZ: numpy.ndarray of vals (no clamp)
+            zeroX: numpy.ndarray of lons for clamp
+            zeroY: numpy.ndarray of lats for clamp
+            zeroV: numpy.ndarray of Values for clamp
         """
         indataAll = pd.read_csv(f, header=0)
         indataAll.dropna(axis=0, inplace=True) # Need this incase we save summaries with nana
@@ -228,12 +243,12 @@ class interpolateScalerField(object):
         np.random.shuffle(data) # incase we want to do CV studies
         Xpoints, Ypoints, Valuepoints = data[:,0], data[:, 1], data[:, 2]
         inX, inY, inV = indata[:,0], indata[:, 1], indata[:, 2]
+        zeroX,zeroY,zeroV = zeros[:,0], zeros[:, 1], zeros[:, 2]
         if not np.isnan(Xpoints).any() and not np.isnan(Ypoints).any() and not np.isnan(Valuepoints).any():
-            return Xpoints, Ypoints, Valuepoints, inX, inY, inV
+            return Xpoints, Ypoints, Valuepoints, inX, inY, inV, zeroX, zeroY, zeroV
         else:
             utilities.log.error('Some of the input data are nans: Aborting ')
             sys.exit('Some of the input data are nans: Aborting ')
-        return Xpoints, Ypoints, Valuepoints, inX, inY, inV
 
 ##
 ## Modify this to accept param,vprams and a filename on input
@@ -269,11 +284,11 @@ class interpolateScalerField(object):
         if method == 'ordinary':
             utilities.log.info('Ordinary kriging method selected')
             model = OrdinaryKriging(self.X, self.Y, self.Values, **param_dict,
-                                 variogram_parameters=vparams, verbose=False, enable_plotting=False)
+                                 variogram_parameters=vparams, verbose=False, enable_plotting=False, exact_values=False)
         else:
             utilities.log.info('Universal kriging method selected: is data not stationary ?')
             model = UniversalKriging(self.X, self.Y, self.Values, **param_dict,
-                                  variogram_parameters=vparams, verbose=False, enable_plotting=False)
+                                  variogram_parameters=vparams, verbose=False, enable_plotting=False, exact_values=False)
         imgdir = self.rootdir # fetchBasedir(self.config['DEFAULT']['RDIR'].replace('$',''))# Yaml call to be subsequently removed except:
         newfilename = utilities.getSubdirectoryFileName(imgdir, subdir, filename)
         try:
@@ -444,9 +459,11 @@ class interpolateScalerField(object):
         param_dict['variogram_model'] = model_list
         utilities.log.info('Params for current CV {}'.format(param_dict))
  
+        scoring='r2'
         #scoring='accuracy'
-        estimator = GridSearchCV(newKrige(variogram_parameters=vparams), param_dict, error_score='raise', scoring='r2',verbose=True, iid=True,
-                                 return_train_score=True, cv=10)
+        # estimator = GridSearchCV(newKrige(variogram_parameters=vparams), param_dict, error_score='raise', scoring='r2',verbose=True, # Remove iid=True
+        #                         return_train_score=True, cv=10)
+        estimator = GridSearchCV(newKrige(variogram_parameters=vparams), param_dict, error_score='raise', scoring=scoring, verbose=True, return_train_score=True, cv=5)
         data = np.concatenate((self.X.reshape(-1, 1), self.Y.reshape(-1, 1)), axis=1)
         estimator.fit(X=data, y=self.Values)
         # This doesn't help print('Print fixed vparams estimator {}'.format(estimator))

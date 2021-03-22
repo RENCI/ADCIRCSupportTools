@@ -1,7 +1,6 @@
 ADCIRC: &adcirc
   AdcircGrid: "hsofs"
   Machine: "hatteras.renci.org"
-  NodeList: "adcirc_test_nodes.dat"
   Instance: '%s' #"hsofs-nam-bob"  #  "ncfs-dev-hsofs-nam-master"
   baseurl: "http://tds.renci.org:8080/thredds/"
   #catPart: "/catalog/2020/nam/catalog.xml"

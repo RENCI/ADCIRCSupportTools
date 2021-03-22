@@ -50,10 +50,12 @@ def make_log_stationary(df_raw,logshift=0.1):
     """
     global rolling_mean
     global rmin
+    window=49
+    utilities.log.info('Apply stationarity transform: window is {}'.format(window))
     rmin = np.abs(df_raw.min())
     df = df_raw+(rmin+logshift)
     df_log = np.log(df)
-    rolling_mean = df_log.rolling(window=11).mean()
+    rolling_mean = df_log.rolling(window=window).mean()
     df_log_minus_mean = df_log - rolling_mean
     df_log_minus_mean.dropna(inplace=True)
     rolling_mean.dropna(inplace=True)
@@ -62,6 +64,7 @@ def make_log_stationary(df_raw,logshift=0.1):
 
 # Why the extra .loc? because ARIMA drops the first time index value - awesome
 def invert_make_log_stationary(df_log_minus_mean, logshift=0.1):
+    utilities.log.info('Apply inverse stationarity transform')
     commontimes = df_log_minus_mean.index & rolling_mean.index
     df_nolog = np.exp(df_log_minus_mean.loc[commontimes]+rolling_mean.loc[commontimes])-rmin-logshift
     #stats=check_stationarity(df_nolog)
@@ -120,6 +123,8 @@ def fft_lowpass(signal, lowhrs):
     # Insert ramp into factor.
     factor[sl] = a
     result = result * factor
+    print('Freqs {}'.format(result))
+    print('FREQ TYPEW {}'.format(type(result)))
     return np.fft.irfft(result, len(signal))
 
 # The means are proper means for the month./week. The offset simply changes the index underwhich it will be stored
@@ -253,6 +258,7 @@ def fetch_data_metadata(f, meta):
 def main(args):
     t0 = tm.time()
 
+
     if not args.inDir:
         utilities.log.error('Need inDir on command line: --inDir <inDir>')
         return 1
@@ -302,7 +308,7 @@ def main(args):
 
     # FFT Lowpass each station for entire range time. Then, extract values for all stations every day
     upshift=0
-    hourly_cutoff=48 # 168
+    hourly_cutoff=48 # 168 # 48 # 6 # 168 #48
     cutoff = hourly_cutoff+upshift
     utilities.log.info('FFT hourly_cutoff {}, actual_cutoff {}'.format(hourly_cutoff,cutoff))
 
@@ -311,33 +317,44 @@ def main(args):
 
     # Perform FFT for each station over the entire time range
     df_err_all_lowpass=pd.DataFrame(index=df_err_all.index)
+    ##df_err_all_lowpass_stationarity=pd.DataFrame(index=df_err_all.index)
 
     fftAllstations=dict()
     # Perform FFT for each stationm oveer the entire time range
-    if args.stationarity: 
-        utilities.log.info('Will attempt to render data stationary pre FFT')
+    ##if args.stationarity: 
+    ##    utilities.log.info('Will attempt to render data stationary pre FFT')
 
+    utilities.writePickle(df_err_all, rootdir=rootdir,subdir='',fileroot='df_err_all',iometadata='')
+
+    # Compare FFTs with and without using stationarity
     for station in intersectedStations:
-        print('Process station {}'.format(station))
-        stationName = df_meta.loc[int(station)]['stationname']
-        df_fft=pd.DataFrame()
-        df_low = pd.DataFrame()
-
-        #for cutoffflank,cutoff in zip(cutoffs,hourly_cutoffs):
-
-        print('Process cutoff {} for station {}'.format(cutoff,station))
-        df_temp = df_err_all[station].dropna()
-        if args.stationarity:
-            df_temp = make_log_stationary(df_temp) # Note beginning times get wiped out 
-        df_low['low'] = fft_lowpass(df_temp,lowhrs=cutoff)
-        df_low.index=df_temp.index # Need this if doing invert_stationarity
-        if args.stationarity:
-            df_inv=invert_make_log_stationary(df_low['low'])
-            df_fft[str(cutoff)] = df_inv
-        else:
+        try:
+            print('Process station {}'.format(station))
+            stationName = df_meta.loc[int(station)]['stationname']
+            df_fft=pd.DataFrame()
+            ##df_fft_stationarity=pd.DataFrame()
+            df_low = pd.DataFrame()
+            ##df_low_stationarity = pd.DataFrame()
+            print('Process cutoff {} for station {}'.format(cutoff,station))
+            df_temp = df_err_all[station].dropna()
+            df_low['low'] = fft_lowpass(df_temp,lowhrs=cutoff)
+            df_low.index=df_temp.index 
             df_fft[str(cutoff)]=df_low['low']
-        #df_fft.index = df_inv.index # df_temp.index
-        df_err_all_lowpass[station]=df_fft[str(cutoff)]
+            #
+            ##df_temp_stationarity= df_err_all[station].dropna()
+            ## df_temp_stationarity= make_log_stationary(df_temp_stationarity) # Note beginning times get wiped out 
+            ##df_low_stationarity['low'] = fft_lowpass(df_temp_stationarity,lowhrs=cutoff)
+            ##df_low_stationarity.index=df_temp_stationarity.index # Need this if doing invert_stationarity
+            ##df_inv=invert_make_log_stationary(df_low_stationarity['low'])
+            ##df_fft_stationarity[str(cutoff)] = df_inv
+            #
+            df_err_all_lowpass[station]=df_fft[str(cutoff)]
+            ##df_err_all_lowpass_stationarity[station]=df_fft_stationarity[str(cutoff)]
+        except:
+            utilities.log.info('FFT failed for stastion {}'.format(station))
+
+    utilities.writePickle(df_err_all_lowpass, rootdir=rootdir,subdir='',fileroot='df_err_all_lowpass',iometadata='')
+    ##utilities.writePickle(df_err_all_lowpass_stationarity, rootdir=rootdir,subdir='',fileroot='df_err_all_lowpass_stationarity',iometadata='')
 
     # Now pull out daily data 
     utilities.log.info('MANUAL setting of date range')

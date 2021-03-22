@@ -258,7 +258,7 @@ def main(args):
     # FFT Lowpass each station for all time. Then, extract values for all stations every start week.
 
     upshift=0
-    hourly_cutoffs=[168]
+    hourly_cutoffs=[48]
     cutoffs = [x + upshift for x in hourly_cutoffs]
 
     #intersectedStations=stations # These are from the meta data not the data sets

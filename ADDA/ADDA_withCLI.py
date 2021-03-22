@@ -72,29 +72,44 @@ def main(args):
     overrideRepeats = args.override_repeats
     overridetimeout = None if args.time2 is None else str2datetime(args.time2)
     aveper = None if args.aveper is None else int(args.aveper)
+    chosengrid=args.grid
 
     ###########################################################################
     # First Step: Load main yaml configuration information and determine the
     # 
 
     # 1) Setup main config data
-    ##config = utilities.load_config()
+    config = utilities.load_config()
 
     # 2) Read the OBS yml to get station data
     # Such as node_idx data
-    utilities.log.info('Fetch OBS station data')
-    obs_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'obs.yml')
-    obs_config = utilities.load_config(obs_yamlname)
-    station_df = utilities.get_station_list()
-    station_id = station_df["stationid"].values.reshape(-1,)
-    node_idx = station_df["Node"].values
+    utilities.log.info('Fetch station data for ghrid {}'.format(chosengrid)) 
+    try:
+        stationFile=config['STATIONS'][chosengrid.upper()]
+        stationFile=os.path.join(os.path.dirname(__file__), "../config", stationFile)
+    except KeyError as e:
+        utilities.log.error('ADDA: Error specifying grid. Uppercase version Not found in the main.yml {}'.format(chosengrid))
+        utilities.log.error(e)
+        sys.exit()
 
+    # Read the stationids and nodeid data
+    df = pd.read_csv(stationFile, index_col=0, header=0, skiprows=[1], sep=',')
+    station_id = df["stationid"].values.reshape(-1,)
+    node_idx = df["Node"].values.reshape(-1,1) # had to slightly change the shaping here
+    utilities.log.info('Retrived stations and nodeids from {}'.format(stationFile))
+
+    #utilities.log.info('Fetch OBS station data')
+    #obs_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'obs.yml')
+    #obs_config = utilities.load_config(obs_yamlname)
+    #station_df = utilities.get_station_list()
+    #station_id = station_df["stationid"].values.reshape(-1,)
+    #node_idx = station_df["Node"].values
 
     # 3) Get ADCIRC data: Use it to decide on desired stations and time ranges
     # Build metadata string
 
     adc_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'adc.yml')
-    adc = Adcirc(adc_yamlname)
+    adc = Adcirc(adc_yamlname, grid=chosengrid)
 
     if overridetimeout is None:
         adc.set_times()  # Get current ADC now and chosen starting time
@@ -169,7 +184,9 @@ def main(args):
     timeout = adc.T2
 
     # These are all defaults and can be excluded from the invocation
-    obs_config = obs_config['OBSERVATIONS']
+    obs_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'obs.yml')
+    obs_config = utilities.load_config(obs_yamlname)['OBSERVATIONS']
+    #obs_config = obs_config['OBSERVATIONS']
     datum = obs_config['DATUM']  # 'MSL'
     unit = obs_config['UNIT']  # 'metric'
     timezone = obs_config['TIMEZONE']  # 'gmt'
@@ -396,5 +413,6 @@ if __name__ == '__main__':
                         help='Boolean: Fetch URLs for NOAA station levels')
     parser.add_argument('--error_histograms', action='store_true', 
                         help='Boolean: Display 3 histograms: station only, vis grid errors, and adcirc nodes')
+    parser.add_argument('--grid', default='hsofs',help='Choose name of available grid',type=str)
     args = parser.parse_args()
     sys.exit(main(args))
