@@ -413,13 +413,9 @@ class Adcirc:
         for key, forecast in in_forecast.items():
             words=forecast.split('/')
             advisory = checkAdvisory(words[-6])
-            ###time2=dt.datetime.strptime(words[-6],'%Y%m%d%H')
             advisories=list()
-            # Still not working
             for adv in range(advisory,max(1,advisory-num6hourTimes),-1):
-            #for shift in range(num6hourTimes,1,-1):
                 advisories.append(adv) # Want at most 4 6 periods for error computation later on 
-
             # Build a new list of urls and add appropriate time key to the dict
             words[-2]='nowcast' # This is constant for all grids
             for adv in advisories:
