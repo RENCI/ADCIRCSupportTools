@@ -21,8 +21,8 @@ def build_slurm(ROOTDIR,YAMLNAME,ERRFILE,CLAMPFILE,ADCJSON,RANGE,SILL):
     slurm.append('#SBATCH -J Interpolate')
     slurm.append('#SBATCH --mem-per-cpu 64000')
     slurm.append('echo "Begin the Interpolation phase" ')
-    slurm.append('export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools:$PYTHONPATH')
-    slurm.append('dir="/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/reanalysis"')
+    slurm.append('export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools')
+    slurm.append('dir="/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/reanalysis"')
     slurm.append('python -u $dir/krigListOfErrorSets.py --daily --inrange "'+RANGE+'" --insill "'+SILL+'" --outroot "'+ROOTDIR+'" --yamlname "'+YAMLNAME+'" --errorfile "'+ERRFILE+'" --clampfile "'+CLAMPFILE+'" --gridjsonfile "'+ADCJSON+'"' )
     with open('runSlurm.sh', 'w') as file:
         for row in slurm:
