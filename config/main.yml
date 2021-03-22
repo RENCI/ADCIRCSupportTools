@@ -16,4 +16,5 @@ GRAPHICS: &graphics
 STATIONS: &stations
   HSOFS: "CERA_NOAA_HSOFS_stations_V2.csv"
   EC95D: "ec95d_stations.V1.csv"
+  REGFION3: "Region3_Stations_V1.csv"
 
