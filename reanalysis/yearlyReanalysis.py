@@ -204,7 +204,7 @@ def main(args):
 
     # 3) Setup OBS specific YML-resident values
     utilities.log.info('Fetch Observations')
-    #obs_yamlname = os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'obs.yml')
+    obs_yamlname = os.path.join('/home/jtilson/ADCIRCSupportTools', 'config', 'obs.yml')
 
     # Grab time Range and tentative station list from the ADCIRC fetch  (stations may still be filtered out)
     timein = timestart.strftime('%Y%m%d %H:%M')
