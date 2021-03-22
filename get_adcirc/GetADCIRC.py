@@ -416,7 +416,6 @@ class Adcirc:
             ###time2=dt.datetime.strptime(words[-6],'%Y%m%d%H')
             advisories=list()
             # Still not working
-            print('POOP advi {}'.format(advisory))
             for adv in range(advisory,max(1,advisory-num6hourTimes),-1):
             #for shift in range(num6hourTimes,1,-1):
                 advisories.append(adv) # Want at most 4 6 periods for error computation later on 
