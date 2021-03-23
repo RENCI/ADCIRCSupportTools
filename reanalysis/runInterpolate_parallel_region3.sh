@@ -8,12 +8,10 @@ export NUGGET=0.005
 #DAILY=DAILY-4MONTH-RANGE$RANGE-SILL$SILL-LP48
 DAILY=DAILY-4MONTH-REGION3-RANGE$RANGE-SILL$SILL-NUGGET$NUGGET-LP48
 
-export CODEBASE=/projects/sequence_analysis/vol1/prediction_work/NEW-ADCIRCSupportTools/ADCIRCSupportTools
-#export CODEBASE=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools
-#export CODEBASE=/projects/sequence_analysis/vol1/prediction_work/CausalInference/CausalNetworking_forKirk/TEST/ADCIRCSupportTools
+export CODEBASE=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools
 export PYTHONPATH=$CODEBASE
 export RUNTIMEDIR=.
-export BASEDIREXTRA=REANALYSIS_COMPREHENSIVE/YEARLY-$YEAR
+export BASEDIREXTRA=REANALYSIS_COMPREHENSIVE_REGION3/YEARLY-$YEAR
 #export BASEDIREXTRA=REANALYSIS_NOFFT/YEARLY-$YEAR
 
 # Build the yearly error file store in $RUNTIMEDIR/BASEDIREXTRA

@@ -24,8 +24,8 @@ def build_slurm(year,month):
     slurm.append('#SBATCH -J CDS'+year) 
     slurm.append('#SBATCH --mem-per-cpu 32000')
     slurm.append('echo "Begin the CDS query" ')
-    slurm.append('export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools:$PYTHONPATH')
-    slurm.append('dir="/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/convert_to_owi"')
+    slurm.append('export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools')
+    slurm.append('dir="/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/convert_to_owi"')
     slurm.append('python -u $dir/cds_request.py --year "'+year+'" --month "'+month+'"') 
     shName = '_'.join([year,month,'runSlurm.sh'])
     with open(shName, 'w') as file:
@@ -57,4 +57,4 @@ for iyear in yearlist:
         slurmFilename = build_slurm(year, month)
         cmd = 'sbatch ./'+slurmFilename
         print('Launching job {} as {}'.format(year,slurmFilename))
-        #os.system(cmd) 
+        os.system(cmd) 
