@@ -24,8 +24,8 @@ def build_slurm(year,month):
     slurm.append('#SBATCH -J CDS'+year) 
     slurm.append('#SBATCH --mem-per-cpu 32000')
     slurm.append('echo "Begin the CDS query" ')
-    slurm.append('export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools:$PYTHONPATH')
-    slurm.append('dir="/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/convert_to_owi"')
+    slurm.append('export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools')
+    slurm.append('dir="/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/convert_to_owi"')
     slurm.append('python -u $dir/cds_request.py --year "'+year+'" --month "'+month+'"') 
     shName = '_'.join([year,month,'runSlurm.sh'])
     with open(shName, 'w') as file:
@@ -46,7 +46,7 @@ yearlist = [1950,1951,1952,1953,1954,1955,1956,1957,1958]
 #yearlist = [2000,2001,2002,2003,2004,2005,2006,2007,2008,2009]
 #yearlist = [2010,2011,2012,2013,2014,2015,2016,2017,2018,2019]
 
-yearlist = ['1953']
+yearlist = ['1979']
 months = ['01','02','03','04','05','06','07','08',';09','10','11','12']
 
 for iyear in yearlist:
@@ -57,4 +57,4 @@ for iyear in yearlist:
         slurmFilename = build_slurm(year, month)
         cmd = 'sbatch ./'+slurmFilename
         print('Launching job {} as {}'.format(year,slurmFilename))
-        #os.system(cmd) 
+        os.system(cmd) 
