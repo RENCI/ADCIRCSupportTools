@@ -18,7 +18,9 @@ from utilities.utilities import utilities
 from requests.exceptions import ConnectionError,Timeout,HTTPError
 
 ###############################################################################
-
+# Need this if going for the data < 1979.
+#         c.retrieve(
+#            'reanalysis-era5-single-levels-preliminary-back-extension', config, filename)
 def wrap_retrieve(config, filename):
     month = config['month']
     print('Start month: {} outfilename is {}'.format(month, filename))
