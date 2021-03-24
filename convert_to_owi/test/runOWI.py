@@ -44,7 +44,7 @@ def build_slurm(ddir,odir,date_start,date_end,year,month):
 #yearlist = [2010,2011,2012,2013,2014,2015,2016,2017,2018,2019]
 
 #yearlist = [2018]
-yearlist = [1978]
+yearlist = [1979]
 
 #ncBaseDir = '/projects/ees/TDS/ERA5/global'
 #owiBasedir = '/projects/sequence_analysis/vol1/prediction_work/junk'
