@@ -24,8 +24,8 @@ def build_slurm(ddir,odir,date_start,date_end,year,month):
     slurm.append('#SBATCH -J OWI'+year) 
     slurm.append('#SBATCH --mem-per-cpu 64000')
     slurm.append('echo "Begin the OWI processing" ')
-    slurm.append('export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools:$PYTHONPATH')
-    slurm.append('dir="/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/convert_to_owi"')
+    slurm.append('export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools')
+    slurm.append('dir="/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/convert_to_owi"')
     slurm.append('python -u $dir/era5_to_owi.py --metafilename "'+month+'" --metadirname "'+year+'" --convertEastWest --ddir "'+ddir+'" --date_start "'+date_start+'" --date_end "'+date_end+'"')
     shName = '_'.join([month,year,'runSlurm.sh'])
     with open(shName, 'w') as file:
@@ -43,7 +43,8 @@ def build_slurm(ddir,odir,date_start,date_end,year,month):
 #yearlist = [2000,2001,2002,2003,2004,2005,2006,2007,2008,2009]
 #yearlist = [2010,2011,2012,2013,2014,2015,2016,2017,2018,2019]
 
-yearlist = [2018]
+#yearlist = [2018]
+yearlist = [1978]
 
 #ncBaseDir = '/projects/ees/TDS/ERA5/global'
 #owiBasedir = '/projects/sequence_analysis/vol1/prediction_work/junk'
@@ -51,8 +52,8 @@ yearlist = [2018]
 ncBaseDir='/projects/ees/TDS/ERA5/global'
 owiBasedir=None # Will pick up from RUNTIMEDIR
 
-#months=['01','02','03','04','05','06','07','08','09','10','11','12']
-months=['01']
+months=['01','02','03','04','05','06','07','08','09','10','11','12']
+#months=['01']
 
 for iyear in yearlist:
     for month in months:
@@ -67,5 +68,6 @@ for iyear in yearlist:
         slurmFilename = build_slurm(ddir,odir,date_start,date_end,year,month)
         cmd = 'sbatch ./'+slurmFilename
         print('Launching job {} as {} '.format(ddir,odir))
+        os.system(cmd) 
 print('Finished')
 
