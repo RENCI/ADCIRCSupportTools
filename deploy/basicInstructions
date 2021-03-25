@@ -8,7 +8,7 @@ sudo docker image rm -f adcirc_supp
 sudo docker image rm -f renciorg/adcirc_supp
 
 # Build an image
-sudo docker build -t adcirc_supp:latest .
+sudo docker build --no-cache -t adcirc_supp:latest .
 
 # Reset the tag ID
 sudo docker image tag adcirc_supp:latest renciorg/adcirc_supp:latest
