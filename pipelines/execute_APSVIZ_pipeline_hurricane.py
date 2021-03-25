@@ -107,7 +107,7 @@ def exec_adcirc_nowcast(inurls, rootdir, iometadata, adc_yamlname, node_idx, sta
     This step is always passed an actual forecast URL. nowcast urs are built from it
     """
     adc = Adcirc(adc_yamlname, grid=grid)
-    adc.get_urls_noyaml(inurls, doffset) # doofset in -days internally will be converted to 6hours periods (+1)
+    adc.get_urls_noyaml(inurls, doffset) # doffset in -days internally will be converted to 6hours periods (+1)
     #adc.urls = nc_urls
     utilities.log.info("New: List of available urls input specification:")
     ADCfile = rootdir+'/adc_wl'+iometadata+'.pkl'
@@ -133,7 +133,7 @@ def exec_adcirc_nowcast_hurricane(inurls, rootdir, iometadata, adc_yamlname, nod
     This step is always passed an actual forecast URL. nowcast urs are built from it
     """
     adc = Adcirc(adc_yamlname, grid=grid)
-    adc.get_urls_hurricane_noyaml(inurls, doffset) # doofset in -days internally will be converted to 6hours periods (+1)
+    adc.get_urls_hurricane_noyaml(inurls, doffset) # doffset in -days internally will be converted to 6hours periods (+1)
     #adc.urls = nc_urls
     utilities.log.info("New: List of available hurricane urls input specification:")
     ADCfile = rootdir+'/adc_wl'+iometadata+'.pkl'
