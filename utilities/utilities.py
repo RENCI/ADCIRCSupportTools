@@ -29,6 +29,25 @@ def str2bool(v):
     else:
         raise argparse.ArgumentTypeError('Boolean value expected.')
 
+def AdcircCppForward(lon, lat, lon0=-70, lat0=32):
+    """
+    Platte Carre Forward projection
+    """
+    r = 6378206.4
+    x = r*(lon-lon0)*np.pi/180.*np.cos(lat0*np.pi/180)
+    y = lat*np.pi/180*r
+    return x, y
+
+def AdcircCppInverse(x, y, lon0=-70, lat0=32):
+    """
+    Platte Carre Inverse projection
+    """
+    r = 6378206.4
+    alpha = np.cos(lat0*np.pi/180)
+    lam = lon0 + 180 / np.pi*(np.divide(x,r*alpha))
+    phi = 180/np.pi*y/r
+    return lam, phi
+
 class Utilities:
     """
 
