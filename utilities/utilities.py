@@ -137,6 +137,11 @@ class Utilities:
                     sys.exit("Creation of the high level run directory %s failed" % rundir)
         return rundir
 
+    def fetchLogdir(self, inconfig):
+        try:
+            logdir = os.environ[inconfig.replace('$', '')]  # Yaml call to be subsequently removed
+        return logdir
+
     def setBasedir(self, indir, basedirExtra=None):
         if basedirExtra is not None:
             indir = indir+'/'+basedirExtra
