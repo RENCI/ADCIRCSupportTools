@@ -47,6 +47,7 @@ def build_slurm(ddir,odir,date_start,date_end,year,extra):
 
 yearlist = [2018]
 yearlist = [1979]
+yearlist = [2019]
 
 
 ncBaseDir='/projects/ees/TDS/ERA5/global'
@@ -63,7 +64,8 @@ for iyear in yearlist:
     #date_start='201712'
     #date_end='201801'
     date_start = '%4d12' %(iyear-1)
-    date_end ='%4d01' %(iyear+1)
+    #date_end ='%4d01' %(iyear+1)
+    date_end ='%4d12' %(iyear) # For 2019 no appended flank is possible
     year = str(iyear)
     print('Processing CDS {}'.format(year))
     ddir = ncBaseDir
