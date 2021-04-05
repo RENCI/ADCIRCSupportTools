@@ -352,11 +352,13 @@ class Adcirc:
         # Pass the URL to get the forecast date. Then decrement back 6 hours * num6houroffsets to build a list
         # Missingness and having too many entries is okay as the errorCOmpute code will limit the list later
         # TODO change thios doffset
+        print('NOYAML {}'.format(in_forecast))
         if doffset>0:
             utilities.log.warning('doffset should normally be < 0 {}'.format(doffset))
         urls = {} # dict of datecycles and corresponding nowcast urls
         num6hourTimes=(4*abs(doffset)+1)
         for key, forecast in in_forecast.items():
+            #print('LOOP {},{}'.format(key,forecast))
             words=forecast.split('/')
             time2=dt.datetime.strptime(words[-6],'%Y%m%d%H')
             times=list()
