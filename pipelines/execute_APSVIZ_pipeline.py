@@ -427,10 +427,14 @@ def main(args):
     utilities.log.info('Wrote pipeline Dict data to {}'.format(outfilesjson)) 
 
     # Move the log file from the working dir to rootdir
-    shutil.move('log','/'.join([rootdir,'log']))
-    utilities.log.info('Moved log file to {}'.format('/'.join([rootdir,'log'])))
+    #shutil.copy('logs','/'.join([rootdir,'logs']))
+
     #
     utilities.log.info('Finished pipeline in {} s'.format(tm.time()-t0))
+
+    utilities.log.info('Copied log file to {}'.format('/'.join([rootdir,'logs'])))
+    shutil.copy(utilities.LogFile,'/'.join([rootdir,'logs']))
+
     print(outfiles)
     return 0
 

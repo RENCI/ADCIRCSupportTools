@@ -83,6 +83,7 @@ class Utilities:
         #LogFile = 'log'
         #LogFile = os.getenv('LOG_PATH', os.path.join(os.path.dirname(__file__), 'logs'))
         LogFile = os.getenv('LOG_PATH','logs')
+        self.LogFile = LogFile
 
         # print('Use a log filename of '+LogFile)
         formatter = logging.Formatter('%(asctime)s : %(levelname)s : %(funcName)s : %(module)s : %(name)s : %(message)s ')
