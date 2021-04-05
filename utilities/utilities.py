@@ -80,7 +80,10 @@ class Utilities:
 
         # LogFile = self.config['LOG_FILE']
         # LogFile = '{}.{}.log'.format(thisDomain, currentdatecycle.cdc)
-        LogFile = 'log'
+        #LogFile = 'log'
+        #LogFile = os.getenv('LOG_PATH', os.path.join(os.path.dirname(__file__), 'logs'))
+        LogFile = os.getenv('LOG_PATH','logs')
+
         # print('Use a log filename of '+LogFile)
         formatter = logging.Formatter('%(asctime)s : %(levelname)s : %(funcName)s : %(module)s : %(name)s : %(message)s ')
         dirname = os.path.dirname(LogFile)
@@ -156,11 +159,6 @@ class Utilities:
                 except OSError:
                     sys.exit("Creation of the high level run directory %s failed" % rundir)
         return rundir
-
-    def fetchLogdir(self, inconfig):
-        try:
-            logdir = os.environ[inconfig.replace('$', '')]  # Yaml call to be subsequently removed
-        return logdir
 
     def setBasedir(self, indir, basedirExtra=None):
         if basedirExtra is not None:
