@@ -361,12 +361,17 @@ def main(args):
     #stime=''.join(['2017','-12-20 00:00:00'])
     #etime=''.join(['2019','-01-01 00:00:00'])
 
+    #stime=''.join(['2018','-01-01 00:00:00'])
+    #etime=''.join(['2018','-12-31 18:00:00'])
+
     stime=''.join(['2018','-01-01 00:00:00'])
     etime=''.join(['2018','-05-01 00:00:00'])
 
     starttime = dt.datetime.strptime(stime,'%Y-%m-%d %H:%M:%S')
     endtime = dt.datetime.strptime(etime,'%Y-%m-%d %H:%M:%S')
     numDays = (endtime-starttime).days + 1
+
+    utilities.log.info('Specified time ranges are {} and {}'.format(starttime, endtime))
 
     startday=pd.date_range(starttime, periods=numDays) #.values()
     julianMetadata = startday.strftime('%y-%j').to_list()
@@ -385,6 +390,8 @@ def main(args):
 
     # startday is in yyyy-mm-dd lowpass includes times
     # ALl Nans
+    utilities.log.info('df_err_all times {}'.format(df_err_all.index))
+    utilities.log.info('df_err_lowpass times {}'.format(df_err_all_lowpass.index))
     intersect = [value for value in startday if value in df_err_all_lowpass.index] 
 
     utilities.log.info('Residual data: intersect list {}'.format(intersect))
@@ -395,8 +402,6 @@ def main(args):
     # Store the list of filenames into a dict for krig processing
 
     subdir='errorfield'
-
-
     datadict = dict()
     for index, df in df_err_all_lowpass_subselect.iterrows():
         metadata='_'+iometa[index]
