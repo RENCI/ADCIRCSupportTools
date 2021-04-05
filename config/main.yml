@@ -4,6 +4,8 @@ DEFAULT: &default
   RDIR: $RUNTIMEDIR   
   LOGGING: true
   LOGLEVEL: DEBUG
+  LOGK8S: $LOG_PATH
+  #LOGK8S_LVL: $LOG_LEVEL
   GRAPHICS: true
 
 GRAPHICS: &graphics
