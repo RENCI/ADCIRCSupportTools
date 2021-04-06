@@ -258,6 +258,7 @@ def main(args):
 
     doffset = args.doffset
     chosengrid=args.grid
+    utilities.log.info('Grab the first 4 months of ADCIRC values at the stations skip forewcasting')
     utilities.log.info('Grid specified was {}'.format(chosengrid))
 
     # Get input adcirc url and check for existance
@@ -280,18 +281,9 @@ def main(args):
     else:
         utilities.log.error('No Proper URL specified')
 
-    # 0) Read the ASGS Forecast URL and create a nowcast timeout from it
+    # 0) URL nowcast timeout from it
     # NOTE the dict key (datecycle) is not actually used in this code as it is yet to be defined to me
     # We already expect this to be a single url
-
-    #timeout=None
-    #for datecyc, url in urls.items():
-    #    utilities.log.info("{} : ".format(datecyc))
-    #    if url is None:
-    #        utilities.log.info("   Skipping timefetch. No url.")
-    #    else:
-    #        timeout = extractDateFromURL(url)
-    #utilities.log.info('Generated value for timeout is {}'.format(timeout.strftime('%Y%m%d%H%M')))
 
     # 1) Setup main config data - we will override elements later
     iosubdir = args.iosubdir
@@ -329,32 +321,16 @@ def main(args):
     utilities.log.info('Retrived stations and nodeids from {}'.format(stationFile))
 
     # 3) Setup ADCIRC specific YML-resident inputs
-    utilities.log.info('Fetch ADCIRC-FORECAST')
+    utilities.log.info('Fetch ADCIRC-region3 reanalysis NOWCAST')
     adc_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'adc.yml')
-    #adc_config = utilities.load_config(adc_yamlname)
+
+    # Need to rename this as it is not really a forecast. it is whatever the URL says it is.
 
     # 4) Get actual ASGS Forecast data from this we can ghet the times
     # Not any need to specify a diff yml since we pass in the url directly
     # This will be appended to the DIFF plots in the final PNGs
-    ADCfileFore, ADCjsonFore, timestart_forecast, timeend_forecast, runDataMetadata = exec_adcirc_forecast(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids, chosengrid)
-    utilities.log.info('Completed ADCIRC Forecast Read')
-    utilities.log.info('Forecast timein={}, timeout={}'.format(timestart_forecast, timeend_forecast))
-    outfiles['ADCIRC_WL_FORECAST_PKL']=os.path.basename(ADCfileFore)
-    outfiles['ADCIRC_WL_FORECAST_JSON']=os.path.basename(ADCjsonFore)
-    outfiles['RUNDATE_FORECAST']= runDataMetadata # netCDF4 supplied model initialization time for the forecast
 
-    # 5) Build the nowcast URL
-    #utilities.log.info('Build a nowcast style url')
-    #urlnow = buildNowcast(urls)
-    #utilities.log.info('Resulting nowcast style url {}'.format(urlnow))
-
-    # 6) Get the ADCIRC nowcast with a final time of 
-    timeout = timestart_forecast
-
-    utilities.log.info('Fetch ADCIRC')
-    adc_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'adc.yml')
-    #adc_config = utilities.load_config(adc_yamlname)
-    ADCfile, ADCjson, timestart, timeend = exec_adcirc_nowcast_hurricane(urls, rootdir, '_nowcast'+iometadata, adc_yamlname, node_idx, station_ids, chosengrid, doffset=doffset)
+    ADCfile, ADCjson, timestart, timeend, runDataMetadata = exec_adcirc_forecast(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids, chosengrid)
     utilities.log.info('Completed ADCIRC nowcast Reads')
     outfiles['ADCIRC_WL_PKL']=os.path.basename(ADCfile)
     outfiles['ADCIRC_WL_JSON']=os.path.basename(ADCjson)
@@ -366,7 +342,13 @@ def main(args):
     # Grab time Range and tentative station list from the ADCIRC fetch  (stations may still be filtered out)
     timein = timestart.strftime('%Y%m%d %H:%M')
     timeout = timeend.strftime('%Y%m%d %H:%M')
-    utilities.log.info('ADC provided times are {} and {}'.format(timein, timeout))
+
+    utilities.log.info('Manually limit times to Jan 01 - May 01')
+    timein=timestart.strftime('20180101 00:00')
+    timeout=timestart.strftime('20180501 00:00')
+    utilities.log.info('Manually limit times to Jan 01 - May 01')
+
+    utilities.log.info('ADC times are {} and {}'.format(timein, timeout))
 
     # New approach to account for the changing grid names
     try:
@@ -410,7 +392,7 @@ def main(args):
     files=dict()
     files['META']=metaJ # outfiles['OBS_METADATA_JSON']
     files['DIFFS']=jsonf # outfiles['ERR_TIME_JSON']
-    files['FORECAST']=ADCjsonFore # outfiles['ADCIRC_WL_FORECAST_JSON']
+    files['FORECAST']=ADCjson # outfiles['ADCIRC_WL_FORECAST_JSON']
     utilities.log.info('PNG plotter dict is {}'.format(files))
     png_dict = exec_pngs(files=files, rootdir=rootdir, iometadata=iometadata, iosubdir=iosubdir)
 
@@ -426,9 +408,9 @@ def main(args):
     utilities.log.info('Wrote pipeline Dict data to {}'.format(outfilesjson)) 
 
     utilities.log.info('Finished pipeline in {} s'.format(tm.time()-t0))
-
     utilities.log.info('Copied log file to {}'.format('/'.join([rootdir,'logs'])))
     shutil.copy(utilities.LogFile,'/'.join([rootdir,'logs']))
+
     print(outfiles)
     return 0
 
