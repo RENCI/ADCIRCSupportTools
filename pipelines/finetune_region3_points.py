@@ -76,7 +76,7 @@ def exec_adcirc(dtime2, rootdir, iometadata, adc_yamlname, node_idx, station_ids
     timeend = adc.T2
     return ADCfile, ADCjson, timestart, timeend
 
-def exec_adcirc_forecast(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids, grid):
+def exec_adcirc_forecast(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids, grid, timein=None, timeout=None):
     """
     This step is always passed actual URLs to fetch the forecast data. So changing grid names here is easy
     """
@@ -87,6 +87,11 @@ def exec_adcirc_forecast(urls, rootdir, iometadata, adc_yamlname, node_idx, stat
     ADCfile = rootdir+'/adc_wl'+iometadata+'.pkl'
     ADCjson = rootdir+'/adc_wl'+iometadata+'.json'
     df = get_water_levels63(adc.urls, node_idx, station_ids) # Gets ADCIRC water levels
+    # Insert manual time override - not m,uch error checking here
+    if timein is not None:
+        utilities.log.info('ADC: manually overrtide times to {} {}'.format(timein, timeout))
+        df = df.loc[timein:timeout]
+    #
     adc.T1 = df.index[0] # Optional update to actual times fetched form ADC
     adc.T2 = df.index[-1]
     ADCfile = utilities.writePickle(df, rootdir=rootdir,subdir='',fileroot='adc_wl_forecast',iometadata=iometadata)
@@ -141,6 +146,7 @@ def exec_adcirc_nowcast_hurricane(inurls, rootdir, iometadata, adc_yamlname, nod
     df = get_water_levels63(adc.urls, node_idx, station_ids) # Gets ADCIRC water levels
     adc.T1 = df.index[0] # Optional update to actual times fetched form ADC
     adc.T2 = df.index[-1]
+    utilities.log.debug('ADC index is {}'.format(df.index))
     ADCfile = utilities.writePickle(df, rootdir=rootdir,subdir='',fileroot='adc_wl_forecast',iometadata=iometadata)
     ##df.to_pickle(ADCfile)
     ####df.to_json(ADCjson)
@@ -175,8 +181,8 @@ def exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdi
     exccsv=outputdict['CSVexclude']
     return detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ 
 
-def exec_error(obsf, adcf, meta, err_yamlname, rootdir, iometadata, iosubdir): 
-    cmp = computeErrorField(obsf, adcf, meta, yamlname=err_yamlname, rootdir=rootdir)
+def exec_error(obsf, adcf, meta, local_config, rootdir, iometadata, iosubdir): 
+    cmp = computeErrorField(obsf, adcf, meta, inputcfg=local_config, rootdir=rootdir)
     cmp.executePipelineNoTidalTransform(metadata=iometadata,subdir=iosubdir)
     errf, finalf, cyclef, metaf, mergedf,jsonf = cmp._fetchOutputFilenames()
     return errf, finalf, cyclef, metaf, mergedf, jsonf
@@ -197,6 +203,19 @@ def buildNowcast(urls):
         print('key{} url{}'.format(key,url))
     return urls
     
+def buildErrorConfig(n_aveper=4, n_period=24, n_tide=12.42, n_pad=1):
+    """
+    """
+    cfg = {'TIME':
+        {'AvgPer': n_aveper,
+         'n_tide': n_tide,
+         'n_period': n_period,
+         'n_pad': n_pad },
+        'ERRORFIELD': {'EX_OUTLIER': True}
+    }
+    utilities.log.info('Constructed an internal err.yml configuration dict containing {}'.format(cfg))
+    return cfg
+
 def buildLocalConfig(grid='hsofs'):
     """
     Temporary function to build a config object that can be passed to an ADCIRC nowcast
@@ -255,6 +274,10 @@ def main(args):
 
     t0 = tm.time()
     outfiles = dict()
+
+    utilities.log.info('Manually limit times to Jan 01 - May 01')
+    timein=dt.datetime.strptime('2018-01-01 00:00', '%Y-%m-%d %H:%M')
+    timeout=dt.datetime.strptime('2018-01-07 00:00', '%Y-%m-%d %H:%M')
 
     doffset = args.doffset
     chosengrid=args.grid
@@ -330,7 +353,7 @@ def main(args):
     # Not any need to specify a diff yml since we pass in the url directly
     # This will be appended to the DIFF plots in the final PNGs
 
-    ADCfile, ADCjson, timestart, timeend, runDataMetadata = exec_adcirc_forecast(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids, chosengrid)
+    ADCfile, ADCjson, timestart, timeend, runDataMetadata = exec_adcirc_forecast(urls, rootdir, iometadata, adc_yamlname, node_idx, station_ids, chosengrid, timein=timein, timeout=timeout)
     utilities.log.info('Completed ADCIRC nowcast Reads')
     outfiles['ADCIRC_WL_PKL']=os.path.basename(ADCfile)
     outfiles['ADCIRC_WL_JSON']=os.path.basename(ADCjson)
@@ -340,13 +363,8 @@ def main(args):
     #obs_yamlname = os.path.join('~/ADCIRCSupportTools', 'config', 'obs.yml')
 
     # Grab time Range and tentative station list from the ADCIRC fetch  (stations may still be filtered out)
-    timein = timestart.strftime('%Y%m%d %H:%M')
+    timein = timestart.strftime('%Y%m%d %H:%M') 
     timeout = timeend.strftime('%Y%m%d %H:%M')
-
-    utilities.log.info('Manually limit times to Jan 01 - May 01')
-    timein=timestart.strftime('20180101 00:00')
-    timeout=timestart.strftime('20180501 00:00')
-    utilities.log.info('Manually limit times to Jan 01 - May 01')
 
     utilities.log.info('ADC times are {} and {}'.format(timein, timeout))
 
@@ -377,7 +395,12 @@ def main(args):
     meta = metapkl
     obsf = smoothedpkl
     adcf = ADCfile 
-    errf, finalf, cyclef, metaf, mergedf, jsonf = exec_error(obsf, adcf, meta, err_yamlname, rootdir, iometadata, iosubdir)
+    # A sloppy trick to figure out how many times to include
+    df_temp_obs = pd.read_pickle(obsf)
+    n_length = len(df_temp_obs.index)
+    n_aveper = n_length // 24
+    local_config = buildErrorConfig(n_aveper=n_aveper, n_period=24)
+    errf, finalf, cyclef, metaf, mergedf, jsonf = exec_error(obsf, adcf, meta, local_config, rootdir, iometadata, iosubdir)
     outfiles['ERR_TIME_PKL']=os.path.basename(errf)
     outfiles['ERR_TIME_JSON']=os.path.basename(jsonf)
     outfiles['ERR_STATION_AVES_CSV']=os.path.basename(errf)  # THis would pass to interpolator
@@ -408,8 +431,9 @@ def main(args):
     utilities.log.info('Wrote pipeline Dict data to {}'.format(outfilesjson)) 
 
     utilities.log.info('Finished pipeline in {} s'.format(tm.time()-t0))
-    utilities.log.info('Copied log file to {}'.format('/'.join([rootdir,'logs'])))
-    shutil.copy(utilities.LogFile,'/'.join([rootdir,'logs']))
+
+    utilities.log.info('Copied log file {} to {}'.format(utilities.LogFile,''.join([rootdir,'logs'])))
+    shutil.copy(utilities.LogFile,''.join([rootdir,'logs']))
 
     print(outfiles)
     return 0

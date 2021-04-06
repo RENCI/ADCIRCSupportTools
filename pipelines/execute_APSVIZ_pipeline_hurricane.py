@@ -427,8 +427,9 @@ def main(args):
 
     utilities.log.info('Finished pipeline in {} s'.format(tm.time()-t0))
 
-    utilities.log.info('Copied log file to {}'.format('/'.join([rootdir,'logs'])))
-    shutil.copy(utilities.LogFile,'/'.join([rootdir,'logs']))
+    utilities.log.info('Copied log file {} to {}'.format(utilities.LogFile,''.join([rootdir,'logs'])))
+    shutil.copy(utilities.LogFile,''.join([rootdir,'logs']))
+
     print(outfiles)
     return 0
 
