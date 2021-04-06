@@ -82,8 +82,10 @@ class Utilities:
         # LogFile = '{}.{}.log'.format(thisDomain, currentdatecycle.cdc)
         #LogFile = 'log'
         #LogFile = os.getenv('LOG_PATH', os.path.join(os.path.dirname(__file__), 'logs'))
-        Logdir = os.getenv('LOG_PATH','logs')
-        LogFile='/'.join([Logdir,'logs'])
+        Logdir = os.getenv('LOG_PATH','.') 
+        #LogName =os.getenv('LOG_NAME','logs')
+        LogName='AdcircSupportTools.log'
+        LogFile='/'.join([Logdir,LogName])
         self.LogFile = LogFile
 
         # print('Use a log filename of '+LogFile)
