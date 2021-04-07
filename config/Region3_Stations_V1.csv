@@ -1,4 +1,4 @@
-serial_nr,stationid,stationname,state,vertical_datum,NOAA lon,NOAA lat,navd_to_msl [ft],navd_to_msl [m],Datum Source,lon,lat,bathy,element,node
+serial_nr,stationid,stationname,state,vertical_datum,NOAA lon,NOAA lat,navd_to_msl [ft],navd_to_msl [m],Datum Source,lon,lat,bathy,Element,Node
 -,-,-,-,-,deg,deg,ft,m,-,deg,deg,m MSL,-,-
 1,8410140,Eastport Passamaquoddy Bay,ME,MSL,-66.982315,44.9033,0.23,0.0701,NOAA gage,-66.982315,44.903300,36.701,2113761,1051378
 2,8413320,Bar Harbor,ME,MSL,-68.205,44.3917,0.276,0.0841,NOAA gage,-68.169640,44.337400,4.5782,1924278,960216
