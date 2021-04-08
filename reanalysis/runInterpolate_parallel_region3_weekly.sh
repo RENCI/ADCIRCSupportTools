@@ -6,7 +6,7 @@
 #SBATCH -J Reanalysis
 #SBATCH --mem-per-cpu 512000
 
-export YEAR=2018
+export YEAR=2018DA
 export YEARNUMBER=2018
 
 export SILL=0.015
@@ -21,15 +21,14 @@ export RUNTIMEDIR=.
 export BASEDIREXTRA=REANALYSIS_COMPREHENSIVE_REGION3/YEARLY-$YEAR
 
 # Build the yearly error file store in $RUNTIMEDIR/BASEDIREXTRA
-#python yearlyReanalysis.py --iosubdir $BASEDIREXTRA --urljson reanalysis.json
-#mv $RUNTIMEDIR/AdcircSupportTools.log $RUNTIMEDIR/$BASEDIREXTRA/log-yearly
+#python yearlyReanalysis.py --iosubdir $BASEDIREXTRA --urljson region3.json --grid region3
+#python yearlyReanalysis.py --iosubdir $BASEDIREXTRA --urljson region3_da.json --grid region3
 
 # Store files in $RUNTIMEDIR/WEEKLY/errorfield
 export INDIR=$RUNTIMEDIR/$BASEDIREXTRA
 export OUTROOT=$RUNTIMEDIR/$BASEDIREXTRA/$WEEKLY
 python weeklyLowpassSampledError.py --inyear $YEARNUMBER --inDir $INDIR --outroot $OUTROOT
 mv $RUNTIMEDIR/AdcircSupportTools.log $OUTROOT/log-weekly
-
 
 # Interpolate a single specific file
 export ADCJSON=$INDIR/adc_coord.json
