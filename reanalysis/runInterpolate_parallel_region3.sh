@@ -18,13 +18,13 @@ export BASEDIREXTRA=REANALYSIS_COMPREHENSIVE_REGION3/YEARLY-$YEAR
 # Build the yearly error file store in $RUNTIMEDIR/BASEDIREXTRA
 #python yearlyReanalysis.py --iosubdir $BASEDIREXTRA --urljson region3.json --grid region3
 python yearlyReanalysis.py --iosubdir $BASEDIREXTRA --urljson region3_da.json --grid region3
-mv $RUNTIMEDIR/logs $RUNTIMEDIR/$BASEDIREXTRA/log-yearly
+mv $RUNTIMEDIR/AdcircSupportTools.log $RUNTIMEDIR/$BASEDIREXTRA/log-yearly
 
 # Store files in $RUNTIMEDIR/DAILY/errorfield
 export INDIR=$RUNTIMEDIR/$BASEDIREXTRA
 export OUTROOT=$RUNTIMEDIR/$BASEDIREXTRA/$DAILY
 python dailyLowpassSampledError.py --inDir $INDIR --outroot $OUTROOT # --stationarity
-mv $RUNTIMEDIR/logs $OUTROOT/log-daily
+mv $RUNTIMEDIR/AdcircSupportTools.log $OUTROOT/log-daily
 
 # Interpolate a single specific file
 export ADCJSON=$INDIR/adc_coord.json
@@ -33,4 +33,4 @@ export YAMLNAME=$CODEBASE/config/int.REANALYSIS.yml
 export OUTROOT=$RUNTIMEDIR/$BASEDIREXTRA/$DAILY
 export ERRDIR=$OUTROOT/errorfield
 python  runInterpolate_parallel.py  --insill $SILL --inrange $RANGE --outroot $OUTROOT --yamlname $YAMLNAME --errordir $ERRDIR --clampfile $CLAMPFILE --gridjsonfile $ADCJSON
-mv $RUNTIMEDIR/logs $OUTROOT/log-interpolate
+mv $RUNTIMEDIR/AdcircSupportTools.log $OUTROOT/log-interpolate
