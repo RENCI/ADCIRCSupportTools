@@ -1,5 +1,5 @@
 #!/bin/sh
-export YEAR=2018DA
+export YEAR=2018
 
 export SILL=0.015
 export RANGE=8
