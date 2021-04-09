@@ -85,8 +85,8 @@ def exec_adcirc_url(urls, rootdir, iometadata, adc_yamlname, node_idx, station_i
     utilities.log.info('Times returned by get_adcirc {},{}'.format(adc.T1,adc.T2))
     return ADCfile, ADCjson, timestart, timeend
 
-def exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdir):
-    rpl = GetObsStations(iosubdir=iosubdir, rootdir=rootdir, yamlname=obs_yamlname, metadata=iometadata)
+def exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdir, stationFile):
+    rpl = GetObsStations(iosubdir=iosubdir, rootdir=rootdir, yamlname=obs_yamlname, metadata=iometadata, stationFile=stationFile)
     df_stationNodelist = rpl.fetchStationNodeList()
     stations = df_stationNodelist['stationid'].to_list()
     #utilities.log.info('Choose a limited number of stations')
@@ -212,7 +212,7 @@ def main(args):
     utilities.log.info('ADC provided times are {} and {}'.format(timein, timeout))
 
     # Could also set stations to None
-    detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ = exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdir)
+    detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ = exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdir, stationFile)
     outfiles['OBS_DETAILED_PKL']=detailedpkl
     outfiles['OBS_SMOOTHED_PKL']=smoothedpkl
     outfiles['OBS_METADATA_PKL']=metapkl
