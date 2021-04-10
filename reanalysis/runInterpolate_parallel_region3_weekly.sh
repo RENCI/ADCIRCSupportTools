@@ -6,6 +6,7 @@
 #SBATCH -J Reanalysis
 #SBATCH --mem-per-cpu 512000
 
+#export YEAR=2018
 export YEAR=2018DA
 export YEARNUMBER=2018
 
