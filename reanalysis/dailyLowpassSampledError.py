@@ -93,15 +93,7 @@ def fft_lowpass(signal, lowhrs):
     >>> from oceans.filters import fft_lowpass
     >>> import matplotlib.pyplot as plt
     >>> t = np.arange(500)  # Time in hours.
-    >>> x = 2.5 * np.sin(2 * np.pi * t / 12.42)
-    >>> x += 1.5 * np.sin(2 * np.pi * t / 12.0)
-    >>> x += 0.3 * np.random.randn(len(t))
-    >>> filtered = fft_lowpass(x, low=1/30, high=1/40)
-    >>> fig, ax = plt.subplots()
-    >>> l1, = ax.plot(t, x, label='original')
-    >>> l2, = ax.plot(t, filtered, label='filtered')
-    >>> legend = ax.legend()
-    NOTE for high freq we always take the highesyt possible
+    NOTE for high freq we always take the highest possible
     which is just the sampling freq
     """
     low = 1/lowhrs
@@ -288,7 +280,7 @@ def main(args):
     #timein=args.timein
     #timeout=args.timeout
     # A total hack on specifying the times. We need to deal with this later
-
+    # FFT the entire year
     timein = '-'.join(['2017','12','20'])   
     timeout = '-'.join(['2019','1','1'])
 
@@ -308,12 +300,13 @@ def main(args):
 
     # FFT Lowpass each station for entire range time. Then, extract values for all stations every day
     upshift=0
-    hourly_cutoff=48 # 168 # 48 # 6 # 168 #48
+    hourly_cutoff=24 # 48 # 168 # 48 # 6 # 168 #48
     cutoff = hourly_cutoff+upshift
     utilities.log.info('FFT hourly_cutoff {}, actual_cutoff {}'.format(hourly_cutoff,cutoff))
 
     intersectedStations=set(df_err_all.columns.to_list()).intersection(stations) # Compares data to metadata lists
     utilities.log.info('Number of intersected stations is {}'.format(len(intersectedStations)))
+    utilities.log.debug('Intersected stations {}'.format(intersectedStations))
 
     # Perform FFT for each station over the entire time range
     df_err_all_lowpass=pd.DataFrame(index=df_err_all.index)
