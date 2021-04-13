@@ -29,7 +29,8 @@ python execute_APSVIZ_pipeline.py --urljson ec95d_data1.json --grid 'ec95d'
 # REGION3 invocatrion
 python execute_APSVIZ_pipeline.py --urljson region3.json --grid 'region3'
 
-# New optional "final" location storage of PNGs and thew CSV
+# New optional "final" location storage of PNGs and the CSV
+# THis is not the same as using outputDir and can be used in conjunction with it
 python execute_APSVIZ_pipeline.py --urljson ec95d_data1.json --grid 'ec95d' --final /home/jtilson/ADCIRCSupportTools/FINAL
 
 # Print out dict
