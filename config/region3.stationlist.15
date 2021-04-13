@@ -1,0 +1,135 @@
+134 ! TOTAL NUMBER OF ELEVATION RECORDING STATIONS
+  -64.703306     32.373389    !        2695540    !     Bermuda Esso Pier                !     BM     !     NOAA_NOS
+  -66.982315     44.903300    !        8410140    !     Eastport Passamaquoddy Bay       !     ME     !     NOAA_NOS
+  -67.186830     44.649380    !        8411060    !     Cutler Farris Wharf              !     ME     !     NOAA_NOS
+  -68.169640     44.337400    !        8413320    !     Bar Harbor                       !     ME     !     NOAA_NOS
+  -70.198747     43.623343    !        8418150    !     Portland                         !     ME     !     NOAA_NOS
+  -70.556364     43.319061    !        8419317    !     Wells                            !     ME     !     NOAA_NOS
+  -70.710445     43.071390    !        8423898    !     Fort Point                       !     NH     !     NOAA_NOS
+  -70.959027     42.338478    !        8443970    !     Boston                           !     MA     !     NOAA_NOS
+  -71.168197     41.704310    !        8447386    !     Fall River                       !     MA     !     NOAA_NOS
+  -69.948478     41.688500    !        8447435    !     Chatham                          !     MA     !     NOAA_NOS
+  -70.671700     41.523300    !        8447930    !     Woods Hole                       !     MA     !     NOAA_NOS
+  -70.096596     41.306588    !        8449130    !     Nantucket Island                 !     MA     !     NOAA_NOS
+  -71.326700     41.505000    !        8452660    !     Newport                          !     RI     !     NOAA_NOS
+  -71.343300     41.716700    !        8452944    !     Conimicut Light                  !     RI     !     NOAA_NOS
+  -71.398883     41.806700    !        8454000    !     Providence                       !     RI     !     NOAA_NOS
+  -71.411000     41.583762    !        8454049    !     Quonset Point                    !     RI     !     NOAA_NOS
+  -72.071373     41.303212    !        8461490    !     New London                       !     CT     !     NOAA_NOS
+  -72.915966     41.248365    !        8465705    !     New Haven                        !     CT     !     NOAA_NOS
+  -73.180396     41.158849    !        8467150    !     Bridegport                       !     CT     !     NOAA_NOS
+  -71.979363     41.054951    !        8510560    !     Montauk                          !     NY     !     NOAA_NOS
+  -73.767883     40.810310    !        8516945    !     Kings Point                      !     NY     !     NOAA_NOS
+  -74.014200     40.699296    !        8518750    !     The Battery                      !     NY     !     NOAA_NOS
+  -73.937600     42.013000    !        8518962    !     Turkey Point HudsonRiver NERR    !     NY     !     NOAA_NOS
+  -74.141670     40.640991    !        8519483    !     Bergen Point West Reach          !     NY     !     NOAA_NOS
+  -74.000000     40.500000    !        8531680    !     Sandy Hook                       !     NJ     !     NOAA_NOS
+  -74.418297     39.356791    !        8534720    !     Atlantic City                    !     NJ     !     NOAA_NOS
+  -74.959962     38.967747    !        8536110    !     Cape May Ferry Terminal          !     NJ     !     NOAA_NOS
+  -75.375000     39.305000    !        8537121    !     Ship John Shoal                  !     NJ     !     NOAA_NOS
+  -74.873330     40.080000    !        8539094    !     Burlington DelawareRiver         !     NJ     !     NOAA_NOS
+  -75.410000     39.811700    !        8540433    !     Marcus Hook                      !     PA     !     NOAA_NOS
+  -75.138885     39.933330    !        8545240    !     Philadelphia                     !     PA     !     NOAA_NOS
+  -74.751900     40.136025    !        8548989    !     Newbold                          !     PA     !     NOAA_NOS
+  -75.588300     39.581700    !        8551762    !     Delaware City                    !     DE     !     NOAA_NOS
+  -75.573310     39.558742    !        8551910    !     Reedy Point                      !     DE     !     NOAA_NOS
+  -75.113300     38.985000    !        8555889    !     Brandywine Shoa Light            !     DE     !     NOAA_NOS
+  -75.119160     38.785756    !        8557380    !     Lewes                            !     DE     !     NOAA_NOS
+  -75.091670     38.328330    !        8570283    !     Ocean City Inlet                 !     MD     !     NOAA_NOS
+  -76.038670     38.219265    !        8571421    !     Bishops Head                     !     MD     !     NOAA_NOS
+  -76.068300     38.575703    !        8571892    !     Cambridge                        !     MD     !     NOAA_NOS
+  -76.249760     39.213330    !        8573364    !     Tolchester Beach                 !     MD     !     NOAA_NOS
+  -75.809980     39.527820    !        8573927    !     Chesapeake City                  !     MD     !     NOAA_NOS
+  -76.573110     39.266670    !        8574680    !     Baltimore                        !     MD     !     NOAA_NOS
+  -76.479592     38.984510    !        8575512    !     Annapolis                        !     MD     !     NOAA_NOS
+  -76.451670     38.316670    !        8577330    !     Solomons Island                  !     MD     !     NOAA_NOS
+  -77.021670     38.873330    !        8594900    !     Washington                       !     DC     !     NOAA_NOS
+  -75.643780     37.608270    !        8631044    !     Wachapreague                     !     VA     !     NOAA_NOS
+  -75.989994     37.166700    !        8632200    !     Kiptopeke                        !     VA     !     NOAA_NOS
+  -77.036731     38.316720    !        8635027    !     Dahlgren                         !     VA     !     NOAA_NOS
+  -76.500000     38.000000    !        8635750    !     Lewisetta                        !     VA     !     NOAA_NOS
+  -76.293670     37.611700    !        8636580    !     Windmill Point                   !     VA     !     NOAA_NOS
+  -76.478800     37.226500    !        8637689    !     Yorktown USGS Training Center    !     VA     !     NOAA_NOS
+  -76.330000     36.946670    !        8638610    !     Sewells Point                    !     VA     !     NOAA_NOS
+  -76.083333     37.033333    !        8638901    !     CBBT Chesapeake Channel          !     VA     !     NOAA_NOS
+  -76.301700     36.778300    !        8639348    !     Money Point                      !     VA     !     NOAA_NOS
+  -75.746670     36.183330    !        8651370    !     Duck Pier                        !     NC     !     NOAA_NOS
+  -75.553198     35.795000    !        8652587    !     Oregon Inlet Marina              !     NC     !     NOAA_NOS
+  -75.704170     35.212708    !        8654467    !     USCG Hatteras                    !     NC     !     NOAA_NOS
+  -76.672932     13.520000    !        8656483    !     Beaufort                         !     NC     !     NOAA_NOS
+  -77.952628     34.227500    !        8658120    !     Wilmington                       !     NC     !     NOAA_NOS
+  -77.784973     34.213310    !        8658163    !     Wrightsville Beach               !     NC     !     NOAA_NOS
+  -78.909931     33.641724    !        8661070    !     Springmaid Pier                  !     SC     !     NOAA_NOS
+  -79.184250     33.348710    !        8662245    !     Oyster Landing (N.Inlet Estua    !     SC     !     NOAA_NOS
+  -79.861604     32.743890    !        8665530    !     Charleston Harbor                !     SC     !     NOAA_NOS
+  -80.892552     32.048645    !        8670870    !     Fort Pulaski                     !     GA     !     NOAA_NOS
+  -81.466768     30.671700    !        8720030    !     Fernandina Beach                 !     FL     !     NOAA_NOS
+  -81.430000     30.396700    !        8720218    !     Mayport (Bar PilotsDock)         !     FL     !     NOAA_NOS
+  -81.558300     30.386700    !        8720219    !     Dames Point                      !     FL     !     NOAA_NOS
+  -81.658220     30.321320    !        8720226    !     Southbank RiverwalkSt Johns R    !     FL     !     NOAA_NOS
+  -81.688438     30.191700    !        8720357    !     I-295 Bridge St Johns River      !     FL     !     NOAA_NOS
+  -81.549430     29.800020    !        8720625    !     Racy Point St JohnsRiver         !     FL     !     NOAA_NOS
+  -80.593527     28.415830    !        8721604    !     Trident Pier                     !     FL     !     NOAA_NOS
+  -80.034170     26.612780    !        8722670    !     Lake Worth Pier                  !     FL     !     NOAA_NOS
+  -80.114570     26.081280    !        8722956    !     South Port Everglades            !     FL     !     NOAA_NOS
+  -80.161800     25.731155    !        8723214    !     Virginia Key                     !     FL     !     NOAA_NOS
+  -81.104820     24.713630    !        8723970    !     Vaca Key                         !     FL     !     NOAA_NOS
+  -81.809140     24.555060    !        8724580    !     Key West                         !     FL     !     NOAA_NOS
+  -81.872130     26.647930    !        8725110    !     Naples                           !     FL     !     NOAA_NOS
+  -81.871700     26.646700    !        8725520    !     Fort Myers                       !     FL     !     NOAA_NOS
+  -82.563780     27.638990    !        8726384    !     Port Manatee                     !     FL     !     NOAA_NOS
+  -82.627440     27.758940    !        8726520    !     St. Petersburg Tampa Bay         !     FL     !     NOAA_NOS
+  -82.554110     27.858050    !        8726607    !     Old Port Tampa                   !     FL     !     NOAA_NOS
+  -82.425000     27.913330    !        8726667    !     Mckay Bay Entrance               !     FL     !     NOAA_NOS
+  -82.833120     27.978090    !        8726724    !     Clearwater Beach                 !     FL     !     NOAA_NOS
+  -83.030890     29.133020    !        8727520    !     Cedar Key                        !     FL     !     NOAA_NOS
+  -84.977520     29.727010    !        8728690    !     Apalachicola                     !     FL     !     NOAA_NOS
+  -85.667910     30.151170    !        8729108    !     Panama City                      !     FL     !     NOAA_NOS
+  -85.878250     30.211950    !        8729210    !     Panama City Beach                !     FL     !     NOAA_NOS
+  -87.212170     30.401320    !        8729840    !     Pensacola                        !     FL     !     NOAA_NOS
+  -87.829860     30.411070    !        8732828    !     Weeks Bay Mobile Bay             !     AL     !     NOAA_NOS
+  -88.073412     30.250000    !        8735180    !     Dauphin Island                   !     AL     !     NOAA_NOS
+  -88.088000     30.565170    !        8735391    !     Dog River Bridge                 !     AL     !     NOAA_NOS
+  -88.104830     30.452420    !        8735523    !     East Fowl River Bridge           !     AL     !     NOAA_NOS
+  -88.053880     30.648410    !        8736897    !     Coast Guard SectorMobile         !     AL     !     NOAA_NOS
+  -88.039302     30.708300    !        8737048    !     Mobile State Docks               !     AL     !     NOAA_NOS
+  -88.049360     30.763000    !        8737138    !     Chickasaw Creek                  !     AL     !     NOAA_NOS
+  -88.189740     30.362860    !        8738043    !     West Fowl River Bridge           !     AL     !     NOAA_NOS
+  -88.271490     30.379430    !        8739803    !     Bayou La Batre Bridge            !     AL     !     NOAA_NOS
+  -88.392030     30.382580    !        8740166    !     Grand Bay NERR Mississippi So    !     MS     !     NOAA_NOS
+  -88.509990     30.331890    !        8741041    !     Dock E Port of Pascagoula        !     MS     !     NOAA_NOS
+  -88.568600     30.344620    !        8741533    !     Pascagoula NOAA Lab              !     MS     !     NOAA_NOS
+  -89.325780     30.326390    !        8747437    !     Bay Waveland YachtClub           !     MS     !     NOAA_NOS
+  -89.258310     29.178310    !        8760721    !     Pilottown                        !     LA     !     NOAA_NOS
+  -89.406667     28.931667    !        8760922    !     Pilots Station EastSW Pass       !     LA     !     NOAA_NOS
+  -89.678981     29.870579    !        8761305    !     Shell Beach                      !     LA     !     NOAA_NOS
+  -89.953120     29.263930    !        8761724    !     Grand Isle                       !     LA     !     NOAA_NOS
+  -90.113330     30.027220    !        8761927    !     New Canal Station                !     LA     !     NOAA_NOS
+  -90.137257     29.932890    !        8761955    !     Carrollton                       !     LA     !     NOAA_NOS
+  -90.215890     29.105530    !        8762075    !     Port Fourchon BellePass          !     LA     !     NOAA_NOS
+  -90.388890     30.068930    !        8762483    !     I-10 Bonnet Carre Floodway       !     LA     !     NOAA_NOS
+  -91.237610     29.667500    !        8764044    !     Berwick AtchafalayaRiver         !     LA     !     NOAA_NOS
+  -91.338110     29.449610    !        8764227    !     LAWMA Amerada Pass               !     LA     !     NOAA_NOS
+  -91.383900     29.367500    !        8764314    !     Eugene Island North              !     LA     !     NOAA_NOS
+  -92.305000     29.555000    !        8766072    !     Freshwater Canal Locks           !     LA     !     NOAA_NOS
+  -93.342890     29.768170    !        8768094    !     Calcasieu Pass                   !     LA     !     NOAA_NOS
+  -93.868110     29.728400    !        8770570    !     Sabine Pass North                !     TX     !     NOAA_NOS
+  -94.985000     29.681815    !        8770613    !     Morgans Point                    !     TX     !     NOAA_NOS
+  -94.914538     29.480000    !        8771013    !     Eagle Point                      !     TX     !     NOAA_NOS
+  -94.793300     29.310924    !        8771450    !     Galveston Pier 21                !     TX     !     NOAA_NOS
+  -95.302500     28.942452    !        8772447    !     Freeport                         !     TX     !     NOAA_NOS
+  -96.330100     28.426900    !        8773767    !     Matagorda Bay Entrance Channe    !     TX     !     NOAA_NOS
+  -97.046079     28.021670    !        8774770    !     Rockport                         !     TX     !     NOAA_NOS
+  -97.216700     27.580000    !        8775870    !     Bob Hall Pier Corpus Christi     !     TX     !     NOAA_NOS
+  -97.194890     26.060870    !        8779770    !     Port Isabel                      !     TX     !     NOAA_NOS
+  -64.705000     17.752867    !        9751364    !     Christiansted Harbor St Croix    !     VI     !     NOAA_NOS
+  -64.727833     18.312609    !        9751381    !     Lameshur Bay St. John            !     VI     !     NOAA_NOS
+  -64.753810     17.694720    !        9751401    !     Lime Tree Bay                    !     VI     !     NOAA_NOS
+  -64.928520     18.334110    !        9751639    !     Charlotte Amalie                 !     VI     !     NOAA_NOS
+  -65.302997     18.299317    !        9752235    !     Culebra                          !     PR     !     NOAA_NOS
+  -65.473620     18.084800    !        9752695    !     Esperanza Vieques Island         !     PR     !     NOAA_NOS
+  -66.116420     18.458357    !        9755371    !     San Juan                         !     PR     !     NOAA_NOS
+  -67.046390     17.970000    !        9759110    !     Magueyes Island                  !     PR     !     NOAA_NOS
+  -67.162142     18.215469    !        9759394    !     Mayaguez                         !     PR     !     NOAA_NOS
+  -67.938500     18.089920    !        9759938    !     Mona Island                      !     PR     !     NOAA_NOS
+  -61.820560     17.581904    !        9761115    !     Barbuda                          !     AG     !     NOAA_NOS

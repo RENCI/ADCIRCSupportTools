@@ -30,6 +30,13 @@ import datetime as dt
 ## For now this sidesteps the differing nomenclatures used for 2020 and 2021 data storage
 ## Moving forward this needs to be handled much more generally 
 
+def buildCloudListFiles(indir,infilecsv):
+    """
+    Extract out the png filenames and build a list simple list of names+path for cloud constraints
+    """
+    l=pd.read_csv(infilecsv,header=0)['Filename'].to_list()
+    return ['/'.join([indir,x]) for x in l]
+
 def extractDateFromURL(url):
     """
     Dig thru url, fetch date, converet to datetime object and return
@@ -259,6 +266,8 @@ def main(args):
     doffset = args.doffset
     chosengrid=args.grid
     utilities.log.info('Grid specified was {}'.format(chosengrid))
+    if args.cloudfinal is not None:
+        utilities.log.info('PNGs and CSV will be also saved to {}'.format(args.cloudfinal))
 
     # Get input adcirc url and check for existance
     if args.urljson != None:
@@ -299,10 +308,10 @@ def main(args):
     main_config = utilities.load_config() # Get main comnfig. RUNTIMEDIR, etc
 
     if args.outputDir is None:
-        rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'], basedirExtra=iosubdir)
+        rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'], basedirExtra='')
     else:
         rootdir = args.outputDir
-        rootdir = utilities.setBasedir(args.outputDir)
+        rootdir = utilities.setBasedir(args.outputDir+'/')
     utilities.log.info('Specified rootdir underwhich all files will be stored. Rootdir is {}'.format(rootdir))
 
     outfiles['OBS_CREATIONTIME']=dt.datetime.now().strftime('%Y%m%d%H%M')
@@ -412,6 +421,10 @@ def main(args):
     files['META']=metaJ # outfiles['OBS_METADATA_JSON']
     files['DIFFS']=jsonf # outfiles['ERR_TIME_JSON']
     files['FORECAST']=ADCjsonFore # outfiles['ADCIRC_WL_FORECAST_JSON']
+    #utilities.log.info('PNG plotter dict is {}'.format(files))
+    #png_dict = exec_pngs(files=files, rootdir=rootdir, iometadata=iometadata, iosubdir=iosubdir)
+
+    # Write out ther data in the usual way
     utilities.log.info('PNG plotter dict is {}'.format(files))
     png_dict = exec_pngs(files=files, rootdir=rootdir, iometadata=iometadata, iosubdir=iosubdir)
 
@@ -428,7 +441,19 @@ def main(args):
 
     # Move the log file from the working dir to rootdir
     #shutil.copy('logs','/'.join([rootdir,'logs']))
-
+    if args.cloudfinal is not None:
+        utilities.log.info('APSVIZ Cloud: Must copy over pngs and associated csv to {}'.format(args.cloudfinal))
+        #if iosubdir is not None:
+        #    filelist = buildCloudListFiles(''.join([rootdir,iosubdir]),outfilecsv) 
+        #else:
+        #    filelist = buildCloudListFiles(rootdir,outfilecsv)
+        filelist = buildCloudListFiles(''.join(filter(None, [rootdir,iosubdir])),outfilecsv)
+        filelist.append(outfilecsv) # Need this too for kubernetes
+        os.makedirs(args.cloudfinal, exist_ok=True)
+        for x in filelist:
+            print(x)
+            shutil.copy(x, args.cloudfinal+'/.')
+        utilities.log.info('APSVIZ Cloudcopy finished')
     #
     utilities.log.info('Finished pipeline in {} s'.format(tm.time()-t0))
 
@@ -459,6 +484,9 @@ if __name__ == '__main__':
     parser.add_argument('--inputURL', action='store', dest='inputURL', default=None,
                         help='String: url.')
     parser.add_argument('--grid', default='hsofs',help='Choose name of available grid',type=str)
+    parser.add_argument('--final', action='store', dest='cloudfinal', default=None,
+                        help='String: specialized kubernetes PV location for ONLY PNGs and lookup CSV')
+
     args = parser.parse_args()
     sys.exit(main(args))
 
