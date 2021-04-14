@@ -280,7 +280,7 @@ if __name__ == '__main__':
                         help='String: Filename with a json of urls to loop over.')
     parser.add_argument('--url', action='store', dest='url', default=None,
                         help='String: url.')
-    parser.add_argument('--grid', default='hsofs',help='Choose name of available grid',type=str)
+    parser.add_argument('--grid', default='hsofs',dest='grid', help='Choose name of available grid',type=str)
     args = parser.parse_args()
     sys.exit(main(args))
 
