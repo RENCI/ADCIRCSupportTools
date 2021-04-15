@@ -7,7 +7,7 @@
 #SBATCH --mem-per-cpu 64000
 
 export SILL=0.015
-export RANGE=8
+export RANGE=1
 export NUGGET=0.005
 export NLAGS=6
 
