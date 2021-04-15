@@ -43,8 +43,8 @@ mv $RUNTIMEDIR/AdcircSupportTools.log $OUTROOT/log-daily
 
 # Interpolate a single specific file
 export ADCJSON=$INDIR/adc_coord.json
-export CLAMPFILE=$CODEBASE/config/clamp_list_hsofs.dat
-export YAMLNAME=$CODEBASE/config/int.REANALYSIS.EC95D.yml
+export CLAMPFILE=$PYTHONPATH/config/clamp_list_hsofs.dat
+export YAMLNAME=$PYTHONPATH/config/int.REANALYSIS.EC95D.yml
 export OUTROOT=$RUNTIMEDIR/$DAILY
 export ERRDIR=$OUTROOT/errorfield
 python  $CODEBASE/runInterpolate_parallel.py  --insill $SILL --inrange $RANGE --outroot $OUTROOT --yamlname $YAMLNAME --errordir $ERRDIR --clampfile $CLAMPFILE --gridjsonfile $ADCJSON
