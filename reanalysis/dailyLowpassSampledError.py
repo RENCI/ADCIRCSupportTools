@@ -127,7 +127,7 @@ def station_level_means(df_obs, df_adc, df_err, station):
     dfs['ADC']=df_adc[station]
     dfs['ERR']=df_err[station]
     #
-    dfs['Year'] = dfs.index.year
+    ###### Doesn;t work when spanning multiple yearsdfs['Year'] = dfs.index.year
     dfs['Month'] = dfs.index.month
     dfs['Hour'] = dfs.index.hour
     #
@@ -260,6 +260,12 @@ def main(args):
         utilities.log.error('Need outroot on command line: --inDir <inDir>')
         return 1
     rootdir = args.outroot.strip()
+
+    # Maybe want to include the flank
+    inyear = args.inyear
+    timein = '-'.join([inyear,'01','01'])
+    timeout = '-'.join([inyear,'12'])
+
     #rootdir = '/'.join([outroot,'WEEKLY'])
 
     # Ensure the destination is created
@@ -267,8 +273,11 @@ def main(args):
 
     utilities.log.info('Yearly data (with flanks) found in {}'.format(topdir))
     utilities.log.info('Specified rootdir underwhich all files will be stored. Rootdir is {}'.format(rootdir))
+    #f='/'.join([topdir,'adc_obs_error_merged.json'])
+    #meta='/'.join([topdir,'obs_water_level_metadata.json'])
+    utilities.log.info('ASSUMING HOURLY_HEIGHT INSTEAD OF WATER_LEVEL')
     f='/'.join([topdir,'adc_obs_error_merged.json'])
-    meta='/'.join([topdir,'obs_water_level_metadata.json'])
+    meta='/'.join([topdir,'obs_hourly_height_metadata.json'])
 
     dataDict, metaDict = fetch_data_metadata(f, meta)
     stations = list(dataDict.keys()) # For subsequent naming - are we sure order is maintained?
@@ -277,12 +286,13 @@ def main(args):
     #timein = '-'.join([inyear,'01','01'])
     #timeout = '-'.join([inyear,'12'])
 
-    #timein=args.timein
-    #timeout=args.timeout
+    timein=args.timein
+    timeout=args.timeout
     # A total hack on specifying the times. We need to deal with this later
     # FFT the entire year
-    timein = '-'.join(['2017','12','20'])   
-    timeout = '-'.join(['2019','1','1'])
+
+    ##timein = '-'.join(['2017','12','20'])   
+    ##timeout = '-'.join(['2019','1','1'])
 
     utilities.log.info('Input data chosen range is {}, {}'.format(timein, timeout))
 
@@ -300,7 +310,7 @@ def main(args):
 
     # FFT Lowpass each station for entire range time. Then, extract values for all stations every day
     upshift=0
-    hourly_cutoff=24 # 48 # 168 # 48 # 6 # 168 #48
+    hourly_cutoff= 48 # 168 # 48 # 6 # 168 #48
     cutoff = hourly_cutoff+upshift
     utilities.log.info('FFT hourly_cutoff {}, actual_cutoff {}'.format(hourly_cutoff,cutoff))
 
@@ -357,8 +367,11 @@ def main(args):
     #stime=''.join(['2018','-01-01 00:00:00'])
     #etime=''.join(['2018','-12-31 18:00:00'])
 
-    stime=''.join(['2018','-01-01 00:00:00'])
-    etime=''.join(['2018','-05-01 00:00:00'])
+    #stime=''.join(['2018','-01-01 00:00:00'])
+    #etime=''.join(['2018','-05-01 00:00:00'])
+
+    stime=timein
+    etime=timeout
 
     starttime = dt.datetime.strptime(stime,'%Y-%m-%d %H:%M:%S')
     endtime = dt.datetime.strptime(etime,'%Y-%m-%d %H:%M:%S')
@@ -435,6 +448,7 @@ if __name__ == '__main__':
     parser.add_argument('--iometadata', action='store', dest='iometadata',default='', help='Used to further annotate output files', type=str)
     parser.add_argument('--iosubdir', action='store', dest='iosubdir',default='', help='Used to locate output files into subdir', type=str)
     parser.add_argument('--stationarity', help="Apply RMean Stationarity pre FFT", action='store_true')
+    parser.add_argument('--inyear', action='store', dest='inyear', default=None, help='potentially flanks MAIN year')
     args = parser.parse_args()
     sys.exit(main(args))
 
