@@ -264,7 +264,7 @@ def main(args):
     # Maybe want to include the flank
     inyear = args.inyear
     timein = '-'.join([inyear,'01','01'])
-    timeout = '-'.join([inyear,'12'])
+    timeout = '-'.join([inyear,'12','31'])
 
     #rootdir = '/'.join([outroot,'WEEKLY'])
 
@@ -373,8 +373,8 @@ def main(args):
     stime=timein
     etime=timeout
 
-    starttime = dt.datetime.strptime(stime,'%Y-%m-%d %H:%M:%S')
-    endtime = dt.datetime.strptime(etime,'%Y-%m-%d %H:%M:%S')
+    starttime = dt.datetime.strptime(stime,'%Y-%m-%d') # %H:%M:%S')
+    endtime = dt.datetime.strptime(etime,'%Y-%m-%d') #  %H:%M:%S')
     numDays = (endtime-starttime).days + 1
 
     utilities.log.info('Specified time ranges are {} and {}'.format(starttime, endtime))
