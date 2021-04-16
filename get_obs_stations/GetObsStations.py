@@ -491,6 +491,9 @@ class GetObsStations(object):
         #dfjson.to_json(self.detailedjsonname)
         self.files['DETAILED']={'PKL':{'DESCRIPTION': 'detailed', 'PRODUCT':self.product, 'INTERVAL': interval, 'DATA': df_final}}
         self.files['DETAILED'].update({'JSON':{'DESCRIPTION': 'detailed', 'PRODUCT':self.product, 'INTERVAL': interval, 'DATA': dfjson}})
+        # THis is redundant to the Smoother which also does this. But we need a re-architecting to fix that.
+        # Capture the excluded data
+        self.files['EXCLUDED']={'CSV':{'DESCRIPTION': 'exclude', 'DATA': self.excludeStationID}}
         return df_final, count_nan, self.stationlist, self.excludeStationID.index.tolist()
 
     def fetchOutputNames(self):

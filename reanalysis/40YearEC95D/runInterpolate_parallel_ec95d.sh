@@ -32,13 +32,13 @@ echo $RUNTIMEDIR
 echo "xxxxxx"
 
 # Build the yearly error file store in $RUNTIMEDIR/BASEDIREXTRA
-python $CODEBASE/yearlyReanalysisRound.py --grid $GRID --url $URL
+python $CODEBASE/yearlyReanalysisRoundHourly.py --grid $GRID --url $URL
 mv $RUNTIMEDIR/AdcircSupportTools.log $RUNTIMEDIR/$BASEDIREXTRA/log-yearly
 
 # Store files in $RUNTIMEDIR/DAILY/errorfield
 export INDIR=$RUNTIMEDIR/
 export OUTROOT=$RUNTIMEDIR/$DAILY
-python $CODEBASE/dailyLowpassSampledError.py --inDir $INDIR --outroot $OUTROOT # --stationarity
+python $CODEBASE/dailyLowpassSampledError_ec95d.py --inyear $YEAR  --inDir $INDIR --outroot $OUTROOT # --stationarity
 mv $RUNTIMEDIR/AdcircSupportTools.log $OUTROOT/log-daily
 
 # Interpolate a single specific file
