@@ -204,7 +204,7 @@ def main(args):
 
     # 3) Setup OBS specific YML-resident values
     utilities.log.info('Fetch Observations')
-    obs_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'obs.yml')
+    obs_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'obs.region3.yml')
 
     # Grab time Range and tentative station list from the ADCIRC fetch  (stations may still be filtered out)
     timein = timestart.strftime('%Y%m%d %H:%M')
@@ -236,6 +236,7 @@ def main(args):
     n_length = len(df_temp_adc.index & df_temp_obs.index)
     n_aveper = n_length // 24
     local_config = buildLocalConfig(n_aveper=n_aveper, n_period=24)
+    utilities.log.info('Config to error {}'.format(local_config))
     errf, finalf, cyclef, metaf, mergedf, jsonf = exec_error(obsf, adcf, meta, local_config, rootdir, iometadata, iosubdir)
     outfiles['ERR_TIME_PKL']=errf
     outfiles['ERR_TIME_JSON']=jsonf

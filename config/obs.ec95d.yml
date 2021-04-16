@@ -9,5 +9,5 @@ OBSERVATIONS: &observations
   DATUM: "MSL"
   UNIT: "metric"
   TIMEZONE: "gmt"
-  PRODUCT: "water_level"
+  PRODUCT: "hourly_height" # "water_level"
   STATIONS: [8410140, 8413320, 8418150] 
