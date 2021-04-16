@@ -115,8 +115,8 @@ def fft_lowpass(signal, lowhrs):
     # Insert ramp into factor.
     factor[sl] = a
     result = result * factor
-    print('Freqs {}'.format(result))
-    print('FREQ TYPEW {}'.format(type(result)))
+    ###print('Freqs {}'.format(result))
+    ###print('FREQ TYPEW {}'.format(type(result)))
     return np.fft.irfft(result, len(signal))
 
 # The means are proper means for the month./week. The offset simply changes the index underwhich it will be stored
@@ -366,8 +366,11 @@ def main(args):
     #stime=''.join(['2018','-01-01 00:00:00'])
     #etime=''.join(['2018','-12-31 18:00:00'])
 
-    stime=''.join(['2018','-01-01 00:00:00'])
-    etime=''.join(['2018','-05-01 00:00:00'])
+    #stime=''.join(['1979','-01-01 00:00:00'])
+    #etime=''.join(['1979','-05-01 00:00:00'])
+
+    stime=timein
+    etime=timeout
 
     starttime = dt.datetime.strptime(stime,'%Y-%m-%d %H:%M:%S')
     endtime = dt.datetime.strptime(etime,'%Y-%m-%d %H:%M:%S')
