@@ -68,7 +68,7 @@ class stationPlotter(object):
         sns.set_style('darkgrid')
         ax=sns.lineplot(data=df_concat, palette=colorlist, dashes=dashlist)
         ax.legend(loc = 4,fontsize = 10)
-        ax.set_ylabel(r'$\Delta$ WL (m) versus MSL')
+        ax.set_ylabel('WL (m) versus MSL')
         ax.set_ylim([ymin, ymax])
         ax.get_xaxis().set_visible(True)
         ax.set(xlabel=None)
