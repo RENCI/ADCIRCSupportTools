@@ -266,8 +266,12 @@ def main(args):
     timein = '-'.join([inyear,'01','01'])
     timeout = '-'.join([inyear,'12','31'])
 
-    #rootdir = '/'.join([outroot,'WEEKLY'])
+    # Winnowq out the range
+    utilities.log.info('Manaul limit to 4 months')
+    timein = '-'.join([inyear,'01','01'])
+    timeout = '-'.join([inyear,'05','01'])
 
+    #rootdir = '/'.join([outroot,'WEEKLY'])
     # Ensure the destination is created
     ##rootdir = utilities.fetchBasedir(rootdir,basedirExtra='')
 
@@ -275,9 +279,9 @@ def main(args):
     utilities.log.info('Specified rootdir underwhich all files will be stored. Rootdir is {}'.format(rootdir))
     #f='/'.join([topdir,'adc_obs_error_merged.json'])
     #meta='/'.join([topdir,'obs_water_level_metadata.json'])
-    utilities.log.info('ASSUMING HOURLY_HEIGHT INSTEAD OF WATER_LEVEL')
+    #utilities.log.info('ASSUMING HOURLY_HEIGHT INSTEAD OF WATER_LEVEL')
     f='/'.join([topdir,'adc_obs_error_merged.json'])
-    meta='/'.join([topdir,'obs_hourly_height_metadata.json'])
+    meta='/'.join([topdir,'obs_water_level_metadata.json'])
 
     dataDict, metaDict = fetch_data_metadata(f, meta)
     stations = list(dataDict.keys()) # For subsequent naming - are we sure order is maintained?
@@ -286,14 +290,29 @@ def main(args):
     #timein = '-'.join([inyear,'01','01'])
     #timeout = '-'.join([inyear,'12'])
 
-    timein=args.timein
-    timeout=args.timeout
+    #timein=args.timein
+    #timeout=args.timeout
+
     # A total hack on specifying the times. We need to deal with this later
     # FFT the entire year
 
     ##timein = '-'.join(['2017','12','20'])   
     ##timeout = '-'.join(['2019','1','1'])
 
+    # Winnow manmually
+
+    #timein = '-'.join(['2017','12','20'])
+    #timeout = '-'.join(['2019','1','1'])
+    #utilities.log.info('Input data chosen range is {}, {}'.format(timein, timeout))
+
+
+    #timein=''.join(['2018','-01-01 00:00:00'])
+    #timeout=''.join(['2018','-05-01 00:00:00'])
+    #etime=timeout
+
+    starttime = dt.datetime.strptime(timein,'%Y-%m-%d')
+    endtime = dt.datetime.strptime(timeout,'%Y-%m-%d')
+    numDays = (endtime-starttime).days + 1
     utilities.log.info('Input data chosen range is {}, {}'.format(timein, timeout))
 
     # Metadata
@@ -367,14 +386,14 @@ def main(args):
     #stime=''.join(['2018','-01-01 00:00:00'])
     #etime=''.join(['2018','-12-31 18:00:00'])
 
-    #stime=''.join(['2018','-01-01 00:00:00'])
-    #etime=''.join(['2018','-05-01 00:00:00'])
+    stime=''.join(['2018','-01-01 00:00:00'])
+    etime=''.join(['2018','-05-01 00:00:00'])
 
-    stime=timein
-    etime=timeout
+    #stime=timein
+    #etime=timeout
 
-    starttime = dt.datetime.strptime(stime,'%Y-%m-%d') # %H:%M:%S')
-    endtime = dt.datetime.strptime(etime,'%Y-%m-%d') #  %H:%M:%S')
+    starttime = dt.datetime.strptime(stime,'%Y-%m-%d %H:%M:%S')
+    endtime = dt.datetime.strptime(etime,'%Y-%m-%d %H:%M:%S')
     numDays = (endtime-starttime).days + 1
 
     utilities.log.info('Specified time ranges are {} and {}'.format(starttime, endtime))

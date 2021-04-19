@@ -59,6 +59,8 @@ def main(args):
             utilities.log.error("Could not open/read file {}".format(errfileJson))
             sys.exit()
     print('Begin the iteration')
+    print('errfile {}'.format(errfileJson))
+    print('json data {}'.format(listedFiles))
 
     import random
     #for key, value in dict(random.sample(listedFiles.items(),20)).items(): # listedFiles.items():

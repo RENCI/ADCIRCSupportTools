@@ -123,18 +123,19 @@ class computeErrorField(object):
         which accounts for the amount of time used to average. We can always overwrite the bounds manually
         """
 #       self.bound_lo = df_adc_wl.index.min() if self.bound_lo is None else  np.datetime64(self.bound_lo)
+        utilities.log.debug('Start time bounds')
         if len(self.df_adc_wl.index) < self.n_cycles*self.n_period:
             #print('Averaging bounds range too wide for actual data. ADC only of length '+str(len(self.df_adc_wl.index)))
             utilities.log.error('Averaging bounds range too wide for actual data. ADC only of length '+str(len(self.df_adc_wl.index)))
             sys.exit('Failed averaging bounds setting')
-        self.bound_hi = self.df_adc_wl.index.max() if self.bound_hi is None else  np.datetime64(self.bound_hi)
-        #self.bound_lo = self.df_adc_wl.index.min() if self.bound_lo is None else np.datetime64(self.df_adc_wl.index[-(self.n_cycles*self.n_period)])
-        self.bound_lo = self.df_adc_wl.index[-(self.n_cycles*self.n_period)] if self.bound_lo is None else np.datetime64(self.bound_lo)
         print(self.df_adc_wl)
         print(self.bound_lo)
         print(self.bound_hi)
         print(self.n_cycles)
         print(self.n_period)
+        self.bound_hi = self.df_adc_wl.index.max() if self.bound_hi is None else  np.datetime64(self.bound_hi)
+        #self.bound_lo = self.df_adc_wl.index.min() if self.bound_lo is None else np.datetime64(self.df_adc_wl.index[-(self.n_cycles*self.n_period)])
+        self.bound_lo = self.df_adc_wl.index[-(self.n_cycles*self.n_period)] if self.bound_lo is None else np.datetime64(self.bound_lo)
         utilities.log.info('bounds (inclusive) lo and hi are '+str(self.bound_lo)+' '+str(self.bound_hi))
         if self.df_adc_wl.index.max() < self.bound_hi:
             utilities.log.error('input hi bound is too high for ADC. Max is '+str(self.df_adc_wl.index.max()))
