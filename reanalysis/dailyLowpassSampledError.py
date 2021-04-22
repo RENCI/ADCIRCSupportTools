@@ -267,9 +267,9 @@ def main(args):
     timeout = '-'.join([inyear,'12','31'])
 
     # Winnowq out the range
-    utilities.log.info('Manaul limit to 4 months')
-    timein = '-'.join([inyear,'01','01'])
-    timeout = '-'.join([inyear,'05','01'])
+    #utilities.log.info('Manaul limit to 4 months')
+    #timein = '-'.join([inyear,'01','01'])
+    #timeout = '-'.join([inyear,'05','01'])
 
     #rootdir = '/'.join([outroot,'WEEKLY'])
     # Ensure the destination is created
@@ -329,7 +329,7 @@ def main(args):
 
     # FFT Lowpass each station for entire range time. Then, extract values for all stations every day
     upshift=0
-    hourly_cutoff= 48 # 168 # 48 # 6 # 168 #48
+    hourly_cutoff= 24 # 48 # 168 # 48 # 6 # 168 #48
     cutoff = hourly_cutoff+upshift
     utilities.log.info('FFT hourly_cutoff {}, actual_cutoff {}'.format(hourly_cutoff,cutoff))
 
@@ -383,11 +383,11 @@ def main(args):
     #stime=''.join(['2017','-12-20 00:00:00'])
     #etime=''.join(['2019','-01-01 00:00:00'])
 
-    #stime=''.join(['2018','-01-01 00:00:00'])
-    #etime=''.join(['2018','-12-31 18:00:00'])
-
     stime=''.join(['2018','-01-01 00:00:00'])
-    etime=''.join(['2018','-05-01 00:00:00'])
+    etime=''.join(['2018','-12-31 18:00:00'])
+
+    #stime=''.join(['2018','-01-01 00:00:00'])
+    #etime=''.join(['2018','-05-01 00:00:00'])
 
     #stime=timein
     #etime=timeout
