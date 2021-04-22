@@ -418,7 +418,6 @@ def main(args):
     utilities.log.info('df_err_all times {}'.format(df_err_all.index))
     utilities.log.info('df_err_lowpass times {}'.format(df_err_all_lowpass.index))
     intersect = [value for value in startday if value in df_err_all_lowpass.index] 
-
     utilities.log.info('Residual data: intersect list {}'.format(intersect))
     df_err_all_lowpass_subselect=df_err_all_lowpass.loc[intersect]
 
@@ -426,9 +425,11 @@ def main(args):
     # df_meta and df report stationids as diff types. Yuk.
     # Store the list of filenames into a dict for krig processing
 
+    # Because ADCIRC skips 00Z on the first day, the very first date entry will be skipped 
     subdir='errorfield'
     datadict = dict()
     for index, df in df_err_all_lowpass_subselect.iterrows():
+        print(index)
         metadata='_'+iometa[index]
         df.index = df.index.astype('int64')    
         df_merged=df_meta.join(df)
