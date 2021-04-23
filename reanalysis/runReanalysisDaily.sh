@@ -1,10 +1,11 @@
 #!/bin/sh
-#SBATCH -t 512:00:00
+
+#SBATCH -t 08:00:00
 #SBATCH -p batch
 #SBATCH -N 1
-#SBATCH -n 2 
+#SBATCH -n 1 
 #SBATCH -J DailyFFTReanalysis
-#SBATCH --mem-per-cpu 512000
+#SBATCH --mem-per-cpu 128000
 
 export YEAR=2018
 
@@ -15,8 +16,8 @@ export RUNTIMEDIR=.
 export BASEDIREXTRA=TESTFULL/STATE/YEARLY-2018/KRIG_LONGRANGE
 
 # Build the yearly error file store in $RUNTIMEDIR/BASEDIREXTRA
-#python yearlyReanalysis.py --iosubdir $BASEDIREXTRA --urljson reanalysis.json
-#mv $RUNTIMEDIR/log $RUNTIMEDIR/$BASEDIREXTRA/log-yearly
+python yearlyReanalysis.py --iosubdir $BASEDIREXTRA --urljson reanalysis.json
+mv $RUNTIMEDIR/log $RUNTIMEDIR/$BASEDIREXTRA/log-yearly
 
 # Store files in $RUNTIMEDIR/DAILY/errorfield
 export INDIR=$RUNTIMEDIR/$BASEDIREXTRA

@@ -132,10 +132,10 @@ class interpolateScalerField(object):
         if self.rootdir == None:
             utilities.log.error('No rootdir was specified')
             sys.exit('No rootdir was specified')
-        #utilities.log.info("OVERRIDE clamps. No clamps used for interpolation")
-        #self.X=self.inX
-        #self.Y=self.inY
-        #self.Values=self.inV
+        utilities.log.info("OVERRIDE clamps. No clamps used for interpolation")
+        self.X=self.inX
+        self.Y=self.inY
+        self.Values=self.inV
 
     def fetchInputAndClamp(self):
         """
