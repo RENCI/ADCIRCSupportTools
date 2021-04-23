@@ -401,7 +401,7 @@ class interpolateScalerField(object):
 ## New layer to loop over vparams and call CV kriging
 ##
 #    def optimize_kriging(self, krig_object, param_dict, vparams_dict ):
-    def optimize_kriging(self, krig_object,  metadata=None):
+    def optimize_kriging(self, krig_object,  metadataFile=None):
         """
         bestname is the model name but we do not really use it after this
         """
@@ -423,7 +423,7 @@ class interpolateScalerField(object):
         fullScores = list()
         for vparams in permutations_dicts:
             utilities.log.info('Next iteration: vparams {}'.format(vparams))
-            best_param, best_score, currentScores = krig_object.CVKrigingFit(param_dict=param_dict,vparams=vparams, metadata=metadata)
+            best_param, best_score, currentScores = krig_object.CVKrigingFit(param_dict=param_dict,vparams=vparams, metadataFile=metadataFile)
             bestdict = {'param':best_param, 'vparams': vparams,'score':best_score}
             overall.append(bestdict)
             fullScores.append(currentScores)
@@ -437,7 +437,7 @@ class interpolateScalerField(object):
 ##
 ## Modify this to simply return the best param, vparam for a subsequent call to SingleKriging
 ##
-    def CVKrigingFit(self, param_dict, vparams, metadata=None):
+    def CVKrigingFit(self, param_dict, vparams, metadataFile=None):
         """
         Build a kriging model performing a basic CV procdure: Choose the best parameters
         gridsearch optimize the param_dict. 
@@ -462,8 +462,8 @@ class interpolateScalerField(object):
         model_list = list(v for v in model_list if v!='linear' and v!='power' )
         param_dict['variogram_model'] = model_list
         utilities.log.info('Params for current CV {}'.format(param_dict))
-        if metadata is not None:
-            utilities.log.info('A request to do stratified spliutting has been madxe using data from {}'.format(metadata))
+        if metadataFile is not None:
+            utilities.log.info('A request to do stratified splitting has been made using data from {}'.format(metadataFile))
         scoring='r2'
         #scoring='accuracy'
         # estimator = GridSearchCV(newKrige(variogram_parameters=vparams), param_dict, error_score='raise', scoring='r2',verbose=True, # Remove iid=True
