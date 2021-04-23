@@ -57,10 +57,10 @@ def parseDateFilename(infilename):
 
 # New methodsw to support stratified splits
 # OrderedDicts ?
-def fetch_data_metadata(metaIndir=None):
+def fetch_data_metadata(metaFile=None):
     metaDict=None
     try:
-        meta='/'.join([metaIndir,'obs_water_level_metadata.json'])
+        #meta='/'.join([metaFile,'obs_water_level_metadata.json'])
         with open(meta, 'r') as fp:
             try:
                 metaDict = json.load(fp)
