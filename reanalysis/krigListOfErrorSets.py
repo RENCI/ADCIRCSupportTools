@@ -176,7 +176,7 @@ def main(args):
             meta=fetch_data_metadata(metadataFile)
             print('meta {}'.format(meta))
         utilities.log.info('Building kriging model using CV procedure')
-        param_dict, vparams, best_score, full_scores = krig_object.optimize_kriging(krig_object, metadata=meta) # , param_dict_list, vparams_dict_list)
+        param_dict, vparams, best_score, full_scores = krig_object.optimize_kriging(krig_object, metadataFile=meta) # , param_dict_list, vparams_dict_list)
         utilities.log.info('Kriging best score is {}'.format(best_score))
         print('List of all scores {}'.format(full_scores))
         #fullScoreDict = {'best_score':best_score,'scores': full_scores, 'params':param_dict,'vparams':vparams}
