@@ -11,7 +11,7 @@ from utilities.utilities import utilities
 #############################################################################
 # Build a slurm file
 
-def build_slurm(ROOTDIR,YAMLNAME,ERRFILE,CLAMPFILE,ADCJSON,RANGE,SILL,METAFILE):
+def build_slurm(ROOTDIR,YAMLNAME,ERRFILE,CLAMPFILE,ADCJSON,RANGE,SILL,CLASSFILE):
     slurm = list()
     slurm.append('#!/bin/sh')
     slurm.append('#SBATCH -t 24:00:00')
@@ -23,7 +23,7 @@ def build_slurm(ROOTDIR,YAMLNAME,ERRFILE,CLAMPFILE,ADCJSON,RANGE,SILL,METAFILE):
     slurm.append('echo "Begin the Interpolation phase" ')
     slurm.append('export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools')
     slurm.append('dir="/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/reanalysis"')
-    slurm.append('python -u $dir/krigListOfErrorSets.py --daily --metadataFile "'+METAFILE+'"  --inrange "'+RANGE+'" --insill "'+SILL+'" --outroot "'+ROOTDIR+'" --yamlname "'+YAMLNAME+'" --errorfile "'+ERRFILE+'" --clampfile "'+CLAMPFILE+'" --gridjsonfile "'+ADCJSON+'"' )
+    slurm.append('python -u $dir/krigListOfErrorSets.py --daily --classdataFile "'+CLASSFILE+'"  --inrange "'+RANGE+'" --insill "'+SILL+'" --outroot "'+ROOTDIR+'" --yamlname "'+YAMLNAME+'" --errorfile "'+ERRFILE+'" --clampfile "'+CLAMPFILE+'" --gridjsonfile "'+ADCJSON+'"' )
     with open('runSlurm.sh', 'w') as file:
         for row in slurm:
             file.write(row+'\n')
@@ -40,6 +40,7 @@ def main(args):
     ROOTDIR=args.outroot
     RANGE=str(args.inrange)
     SILL=str(args.insill)
+    CLASSFILE=args.classdataFile
     grid=args.grid
     utilities.log.info('ERRDIR {}'.format(ERRDIR))
     utilities.log.info('CLAMPFILE {}'.format(CLAMPFILE))
@@ -49,7 +50,7 @@ def main(args):
     utilities.log.info('RANGE {}'.format(RANGE))
     utilities.log.info('SILL {}'.format(SILL))
     utilities.log.info('GRID {}'.format(grid))
-    utilities.log.info('METADATA FILE {}'.format(args.metadataFile))
+    utilities.log.info('CLASSDATA FILE {}'.format(CLASSFILE))
 
     # Set of all files belonging to this ensemble
     errfileJson=ERRDIR+'/runProps.json'
@@ -79,7 +80,8 @@ def main(args):
         utilities.log.info('ROOTDIR {}'.format(ROOTDIR))
         utilities.log.info('RANGE {}'.format(RANGE))
         utilities.log.info('SILL {}'.format(SILL))
-        slurmFilename = build_slurm(ROOTDIR,YAMLNAME,ERRFILE,CLAMPFILE,ADCJSON,RANGE,SILL,METAFILE)
+        utilities.log.info('CLASSFILE {}'.format(CLASSFILE))
+        slurmFilename = build_slurm(ROOTDIR,YAMLNAME,ERRFILE,CLAMPFILE,ADCJSON,RANGE,SILL,CLASSFILE)
         cmd = 'sbatch ./'+slurmFilename
         os.system(cmd)
 
@@ -104,6 +106,6 @@ if __name__ == '__main__':
     parser.add_argument('--outroot', action='store', dest='outroot', default=None,
                         help='Available high level output dir directory')
     parser.add_argument('--grid', default='hsofs',help='Choose name of available grid',type=str)
-    parser.add_argument('--metadataFile', action='store', dest='metadataFile',default=None, help='FQFN to station metadata file.' , type=str)
+    parser.add_argument('--classdataFile', action='store', dest='classdataFile',default=None, help='FQFN to station classdata file.' , type=str)
     args = parser.parse_args()
     sys.exit(main(args))

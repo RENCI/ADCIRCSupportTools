@@ -30,8 +30,8 @@ export ADCJSON=$INDIR/adc_coord.json
 export CLAMPFILE=$CODEBASE/config/clamp_list_hsofs.dat
 export YAMLNAME=$CODEBASE/config/int.REANALYSIS.yml
 export OUTROOT=$RUNTIMEDIR/$BASEDIREXTRA/$DAILY
-export METAFILE=$BASEDIREXTRA/obs_water_level_metadata.json
+export CLASSFILE=$BASEDIREXTRA/classdata_grid.csv
 export ERRDIR=$OUTROOT/errorfield
-#python  $CODEBASE/runInterpolate_parallel_CV.py --metadataFile $METAFILE  --insill $SILL --inrange $RANGE --outroot $OUTROOT --yamlname $YAMLNAME --errordir $ERRDIR --clampfile $CLAMPFILE --gridjsonfile $ADCJSON
+#python  $CODEBASE/runInterpolate_parallel_CV.py --classdataFile $CLASSFILE  --insill $SILL --inrange $RANGE --outroot $OUTROOT --yamlname $YAMLNAME --errordir $ERRDIR --clampfile $CLAMPFILE --gridjsonfile $ADCJSON
 #mv $RUNTIMEDIR/logs $OUTROOT/log-interpolate
 

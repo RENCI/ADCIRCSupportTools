@@ -75,8 +75,8 @@ def main(args):
     utilities.log.info(args)
 
     cv_kriging = args.cv_kriging
-    metadataFile = args.metadataFile
-    utilities.log.info('Input metadata file is {}'.format(metadataFile))
+    classdataFile = args.classdataFile
+    utilities.log.info('Input classdata file is {}'.format(classdataFile))
 
     ###########################################################################
     # Interpolate adcirc node data using the previously generated error matrix
@@ -171,12 +171,12 @@ def main(args):
     param_dict=None
 
     if cv_kriging:
-        if metadataFile is not None:
-            utilities.log.info('Attempt a stratified CV procedure using {}'.format(metadataFile))
-            meta=fetch_data_metadata(metadataFile)
-            print('meta {}'.format(meta))
+        if classdataFile is not None:
+            utilities.log.info('Attempt a stratified CV procedure using {}'.format(classdataFile))
+            classdata=fetch_data_metadata(classdataFile)
+            print('class data {}'.format(classdata))
         utilities.log.info('Building kriging model using CV procedure')
-        param_dict, vparams, best_score, full_scores = krig_object.optimize_kriging(krig_object, metadataFile=meta) # , param_dict_list, vparams_dict_list)
+        param_dict, vparams, best_score, full_scores = krig_object.optimize_kriging(krig_object, classdataFile=classdata) # , param_dict_list, vparams_dict_list)
         utilities.log.info('Kriging best score is {}'.format(best_score))
         print('List of all scores {}'.format(full_scores))
         #fullScoreDict = {'best_score':best_score,'scores': full_scores, 'params':param_dict,'vparams':vparams}
@@ -316,6 +316,6 @@ if __name__ == '__main__':
                         help='Boolean: Choose the DAILY filename nomenclature')
     parser.add_argument('--inrange', action='store', dest='inrange',default=None, help='If specified then an internal config is constructed', type=int)
     parser.add_argument('--insill', action='store', dest='insill',default=None, help='If specified then an internal config is constructed', type=float)
-    parser.add_argument('--metadataFile', action='store', dest='metadataFile',default=None, help='FQFN to station metadata file.' , type=str)
+    parser.add_argument('--classdataFile', action='store', dest='classdataFile',default=None, help='FQFN to station metadata file.' , type=str)
     args = parser.parse_args()
     sys.exit(main(args))

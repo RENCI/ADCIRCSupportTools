@@ -49,7 +49,6 @@ def main(args):
     utilities.log.info('RANGE {}'.format(RANGE))
     utilities.log.info('SILL {}'.format(SILL))
     utilities.log.info('GRID {}'.format(grid))
-    utilities.log.info('METADATA FILE {}'.format(args.metadataFile))
 
     # Set of all files belonging to this ensemble
     errfileJson=ERRDIR+'/runProps.json'
@@ -104,6 +103,5 @@ if __name__ == '__main__':
     parser.add_argument('--outroot', action='store', dest='outroot', default=None,
                         help='Available high level output dir directory')
     parser.add_argument('--grid', default='hsofs',help='Choose name of available grid',type=str)
-    parser.add_argument('--metadataFile', action='store', dest='metadataFile',default=None, help='FQFN to station metadata file.' , type=str)
     args = parser.parse_args()
     sys.exit(main(args))

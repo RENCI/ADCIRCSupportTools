@@ -50,6 +50,10 @@
 # convenience the user simply specified it in the YAML file. The default settings are:
 #     clampfile = os.path.join(os.path.dirname(__file__), "../config", config['DEFAULT']['ClampList']) 
 # 
+# Stratified CV testing:
+# classdataFile is an optional CSV formatted data file that associates stationid to class. The class can be
+# just about anything the user chooses but might be, eg, State, Region, etc. This is highly experimental
+# If you want to do CV including clamp nodes then you MUST alsao have those nodes in the classfile
 #############################################################
 
 import sys, os
@@ -400,8 +404,9 @@ class interpolateScalerField(object):
 ##
 ## New layer to loop over vparams and call CV kriging
 ##
+## Added ther ability to stratify train/test sample sbasewd on a column in the metadata file data set (eg by STATE) 
 #    def optimize_kriging(self, krig_object, param_dict, vparams_dict ):
-    def optimize_kriging(self, krig_object,  metadataFile=None):
+    def optimize_kriging(self, krig_object,  classdataFile=None):
         """
         bestname is the model name but we do not really use it after this
         """
@@ -423,7 +428,7 @@ class interpolateScalerField(object):
         fullScores = list()
         for vparams in permutations_dicts:
             utilities.log.info('Next iteration: vparams {}'.format(vparams))
-            best_param, best_score, currentScores = krig_object.CVKrigingFit(param_dict=param_dict,vparams=vparams, metadataFile=metadataFile)
+            best_param, best_score, currentScores = krig_object.CVKrigingFit(param_dict=param_dict,vparams=vparams, classdataFile=classdataFile)
             bestdict = {'param':best_param, 'vparams': vparams,'score':best_score}
             overall.append(bestdict)
             fullScores.append(currentScores)
@@ -437,7 +442,7 @@ class interpolateScalerField(object):
 ##
 ## Modify this to simply return the best param, vparam for a subsequent call to SingleKriging
 ##
-    def CVKrigingFit(self, param_dict, vparams, metadataFile=None):
+    def CVKrigingFit(self, param_dict, vparams, classdataFile=None):
         """
         Build a kriging model performing a basic CV procdure: Choose the best parameters
         gridsearch optimize the param_dict. 
@@ -462,16 +467,24 @@ class interpolateScalerField(object):
         model_list = list(v for v in model_list if v!='linear' and v!='power' )
         param_dict['variogram_model'] = model_list
         utilities.log.info('Params for current CV {}'.format(param_dict))
-        if metadataFile is not None:
-            utilities.log.info('A request to do stratified splitting has been made using data from {}'.format(metadataFile))
+        if classdataFile is not None:
+            utilities.log.info('A request to do stratified splitting has been made using data from {}'.format(classdataFile))
         scoring='r2'
         #scoring='accuracy'
         # estimator = GridSearchCV(newKrige(variogram_parameters=vparams), param_dict, error_score='raise', scoring='r2',verbose=True, # Remove iid=True
         #                         return_train_score=True, cv=10)
-        estimator = GridSearchCV(newKrige(variogram_parameters=vparams), param_dict, error_score='raise', scoring=scoring, verbose=True, return_train_score=True, cv=10)
-        data = np.concatenate((self.X.reshape(-1, 1), self.Y.reshape(-1, 1)), axis=1)
-        estimator.fit(X=data, y=self.Values)
-        # This doesn't help print('Print fixed vparams estimator {}'.format(estimator))
+        if classdataFile is None:
+            estimator = GridSearchCV(newKrige(variogram_parameters=vparams), param_dict, error_score='raise', scoring=scoring, verbose=True, return_train_score=True, cv=10)
+            data = np.concatenate((self.X.reshape(-1, 1), self.Y.reshape(-1, 1)), axis=1)
+            estimator.fit(X=data, y=self.Values)
+            # This doesn't help print('Print fixed vparams estimator {}'.format(estimator))
+        else:
+            utilities.log.info('Cannot perform stratified optimization yet')
+            ##ss = StratifiedShuffleSplit(n_splits=3, test_size=0.5, random_state=0)
+            ##ss.get_n_splits(X, y)  #X = np.array([[1, 2],....Y classes ##estimator = GridSearchCV(clf_us, param_grid = {parameter: num_range},cv=ss)
+            ##estimator = GridSearchCV(newKrige(variogram_parameters=vparams), param_dict, error_score='raise', scoring=scoring, verbose=True, return_train_score=True, cv=ss)
+            sys.exit('Abort stratified interpolation job')
+
         print("\nCV results::")
         print(estimator)
         currentScores = None
