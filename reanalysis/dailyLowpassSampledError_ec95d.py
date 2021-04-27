@@ -309,7 +309,7 @@ def main(args):
 
     # FFT Lowpass each station for entire range time. Then, extract values for all stations every day
     upshift=0
-    hourly_cutoff= 48 # 168 # 48 # 6 # 168 #48
+    hourly_cutoff= 24 # 168 # 48 # 6 # 168 #48
     cutoff = hourly_cutoff+upshift
     utilities.log.info('FFT hourly_cutoff {}, actual_cutoff {}'.format(hourly_cutoff,cutoff))
 
