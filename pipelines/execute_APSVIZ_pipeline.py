@@ -486,7 +486,6 @@ if __name__ == '__main__':
     parser.add_argument('--grid', default='hsofs',help='Choose name of available grid',type=str)
     parser.add_argument('--final', action='store', dest='cloudfinal', default=None,
                         help='String: specialized kubernetes PV location for ONLY PNGs and lookup CSV')
-
     args = parser.parse_args()
     sys.exit(main(args))
 

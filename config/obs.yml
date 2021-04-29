@@ -4,7 +4,7 @@ DEFAULT: &default
 OBSERVATIONS: &observations
   EX_COOPS_NANS: True
   EX_MULTIVALUE: False
-  EX_THRESH: True
+  EX_THRESH: False # True
   THRESH: 10
   DATUM: "MSL"
   UNIT: "metric"
