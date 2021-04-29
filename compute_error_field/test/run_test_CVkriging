@@ -6,3 +6,25 @@ python test_CVkriging.py --errorfile '/home/jtilson/ADCIRCSupportTools/TEST_DATA
 # Optimize and grab clampfile from config
 
 python test_CVkriging.py --errorfile '/home/jtilson/ADCIRCSupportTools/TEST_DATA/ADCIRC/stationSummaryAves_manualtest.csv' --gridjsonfile '/home/jtilson/ADCIRCSupportTools/TEST_DATA/ADCIRC/adc_coord.json' --subdir_name 'TESTINT' --iometadata 'IOMETA' --cv_kriging
+
+# Test in the 2018 reanalysis data (noclamps)
+
+export YEAR=2018
+#export YEARNUMBER=2018
+#
+export SILL=0.16
+export RANGE=8
+export NUGGET=0.001
+export NLAGS=6
+export GRID='region3'
+#
+
+indir=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/reanalysis/REANALYSIS_COMPREHENSIVE_REGION3/YEARLY-2018
+datadir=$indir/DAILY-4MONTH-region3-RANGE8-SILL0.16-NUGGET0.001-LP48/errorfield
+
+# Choose a single file to test and interpolate
+#
+python test_CVkriging.py --errorfile $datadir"/stationSummaryAves_18-002_2018010200.csv" --gridjsonfile $indir"/adc_coord.json" --cv_kriging
+
+
+

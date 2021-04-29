@@ -106,9 +106,11 @@ def main(args):
     vparams=None
     param_dict=None
 
+    classFilename='class_hsofs.csv'
+
     if cv_kriging:
         utilities.log.info('Building kriging model using CV procedure')
-        param_dict, vparams, best_score, full_scores = krig_object.optimize_kriging(krig_object) # , param_dict_list, vparams_dict_list)
+        param_dict, vparams, best_score, full_scores = krig_object.optimize_kriging(krig_object,classdataFile=classFilename) # , param_dict_list, vparams_dict_list)
         utilities.log.info('Kriging best score is {}'.format(best_score))
         print('List of all scores {}'.format(full_scores))
         fullScoreDict = {'best_score':best_score,'scores': full_scores, 'params':param_dict,'vparams':vparams}

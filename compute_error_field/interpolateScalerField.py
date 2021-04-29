@@ -239,6 +239,10 @@ class interpolateScalerField(object):
             zeroX: numpy.ndarray of lons for clamp
             zeroY: numpy.ndarray of lats for clamp
             zeroV: numpy.ndarray of Values for clamp
+
+        We also add some additional data structures to try and tesgt stratified CV. THis architecture is 
+        terrible and will be corrected once we decide how best to do the science
+        Cannot use CLAMPs for the CV and that data will be ignored
         """
         indataAll = pd.read_csv(f, header=0)
         indataAll.dropna(axis=0, inplace=True) # Need this incase we save summaries with nana
@@ -441,6 +445,7 @@ class interpolateScalerField(object):
         return best[0]['param'], best[0]['vparams'], best[0]['score'], flatFullScores
 ##
 ## Modify this to simply return the best param, vparam for a subsequent call to SingleKriging
+## PyKrige complicated this by initially not optimizing over vparams. 
 ##
     def CVKrigingFit(self, param_dict, vparams, classdataFile=None):
         """
@@ -469,16 +474,22 @@ class interpolateScalerField(object):
         utilities.log.info('Params for current CV {}'.format(param_dict))
         if classdataFile is not None:
             utilities.log.info('A request to do stratified splitting has been made using data from {}'.format(classdataFile))
-        scoring='r2'
-        #scoring='accuracy'
+        #scoring='r2'
+        scoring='accuracy'
         # estimator = GridSearchCV(newKrige(variogram_parameters=vparams), param_dict, error_score='raise', scoring='r2',verbose=True, # Remove iid=True
         #                         return_train_score=True, cv=10)
+        n = len(self.Y)
+        n=10
+        utilities.log.info('LOO CV: Length of the station data set for kriging is {}'.format(n))
         if classdataFile is None:
-            estimator = GridSearchCV(newKrige(variogram_parameters=vparams), param_dict, error_score='raise', scoring=scoring, verbose=True, return_train_score=True, cv=10)
+            estimator = GridSearchCV(newKrige(variogram_parameters=vparams), param_dict, error_score='raise', scoring=scoring, verbose=True, return_train_score=True, cv=n) # 10)
             data = np.concatenate((self.X.reshape(-1, 1), self.Y.reshape(-1, 1)), axis=1)
             estimator.fit(X=data, y=self.Values)
             # This doesn't help print('Print fixed vparams estimator {}'.format(estimator))
         else:
+            # Wll strfatification maker a difference here ?
+            df_class = pd.read_csv(classdataFile, header=0, index_col=0)
+            print('CLASS test {}'.format(df_class))
             utilities.log.info('Cannot perform stratified optimization yet')
             ##ss = StratifiedShuffleSplit(n_splits=3, test_size=0.5, random_state=0)
             ##ss.get_n_splits(X, y)  #X = np.array([[1, 2],....Y classes ##estimator = GridSearchCV(clf_us, param_grid = {parameter: num_range},cv=ss)
