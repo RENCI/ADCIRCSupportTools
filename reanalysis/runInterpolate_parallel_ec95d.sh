@@ -6,43 +6,50 @@
 #SBATCH -J EC95DReanalysis
 #SBATCH --mem-per-cpu 64000
 
-export YEAR=$1
-export SILL=0.015
-export RANGE=1
-export NUGGET=0.005
+
+export SILL=0.16
+export RANGE=8
+export NUGGET=0.001
 export NLAGS=6
 
 GRID="ec95d"
-URL="/projects/ees/TDS/Reanalysis/ADCIRC/ERA5/ec95d/$YEAR/fort.63.nc"
-
-
-#DAILY=DAILY-2018YEAR-12MONTH-REGION3-RANGE$RANGE-SILL$SILL-NUGGET$NUGGET-LP48
-DAILY=DAILY-$GRID-RANGE$RANGE-SILL$SILL-NUGGET$NUGGET-LP48
-
-echo $YEAR
-echo $DAILY
 
 export CODEBASE=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/reanalysis
 export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools
-export RUNTIMEDIR=./EC95D/YEARLY-$YEAR
 export BASEDIREXTRA=
 
+export YEAR=$1
+export RUNTIMEDIR=./EC95D/YEARLY-$YEAR
+export LOG_PATH=$RUNTIMEDIR
+URL="/projects/ees/TDS/Reanalysis/ADCIRC/ERA5/ec95d/$YEAR/fort.63.nc"
+
+#DAILY=DAILY-2018YEAR-12MONTH-REGION3-RANGE$RANGE-SILL$SILL-NUGGET$NUGGET-LP48
+DAILY=DAILY-$GRID-RANGE$RANGE-SILL$SILL-NUGGET$NUGGET-LP24
+
+echo "xxxxxx"
+echo $YEAR
+echo $DAILY
+echo $RUNTIMEDIR
+echo "xxxxxx"
+
+####
 
 # Build the yearly error file store in $RUNTIMEDIR/BASEDIREXTRA
-python $CODEBASE/yearlyReanalysis.py --grid $GRID --url $URL
+python $CODEBASE/yearlyReanalysisRoundHourly.py --grid $GRID --url $URL
 mv $RUNTIMEDIR/AdcircSupportTools.log $RUNTIMEDIR/$BASEDIREXTRA/log-yearly
 
 # Store files in $RUNTIMEDIR/DAILY/errorfield
 export INDIR=$RUNTIMEDIR/
 export OUTROOT=$RUNTIMEDIR/$DAILY
-#python $CODEBASE/dailyLowpassSampledError.py --inDir $INDIR --outroot $OUTROOT # --stationarity
-#mv $RUNTIMEDIR/AdcircSupportTools.log $OUTROOT/log-daily
+python $CODEBASE/dailyLowpassSampledError_ec95d.py --inyear $YEAR  --inDir $INDIR --outroot $OUTROOT # --stationarity
+mv $RUNTIMEDIR/AdcircSupportTools.log $OUTROOT/log-daily
 
 # Interpolate a single specific file
 export ADCJSON=$INDIR/adc_coord.json
-export CLAMPFILE=$CODEBASE/config/clamp_list_hsofs.dat
-export YAMLNAME=$CODEBASE/config/int.REANALYSIS.yml
+export CLAMPFILE=$PYTHONPATH/config/clamp_list_hsofs.dat
+export YAMLNAME=$PYTHONPATH/config/int.REANALYSIS.EC95D.yml
 export OUTROOT=$RUNTIMEDIR/$DAILY
 export ERRDIR=$OUTROOT/errorfield
-#python  $CODEBASE/runInterpolate_parallel.py  --insill $SILL --inrange $RANGE --outroot $OUTROOT --yamlname $YAMLNAME --errordir $ERRDIR --clampfile $CLAMPFILE --gridjsonfile $ADCJSON
-#mv $RUNTIMEDIR/AdcircSupportTools.log $OUTROOT/log-interpolate
+python  $CODEBASE/runInterpolate_parallel.py  --insill $SILL --inrange $RANGE --outroot $OUTROOT --yamlname $YAMLNAME --errordir $ERRDIR --clampfile $CLAMPFILE --gridjsonfile $ADCJSON
+mv $RUNTIMEDIR/AdcircSupportTools.log $OUTROOT/log-interpolate
+
