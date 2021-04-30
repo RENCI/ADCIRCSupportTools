@@ -30,6 +30,13 @@ import datetime as dt
 ## For now this sidesteps the differing nomenclatures used for 2020 and 2021 data storage
 ## Moving forward this needs to be handled much more generally 
 
+def buildCloudListFiles(indir,infilecsv):
+    """
+    Extract out the png filenames and build a list simple list of names+path for cloud constraints
+    """
+    l=pd.read_csv(infilecsv,header=0)['Filename'].to_list()
+    return ['/'.join([indir,x]) for x in l]
+
 def extractDateFromURL(url):
     """
     Dig thru url, fetch date, converet to datetime object and return
@@ -141,6 +148,9 @@ def exec_adcirc_nowcast_hurricane(inurls, rootdir, iometadata, adc_yamlname, nod
     df = get_water_levels63(adc.urls, node_idx, station_ids) # Gets ADCIRC water levels
     adc.T1 = df.index[0] # Optional update to actual times fetched form ADC
     adc.T2 = df.index[-1]
+    utilities.log.info('Swap times from ADCIRC fior hurricane runs')
+    adc.T1=df.index[-1]
+    adc.T2=df.index[0]
     ADCfile = utilities.writePickle(df, rootdir=rootdir,subdir='',fileroot='adc_wl_forecast',iometadata=iometadata)
     ##df.to_pickle(ADCfile)
     ####df.to_json(ADCjson)
@@ -177,7 +187,7 @@ def exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdi
 
 def exec_error(obsf, adcf, meta, err_yamlname, rootdir, iometadata, iosubdir): 
     cmp = computeErrorField(obsf, adcf, meta, yamlname=err_yamlname, rootdir=rootdir)
-    cmp.executePipelineNoTidalTransform(metadata=iometadata,subdir=iosubdir)
+    cmp.executePipelineNoTidalTransform_NoAveraging(metadata=iometadata,subdir=iosubdir)
     errf, finalf, cyclef, metaf, mergedf,jsonf = cmp._fetchOutputFilenames()
     return errf, finalf, cyclef, metaf, mergedf, jsonf
 
@@ -259,6 +269,8 @@ def main(args):
     doffset = args.doffset
     chosengrid=args.grid
     utilities.log.info('Grid specified was {}'.format(chosengrid))
+    if args.cloudfinal is not None:
+        utilities.log.info('PNGs and CSV will be also saved to {}'.format(args.cloudfinal))
 
     # Get input adcirc url and check for existance
     if args.urljson != None:
@@ -299,10 +311,10 @@ def main(args):
     main_config = utilities.load_config() # Get main comnfig. RUNTIMEDIR, etc
 
     if args.outputDir is None:
-        rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'], basedirExtra=iosubdir)
+        rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'], basedirExtra='')
     else:
         rootdir = args.outputDir
-        rootdir = utilities.setBasedir(args.outputDir)
+        rootdir = utilities.setBasedir(args.outputDir+'/')
     utilities.log.info('Specified rootdir underwhich all files will be stored. Rootdir is {}'.format(rootdir))
 
     outfiles['OBS_CREATIONTIME']=dt.datetime.now().strftime('%Y%m%d%H%M')
@@ -354,6 +366,7 @@ def main(args):
     utilities.log.info('Fetch ADCIRC')
     adc_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'adc.yml')
     #adc_config = utilities.load_config(adc_yamlname)
+    #ADCfile, ADCjson, timestart, timeend = exec_adcirc(timeout.strftime('%Y-%m-%d %H:%M'), rootdir, '_nowcast'+iometadata, adc_yamlname, node_idx, station_ids, doffset=doffset)
     ADCfile, ADCjson, timestart, timeend = exec_adcirc_nowcast_hurricane(urls, rootdir, '_nowcast'+iometadata, adc_yamlname, node_idx, station_ids, chosengrid, doffset=doffset)
     utilities.log.info('Completed ADCIRC nowcast Reads')
     outfiles['ADCIRC_WL_PKL']=os.path.basename(ADCfile)
@@ -411,6 +424,10 @@ def main(args):
     files['META']=metaJ # outfiles['OBS_METADATA_JSON']
     files['DIFFS']=jsonf # outfiles['ERR_TIME_JSON']
     files['FORECAST']=ADCjsonFore # outfiles['ADCIRC_WL_FORECAST_JSON']
+    #utilities.log.info('PNG plotter dict is {}'.format(files))
+    #png_dict = exec_pngs(files=files, rootdir=rootdir, iometadata=iometadata, iosubdir=iosubdir)
+
+    # Write out ther data in the usual way
     utilities.log.info('PNG plotter dict is {}'.format(files))
     png_dict = exec_pngs(files=files, rootdir=rootdir, iometadata=iometadata, iosubdir=iosubdir)
 
@@ -425,6 +442,22 @@ def main(args):
     outfilesjson = utilities.writeDictToJson(outfiles, rootdir=rootdir,subdir=iosubdir,fileroot='runProps',iometadata='') # Never change fname
     utilities.log.info('Wrote pipeline Dict data to {}'.format(outfilesjson)) 
 
+    # Move the log file from the working dir to rootdir
+    #shutil.copy('logs','/'.join([rootdir,'logs']))
+    if args.cloudfinal is not None:
+        utilities.log.info('APSVIZ Cloud: Must copy over pngs and associated csv to {}'.format(args.cloudfinal))
+        #if iosubdir is not None:
+        #    filelist = buildCloudListFiles(''.join([rootdir,iosubdir]),outfilecsv) 
+        #else:
+        #    filelist = buildCloudListFiles(rootdir,outfilecsv)
+        filelist = buildCloudListFiles(''.join(filter(None, [rootdir,iosubdir])),outfilecsv)
+        filelist.append(outfilecsv) # Need this too for kubernetes
+        os.makedirs(args.cloudfinal, exist_ok=True)
+        for x in filelist:
+            print(x)
+            shutil.copy(x, args.cloudfinal+'/.')
+        utilities.log.info('APSVIZ Cloudcopy finished')
+    #
     utilities.log.info('Finished pipeline in {} s'.format(tm.time()-t0))
 
     utilities.log.info('Copied log file {} to {}'.format(utilities.LogFile,''.join([rootdir,'logs'])))
@@ -454,6 +487,8 @@ if __name__ == '__main__':
     parser.add_argument('--inputURL', action='store', dest='inputURL', default=None,
                         help='String: url.')
     parser.add_argument('--grid', default='hsofs',help='Choose name of available grid',type=str)
+    parser.add_argument('--final', action='store', dest='cloudfinal', default=None,
+                        help='String: specialized kubernetes PV location for ONLY PNGs and lookup CSV')
     args = parser.parse_args()
     sys.exit(main(args))
 

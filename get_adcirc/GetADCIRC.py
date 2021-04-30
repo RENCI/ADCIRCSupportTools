@@ -387,6 +387,8 @@ class Adcirc:
 #   1) decrement the advisory number to fetch nowcasts -- this list may be spoarse or noneexistant.
 #   2) Find actual dates for use bny downstream methods
 #
+
+# Note the times are in groups of 6 hoursa making the data look like a stairsteps
     def get_urls_hurricane_noyaml(self, in_forecast, doffset=-4):
         """
         Gets a dict of URLs for the time range and other parameters from the specified
@@ -416,8 +418,10 @@ class Adcirc:
             words=forecast.split('/')
             advisory = checkAdvisory(words[-6])
             advisories=list()
-            for adv in range(advisory,max(1,advisory-num6hourTimes),-1):
+            #for adv in range(advisory,max(1,advisory-num6hourTimes),-1):
+            for adv in range(max(1,advisory-num6hourTimes),advisory+1):
                 advisories.append(adv) # Want at most 4 6 periods for error computation later on 
+            #utilities.log.info('append advisory lisat {}'.format(advisories))
             # Build a new list of urls and add appropriate time key to the dict
             words[-2]='nowcast' # This is constant for all grids
             for adv in advisories:
@@ -435,6 +439,7 @@ class Adcirc:
         if len(urls)==0:
             utilities.log.error('No nowcast urls were found for advisory {}'.format(advisory))
             sys.exit()
+        utilities.log.info('Invert nowcast list for hurricane status {}'.format(urls))
         self.urls = urls
 
 def writeToJSON(df, rootdir, iometadata, fileroot='adc_wl', variableName=None):
@@ -493,7 +498,7 @@ def get_water_levels63(urls, nodes, stationids):
     utilities.log.info('Updating internal time range to reflect data values')
     timestart = df.index[0]
     timestop = df.index[-1]
-    print('water_levels_63: ADC actual time range {} {}'.format(timestart, timestop))
+    utilities.log.info('water_levels_63: ADC actual time range {} {}'.format(timestart, timestop))
     return df
 
 def get_water_levels61(urls, stationids):

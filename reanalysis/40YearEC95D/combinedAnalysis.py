@@ -61,7 +61,7 @@ def noFitStationPlot(station, stationName, df_ADC, df_OBS, df_ERR):
         marker='.', markersize=0, linestyle='-', linewidth=0.1,color='lightblue',label='ADC')
     ax.plot(df_ERR,
         marker='.', markersize=.0, linestyle='-', linewidth=0.1,color='red',label='ADC-OBS')
-    ax.set_ylabel('WL (m) versus MSL')
+    ax.set_ylabel('meters')
     ax.set_title(stationName, fontdict={'fontsize': 12, 'fontweight': 'medium'})
     ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=12))
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y')); #-%m'));
@@ -104,7 +104,7 @@ def fitStationPlot(station, stationName, df_ADC, df_OBS, df_ERR):
         marker='.', markersize=.0, linestyle='-', linewidth=0.1,color='red',label='ADC-OBS')
     ax.plot(df_FIT['FIT'],
         markersize=.0, linestyle='-', linewidth=0.3,color='black',label=r"$\widehat{ADC-OBS}$")
-    ax.set_ylabel('WL (m) versus MSL')
+    ax.set_ylabel('meters')
     ax.set_title(stationName, fontdict={'fontsize': 12, 'fontweight': 'medium'})
     ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=12))
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y')); #-%m'));
@@ -119,7 +119,6 @@ def fitStationPlot(station, stationName, df_ADC, df_OBS, df_ERR):
     #plt.show()
 
 # Start the work 
-
 # Read the station metadata since we will want lon/lat/stationnames later on
 # The stations are already ordered in the file itself.
 
@@ -167,7 +166,7 @@ fig, ax = plt.subplots(figsize=(12, 8))
 sns.set(font_scale=1.0, style="darkgrid")
 df_all.groupby(pd.Grouper(level='TIME',freq='Y')).mean().T.boxplot()
 plt.title('Distribution of station WL means for the indicated year: ec95d: ADC-OBS')
-plt.ylabel('WL (m) versus MSL')
+plt.ylabel('meters')
 plt.axhline(df_all.mean().mean(), c='r')
 plt.gcf().subplots_adjust(bottom=0.30)
 ##ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=12))
@@ -179,18 +178,25 @@ plt.tight_layout()
 plt.savefig('yearlyMeansVsTimes.png')
 
 ###############################################################################
-# Distributionm of monthly mean errors for each station. 
+# Swarm: Distributionm of monthly mean errors for each station. 
 # Use SNS method instead
+# Incredible nonsense for making black boxes
 # We can color by STATE ?
 
 fig, ax = plt.subplots(figsize=(12, 8)) 
 sns.set(font_scale=1.0, style="darkgrid")
 df_data = df_all.groupby(pd.Grouper(level='TIME',freq='Y')).mean().T
 df_data.columns=df_data.columns.strftime('%Y')
-sns.boxplot(x="TIME", y="value", data=pd.melt(df_data)) #, color='white', width=1.0, fliersize=0)
-sns.swarmplot(x="TIME", y="value", data=pd.melt(df_data), color='pink')
+sns.boxplot(x="TIME", y="value", data=pd.melt(df_data), color='white', width=.5, fliersize=0)
+for i,box in enumerate(ax.artists): # The dumbest python / sns thing yet.
+    box.set_edgecolor('black')
+    box.set_facecolor('white')
+        # iterate over whiskers and median lines
+    for j in range(6*i,6*(i+1)):
+         ax.lines[j].set_color('black')
+sns.swarmplot(x="TIME", y="value", data=pd.melt(df_data), color='lightgreen')
 plt.title('Distribution of station WL means for the indicated year: ec95d: ADC-OBS')
-plt.ylabel('WL (m) versus MSL')
+plt.ylabel('meters')
 ax.set(xlabel=None)
 plt.axhline(df_all.mean().mean(), c='r')
 plt.gcf().subplots_adjust(bottom=0.30)
@@ -200,6 +206,33 @@ plt.tight_layout()
 #plt.show()
 plt.savefig('yearlyMeansVsTimesSwarm.png')
 
+###############################################################################
+# Violin: Distributionm of monthly mean errors for each station. 
+# Use SNS method instead
+# Incredible nonsense for making black boxes
+
+fig, ax = plt.subplots(figsize=(12, 8))
+sns.set(font_scale=1.0, style="darkgrid")
+df_data = df_all.groupby(pd.Grouper(level='TIME',freq='Y')).mean().T
+df_data.columns=df_data.columns.strftime('%Y')
+sns.boxplot(x="TIME", y="value", data=pd.melt(df_data), color='white', width=.5, fliersize=0)
+for i,box in enumerate(ax.artists): # The dumbest python / sns thing yet.
+    box.set_edgecolor('black')
+    box.set_facecolor('white')
+        # iterate over whiskers and median lines
+    for j in range(6*i,6*(i+1)):
+         ax.lines[j].set_color('black')
+sns.violinplot(x="TIME", y="value", data=pd.melt(df_data), color='pink')
+plt.title('Distribution of station WL means for the indicated year: ec95d: ADC-OBS')
+plt.ylabel('meters')
+ax.set(xlabel=None)
+plt.axhline(df_all.mean().mean(), c='r')
+plt.gcf().subplots_adjust(bottom=0.30)
+plt.xticks(rotation=90, fontsize=10)
+plt.yticks(fontsize=10)
+plt.tight_layout()
+#plt.show()
+plt.savefig('yearlyMeansVsTimesViolin.png')
 ###############################################################################
 # Distributionm of monthly mean errors for each station. 
 # Add the overall total station MEAN to the plot
@@ -215,7 +248,7 @@ sns.set(font_scale=1.0, style="darkgrid")
 df_all.groupby(pd.Grouper(level='TIME',freq='Y')).mean().boxplot()
 plt.xticks(rotation=90)
 plt.title('Distribution of the mean annual WL for indicated station: ec95d. ADC-OBS') 
-plt.ylabel('WL (m) versus MSL')
+plt.ylabel('meters')
 plt.axhline(df_all.mean().mean(), c='r')
 plt.plot(shiftlist, color='r', marker='o')
 #plt.show()
@@ -236,10 +269,10 @@ fig, ax = plt.subplots(figsize=(12, 8))
 snames = [df_meta.loc[int(n)]['stationname'].replace(' ',' ') for n in df_all.columns.to_list()]
 df_all_names=df_all.copy()
 df_all_names.columns=snames
-df_all_names.groupby(pd.Grouper(level='TIME',freq='M')).mean().boxplot()
+df_all_names.groupby(pd.Grouper(level='TIME',freq='Y')).mean().boxplot()
 plt.xticks(rotation=90)
 plt.title('Distribution of the mean annual WL for indicated station: ec95d. ADC-OBS')
-plt.ylabel('WL (m) versus MSL')
+plt.ylabel('meters')
 plt.axhline(df_all.mean().mean(), c='r')
 plt.gcf().subplots_adjust(bottom=0.40)
 plt.plot(shiftlist, color='r', marker='o')
@@ -250,16 +283,16 @@ plt.savefig('yearlyMeansNames.png')
 # station TOTAL means for the full time series
 # No annual averaging
 
-fig, ax = plt.subplots(figsize=(12, 8))
-sns.set(font_scale=1.0, style="darkgrid")
-df_all.groupby(pd.Grouper(level='TIME',freq='h')).mean().boxplot()
-df_all.mean().to_frame().T.plot()
-plt.xticks(rotation=45)
-plt.title('Distribution of overall WL for indicated station: ec95d. ADC-OBS')
-plt.ylabel('WL (m) versus MSL')
-plt.axhline(df_all.mean().mean(), c='r')
+#fig, ax = plt.subplots(figsize=(12, 8))
+#sns.set(font_scale=1.0, style="darkgrid")
+#df_all.groupby(pd.Grouper(level='TIME',freq='h')).mean().boxplot()
+#df_all.mean().to_frame().T.plot()
+#plt.xticks(rotation=45)
+#plt.title('Distribution of overall WL for indicated station: ec95d. ADC-OBS')
+#plt.ylabel('meters')
+#plt.axhline(df_all.mean().mean(), c='r')
 #plt.show()
-plt.savefig('totalMeans.png')
+#plt.savefig('totalMeans.png')
 
 ###############################################################################
 
@@ -300,6 +333,10 @@ df_all_ADC = pd.concat(yearlyADC)
 df_all_OBS = pd.concat(yearlyOBS)
 df_all_ERR = pd.concat(yearlyERR)
 
+df_all_ERR.to_pickle('40dataAllStationsERR.pkl')
+df_all_ADC.to_pickle('40dataAllStationsADC.pkl')
+df_all_OBS.to_pickle('40dataAllStationsOBS.pkl')
+
 #################################################################################
 ##
 ## Could consider iterating over all stations here
@@ -314,9 +351,6 @@ df_all_ERR = pd.concat(yearlyERR)
 
 print('Process All stations')
 stations = df_meta.index.to_list()
-
-stations=[8761724,8534720]
-
 for station in stations:
     print('Processing station {}'.format(station))
     stationName=df_meta.loc[station]['stationname']
