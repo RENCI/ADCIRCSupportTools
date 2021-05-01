@@ -22,3 +22,5 @@ python ../GetADCIRC.py --ignore_pkl --grid 'ec95d' --urljson ec95d_data1_forecas
 
 python  ../GetADCIRC.py --ignore_pkl --timeout='2020-09-21 18:00' --doffset=-2 --iometadata='_myfile' --iosubdir='MYDIR'
 
+# Call a hurricane
+python  ../GetADCIRC.py --ignore_pkl --grid 'ec95d' --urljson data1_hurricaneFlorence_forecast.json
