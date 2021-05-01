@@ -126,8 +126,8 @@ class computeErrorField(object):
         utilities.log.debug('Start time bounds')
         if len(self.df_adc_wl.index) < self.n_cycles*self.n_period:
             #print('Averaging bounds range too wide for actual data. ADC only of length '+str(len(self.df_adc_wl.index)))
-            utilities.log.error('Averaging bounds range too wide for actual data. ADC only of length '+str(len(self.df_adc_wl.index)))
-            sys.exit('Failed averaging bounds setting')
+            utilities.log.warning('Averaging bounds range too wide for actual data. ADC only of length '+str(len(self.df_adc_wl.index)))
+            #sys.exit('Failed averaging bounds setting')
         print(self.df_adc_wl)
         print(self.bound_lo)
         print(self.bound_hi)
@@ -135,7 +135,13 @@ class computeErrorField(object):
         print(self.n_period)
         self.bound_hi = self.df_adc_wl.index.max() if self.bound_hi is None else  np.datetime64(self.bound_hi)
         #self.bound_lo = self.df_adc_wl.index.min() if self.bound_lo is None else np.datetime64(self.df_adc_wl.index[-(self.n_cycles*self.n_period)])
-        self.bound_lo = self.df_adc_wl.index[-(self.n_cycles*self.n_period)] if self.bound_lo is None else np.datetime64(self.bound_lo)
+        
+        #Changes to support hurricane advisories in APSVIZ
+        inxrawlen=len(self.df_adc_wl.index) # The APSVIZ reqs force a change here
+        ind=-(self.n_cycles*self.n_period) if (self.n_cycles*self.n_period)<=inxrawlen else -inxrawlen
+        self.bound_lo = self.df_adc_wl.index[ind] if self.bound_lo is None else np.datetime64(self.bound_lo)
+        #self.bound_lo = self.df_adc_wl.index[-(self.n_cycles*self.n_period)] if self.bound_lo is None else np.datetime64(self.bound_lo)
+
         utilities.log.info('bounds (inclusive) lo and hi are '+str(self.bound_lo)+' '+str(self.bound_hi))
         if self.df_adc_wl.index.max() < self.bound_hi:
             utilities.log.error('input hi bound is too high for ADC. Max is '+str(self.df_adc_wl.index.max()))
@@ -250,6 +256,49 @@ class computeErrorField(object):
             print(str(self.diff.shape))
             #print(self.diff)
         
+    def _computeErrors(self):
+        """
+        """
+        stripNans=False
+        self.diff = self.df_adc_wl - self.df_obs_wl
+        ## Look for outliers now and construct adc/obs moving forward as needed
+        self.df_merged = self._combineDataFrames(self.df_adc_wl.copy(), self.df_obs_wl.copy(), self.diff.copy())
+        diff = self.diff.copy()  # We want to manipulate inplace so do not disturb the real errro object
+        # NANs at this level are prob coming foem the ADC data set
+        # We want the results to be in REVERSE order with oldest subaverage first)
+        # diff.sort_index(ascending=False, inplace=True) #  No need to reverse indexing
+        diff.reset_index(inplace=True) # Specify integers as indexes so we can use a groupby function
+        utilities.log.info('Averaging: Not performed' )
+        self.df_cycle_avgs = self.df_meta[['lon','lat','Node']]
+        # Now get fullmean and std without period boundaries
+        self.df_final = pd.DataFrame([diff.drop('index',axis=1).mean(), diff.drop('index',axis=1).std()]).T
+        self.df_final.columns=['mean','std']
+        self.df_final = pd.concat([self.df_meta[['lon','lat','Node']], self.df_final],axis=1)
+        # Merge lon,lat values into the final data product
+        # Must remove stations in the final and period resulots that have nans
+        if stripNans:
+            utilities.log.info('Removing potential NANS from summary data')
+            if self.df_final.isnull().any().sum() != 0:
+                utilities.log.info('Nans found in the summary means: those stations will be removed')
+                print('Original summary size was '+str(self.df_final.shape))
+                self.df_final.dropna(axis=0, inplace=True) # Only if ALL columns are nan
+                print('Post summary size was '+str(self.df_final.shape))
+        if self.config['ERRORFIELD']['EX_OUTLIER']:
+            utilities.log.info('Check for station outliers')
+            drop_stationlist = self._findStationOutliers()
+            ## Remove from all summary and period statistics
+            utilities.log.info('Removing outlier stations from summary statistics')
+            utilities.log.info('List of stations removed is {}.'.format(str(drop_stationlist)))
+            self.df_final.drop(drop_stationlist,inplace=True) 
+            self.df_cycle_avgs.drop(drop_stationlist,inplace=True)
+            utilities.log.info('Removing outlier stations from ADC, OBS and ERR, time data')
+            self.df_adc_wl.drop(drop_stationlist,axis=1,inplace=True)
+            self.df_obs_wl.drop(drop_stationlist,axis=1,inplace=True)
+            self.diff.drop(drop_stationlist,axis=1,inplace=True)
+            self.df_merged.drop(drop_stationlist,axis=1,inplace=True)
+            print(str(self.diff.shape))
+            #print(self.diff)
+
     @staticmethod
     def _combineDataFrames(adc,obs,err):
         """Combines the three diurnal corrected data frames into a single multiindex object
@@ -327,8 +376,6 @@ class computeErrorField(object):
     def _outputDataToFiles(self, metadata='_test',subdir='errorfield'):
         """Dump the averages to disk for posterity
         """
-        #print(self.df_final)
-        #print(self.df_cycle_avgs)
         df_metadata = pd.DataFrame([self._constructMetaData()])
         self.finalfilename=utilities.writeCsv(self.df_final,rootdir=self.rootdir,subdir=subdir,fileroot='stationSummaryAves',iometadata=metadata)
         self.cyclefilename=utilities.writeCsv(self.df_cycle_avgs,rootdir=self.rootdir,subdir=subdir,fileroot='stationPeriodAves',iometadata=metadata)
@@ -360,6 +407,18 @@ class computeErrorField(object):
         #self._tidalCorrectData()
         self._applyTimeBounds()
         self._computeAndAverageErrors()
+        ##self._generateDICTdata()
+        self.merged_dict = utilities.convertTimeseriesToDICTdata(self.df_merged, variables=['ADC','OBS','ERR'])
+        self._outputDataToFiles(metadata=metadata,subdir=subdir)
+        errf, finalf, cyclef, metaf, mergedf, jsonf = self._fetchOutputFilenames()
+        return errf, finalf, cyclef, metaf, mergedf, jsonf
+
+    def executePipelineNoTidalTransform_NoAveraging(self, metadata = 'Nometadata',subdir=''):
+        self._intersectionStations()
+        self._intersectionTimes()
+        #self._tidalCorrectData()
+        self._applyTimeBounds()
+        self._computeErrors()
         ##self._generateDICTdata()
         self.merged_dict = utilities.convertTimeseriesToDICTdata(self.df_merged, variables=['ADC','OBS','ERR'])
         self._outputDataToFiles(metadata=metadata,subdir=subdir)

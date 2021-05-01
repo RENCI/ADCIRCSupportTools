@@ -190,7 +190,7 @@ def exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdi
 
 def exec_error(obsf, adcf, meta, err_yamlname, rootdir, iometadata, iosubdir): 
     cmp = computeErrorField(obsf, adcf, meta, yamlname=err_yamlname, rootdir=rootdir)
-    cmp.executePipelineNoTidalTransform(metadata=iometadata,subdir=iosubdir)
+    cmp.executePipelineNoTidalTransform_NoAveraging(metadata=iometadata,subdir=iosubdir)
     errf, finalf, cyclef, metaf, mergedf,jsonf = cmp._fetchOutputFilenames()
     return errf, finalf, cyclef, metaf, mergedf, jsonf
 
