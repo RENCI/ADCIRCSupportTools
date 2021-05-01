@@ -13,9 +13,9 @@ REGRID: &regrid
 
 KRIGING: &kriging
    VPARAMS:
-      sill: 0.015 # 0.2
+      sill: 0.16 # 0.2
       range: 8 # 2
-      nugget: 0.005 # 0.1 
+      nugget: 0.001 # 0.1 
    PARAMS:
       method: "ordinary"
       variogram_model: "gaussian"
