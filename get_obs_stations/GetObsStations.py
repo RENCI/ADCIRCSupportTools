@@ -146,7 +146,7 @@ class GetObsStations(object):
         config['OBSERVATIONS']['EX_THRESH'].
         float(config['OBSERVATIONS']['THRESH']).
     """
-    def __init__(self, datum='MSL', unit='metric', product='water_level', stationFile=None, yamlname=os.path.join(os.path.dirname(__file__), '../config', 'obs.yml'),timezone='gmt', metadata='',rootdir='None', iosubdir='obspkl'):
+    def __init__(self, datum='MSL', unit='metric', product='water_level', stationFile=None, yamlname=os.path.join(os.path.dirname(__file__), '../config', 'obs.yml'),timezone='gmt', metadata='',rootdir='None', iosubdir='obspkl', knockout=None):
         """
         get_obs_stations constructor
 
@@ -158,6 +158,7 @@ class GetObsStations(object):
             metadata: str, filename extra naming.
             rootdir: str, high level output directory.
             iosubdir: Subdirectory under trootdir
+            knockout: A dict used to remove ranges of time(s) for a given station
    
         stationFile defaulting to None indicates to try and get name from the obs.yml file as before; else it must be a FQFN
         """
@@ -184,8 +185,39 @@ class GetObsStations(object):
             utilities.log.error('EX_COOPS must be True for all nontrivial work')
         utilities.log.info('PRODUCT to fetch is {}'.format(self.product))
         self.detailedjson='Empty'
+        self.knockout=knockout
+        utilities.log.info('Value of input knockout {}'.format(self.knockout))
 
         self.files = dict() # Collects the current set of files that could be (optionally) stored to disk.
+
+#
+# TODO Continuing issues with stations flipping between type int and type string
+# Need to fix this
+#
+    def knockoutStationRanges(self, df_station):
+        """
+        Input should be a data frame of time indexing and stations as columns.
+        The time ranges specified in the args.knockout will be set to Nans inclusively.
+        Subsequent methods will remove the nans at the right time.
+        """
+        stations=list(self.knockout.keys()) # How many. We antici[pate only one but multiples can be managed
+        #cols=df_station.columns.to_list()
+        cols=list(map(str,df_station.columns.to_list()))
+        #utilities.log.debug(' Lists cols {}, knockout {}'.format(cols, stations))
+        # 1 Do any stations exist? If not quietly leave
+        if not bool(set(stations).intersection(cols)):
+            return df_station
+        # 2 Okay for each station loop over time range(s) and NaN away
+        utilities.log.debug('Stations is {}'.format(stations))
+        utilities.log.debug('dict {}'.format(self.knockout))
+        for station in stations:
+            #utilities.log.debug('Range is {}'.format(self.knockout[station]))
+            for key, value in self.knockout[station].items():
+                #utilities.log.debug('Inner knockout {} {}'.format(station,value))
+                #utilities.log.debug('pre data {}'.format(df_station[int(station)][value[0]:value[1]]))
+                df_station[int(station)][value[0]:value[1]]=np.nan # Damn need to change type n the station id
+                #utilities.log.debug('post data {}'.format(df_station[int(station)][value[0]:value[1]]))
+        return df_station
 
     def writeFilesToDisk(self):
         """
@@ -416,6 +448,8 @@ class GetObsStations(object):
         Parameters:
             timein, timeout: in str or timestanp format. The detailed time range (inclusive).
             to fetch product values.
+            
+            if self.knockout is not None they nan away the data ranges sapecified in it for all stations
 
         Results:
             dataframe: Time x station matrix in df format within the timein,timeout range. Some stations may
@@ -424,6 +458,8 @@ class GetObsStations(object):
             stationlist: List (str) of current set of validated stationIDs (also updates class list).
    
         """
+        if self.knockout is not None:
+            utilities.log.info('Knockout Dict specified for this run')
         list_frame = list()
         exclude_stations = list()
         df_final = pd.DataFrame()
@@ -451,6 +487,9 @@ class GetObsStations(object):
                     stationdata = applyTimeBoundaries(timein, timeout, stationdata)
                     stationdata.set_index(['date_time'], inplace=True)
                     stationdata.columns=[station]
+                    if self.knockout is not None:
+                        #utilities.log.debug('Calling knockout {}'.format(station))
+                        stationdata = self.knockoutStationRanges(stationdata)
                     list_frame.append(stationdata)
             except ConnectionError:
                 utilities.log.error('Hard fail: Could not connect to COOPS for water products {}'.format(station))
