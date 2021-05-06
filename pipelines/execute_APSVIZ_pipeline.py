@@ -301,6 +301,12 @@ def main(args):
 
     doffset = args.doffset
     chosengrid=args.grid
+
+    instanceid=args.instanceid
+    if instanceid is not None:
+        utilities.log.info('A logger instanceid was specified as {}'.format(instanceid))
+        utilities.initialize_logging(instanceid=instanceid) # Override internal defaulkt to support the special case of cloud usage
+
     utilities.log.info('Grid specified was {}'.format(chosengrid))
     if args.cloudfinal is not None:
         utilities.log.info('PNGs and CSV will be also saved to {}'.format(args.cloudfinal))
@@ -534,6 +540,8 @@ if __name__ == '__main__':
     parser.add_argument('--grid', default='hsofs',help='Choose name of available grid',type=str)
     parser.add_argument('--final', action='store', dest='cloudfinal', default=None,
                         help='String: specialized kubernetes PV location for ONLY PNGs and lookup CSV')
+    parser.add_argument('--instanceid', action='store', dest='instanceid', default=None,
+                        help='String: Extra optional ID for use by the logger for specifying log location')
     args = parser.parse_args()
     sys.exit(main(args))
 
