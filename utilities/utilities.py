@@ -90,7 +90,6 @@ class Utilities:
         #LogName =os.getenv('LOG_NAME','logs')
         LogName='AdcircSupportTools.log'
         LogFile='/'.join([Logdir,LogName])
-        print('LogFile {}'.format(LogFile))
         self.LogFile = LogFile
 
         # print('Use a log filename of '+LogFile)
