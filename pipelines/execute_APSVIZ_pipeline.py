@@ -538,7 +538,7 @@ if __name__ == '__main__':
     parser.add_argument('--inputURL', action='store', dest='inputURL', default=None,
                         help='String: url.')
     parser.add_argument('--grid', default='hsofs',help='Choose name of available grid',type=str)
-    parser.add_argument('--final', action='store', dest='cloudfinal', default=None,
+    parser.add_argument('--finalDIR', action='store', dest='cloudfinal', default=None,
                         help='String: specialized kubernetes PV location for ONLY PNGs and lookup CSV')
     parser.add_argument('--instanceId', action='store', dest='instanceid', default=None,
                         help='String: Extra optional ID for use by the logger for specifying log location')
