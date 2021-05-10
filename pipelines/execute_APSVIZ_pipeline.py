@@ -355,11 +355,11 @@ def main(args):
     iometadata = args.iometadata
     main_config = utilities.load_config() # Get main comnfig. RUNTIMEDIR, etc
 
-    if args.outputDIR is None:
+    if args.outputDir is None:
         rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'], basedirExtra='')
     else:
-        rootdir = args.outputDIR
-        rootdir = utilities.setBasedir(args.outputDIR+'/')
+        rootdir = args.outputDir
+        rootdir = utilities.setBasedir(args.outputDir+'/')
     utilities.log.info('Specified rootdir underwhich all files will be stored. Rootdir is {}'.format(rootdir))
 
     outfiles['OBS_CREATIONTIME']=dt.datetime.now().strftime('%Y%m%d%H%M')
