@@ -19,10 +19,10 @@ runProps = os.system('python execute_APSVIZ_pipeline.py --inputURL "~/vol1/predi
 runProps = os.system('python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/dodsC/2021/nam/2021010500/hsofs/hatteras.renci.org/hsofs-nam-bob-2021/namforecast/fort.63.nc"')
 
 #APSVIZ test example save to alternative location
-runProps = os.system('python execute_APSVIZ_pipeline.py --outputDir /projects/ees/APSViz/stageDIR/insets  --inputURL "http://tds.renci.org:8080/thredds/dodsC/2021/nam/2021010500/hsofs/hatteras.renci.org/hsofs-nam-bob-2021/namforecast/fort.63.nc"')
+runProps = os.system('python execute_APSVIZ_pipeline.py --outputDIR /projects/ees/APSViz/stageDIR/insets  --inputURL "http://tds.renci.org:8080/thredds/dodsC/2021/nam/2021010500/hsofs/hatteras.renci.org/hsofs-nam-bob-2021/namforecast/fort.63.nc"'/
 
 # EC95d Manually run the new code
-#python execute_APSVIZ_pipeline.py --outputDir /projects/ees/APSViz/stageDIR/insets  --urljson ec95d_data1.json --grid 'ec95d'
+#python execute_APSVIZ_pipeline.py --outputDIR /projects/ees/APSViz/stageDIR/insets  --urljson ec95d_data1.json --grid 'ec95d'
 
 python execute_APSVIZ_pipeline.py --urljson ec95d_data1.json --grid 'ec95d'
 
@@ -36,7 +36,7 @@ python execute_APSVIZ_pipeline.py  --urljson datanew_hsofs.json --grid 'hsofs'
 # Another hsofs terst 
 python execute_APSVIZ_pipeline.py  --urljson data2-forecast.json --grid 'hsofs'
 # New optional "finalDIR" location storage of PNGs and the CSV
-# THis is not the same as using outputDir and can be used in conjunction with it
+# THis is not the same as using outputDIR and can be used in conjunction with it
 python execute_APSVIZ_pipeline.py --urljson ec95d_data1.json --grid 'ec95d' --finalDIR /home/jtilson/ADCIRCSupportTools/FINAL
 
 # Print out dict
