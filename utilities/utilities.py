@@ -53,7 +53,7 @@ class Utilities:
     """
 
     """
-    def __init__(self):
+    def __init__(self, instanceid=None):
         """
         Initialize the Utilities class, set up logging
         """
@@ -61,19 +61,20 @@ class Utilities:
         self.config = self.load_config()
 
         if LOGGER is None and self.config["DEFAULT"]["LOGGING"]:
-            log = self.initialize_logging()
+            log = self.initialize_logging(instanceid)
             LOGGER = log
         self.log = LOGGER
 
 #############################################################
 # Logging
 
-    def initialize_logging(self):
+    def initialize_logging(self, instanceid=None):
         """
         Initialize project logging
+        instanceid is a subdirectory to be created under LOG_PATH
         """
         # logger = logging.getLogger(__name__)
-        logger = logging.getLogger("adda_services")
+        logger = logging.getLogger("adda_services") # We could simply add the instanceid here as well
         log_level = self.config["DEFAULT"].get('LOGLEVEL', 'DEBUG')
         # log_level = getattr(logging, self.config["DEFAULT"].get('LOGLEVEL', 'DEBUG'))
         logger.setLevel(log_level)
@@ -82,7 +83,10 @@ class Utilities:
         # LogFile = '{}.{}.log'.format(thisDomain, currentdatecycle.cdc)
         #LogFile = 'log'
         #LogFile = os.getenv('LOG_PATH', os.path.join(os.path.dirname(__file__), 'logs'))
-        Logdir = os.getenv('LOG_PATH','.') 
+        if instanceid is not None:
+            Logdir = '/'.join([os.getenv('LOG_PATH','.'),instanceid])
+        else:
+            Logdir = os.getenv('LOG_PATH','.') 
         #LogName =os.getenv('LOG_NAME','logs')
         LogName='AdcircSupportTools.log'
         LogFile='/'.join([Logdir,LogName])
@@ -350,3 +354,4 @@ class Utilities:
 #############################################################
 
 utilities = Utilities()
+

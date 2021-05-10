@@ -35,9 +35,18 @@ python execute_APSVIZ_pipeline.py  --urljson datanew_hsofs.json --grid 'hsofs'
 
 # Another hsofs terst 
 python execute_APSVIZ_pipeline.py  --urljson data2-forecast.json --grid 'hsofs'
-# New optional "final" location storage of PNGs and the CSV
+# New optional "finalDIR" location storage of PNGs and the CSV
 # THis is not the same as using outputDir and can be used in conjunction with it
-python execute_APSVIZ_pipeline.py --urljson ec95d_data1.json --grid 'ec95d' --final /home/jtilson/ADCIRCSupportTools/FINAL
+python execute_APSVIZ_pipeline.py --urljson ec95d_data1.json --grid 'ec95d' --finalDIR /home/jtilson/ADCIRCSupportTools/FINAL
 
 # Print out dict
 print('runProps: {}'.format(runProps))
+
+python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/dodsC/2021/nam/2021050412/ec95d/hatteras.renci.org/ec95d-nam-bob-rptest/namforecast/fort.63.nc" --grid 'ec95d'
+
+# Drop log file into dir instanceId
+
+python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/dodsC/2021/nam/2021050412/ec95d/hatteras.renci.org/ec95d-nam-bob-rptest/namforecast/fort.63.nc" --grid 'ec95d' --instanceId 'CLOUD'
+
+
+

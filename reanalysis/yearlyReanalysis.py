@@ -85,8 +85,8 @@ def exec_adcirc_url(urls, rootdir, iometadata, adc_yamlname, node_idx, station_i
     utilities.log.info('Times returned by get_adcirc {},{}'.format(adc.T1,adc.T2))
     return ADCfile, ADCjson, timestart, timeend
 
-def exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdir, stationFile):
-    rpl = GetObsStations(iosubdir=iosubdir, rootdir=rootdir, yamlname=obs_yamlname, metadata=iometadata, stationFile=stationFile)
+def exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdir, stationFile,knockout=None):
+    rpl = GetObsStations(iosubdir=iosubdir, rootdir=rootdir, yamlname=obs_yamlname, metadata=iometadata, stationFile=stationFile, knockout=knockout)
     df_stationNodelist = rpl.fetchStationNodeList()
     stations = df_stationNodelist['stationid'].to_list()
     #utilities.log.info('Choose a limited number of stations')
@@ -136,6 +136,8 @@ def main(args):
     doffset = args.doffset
     chosengrid=args.grid
 
+    knockout=args.knockout
+
     # Get input adcirc url and check for existance
     if args.urljson != None:
         urljson = args.urljson
@@ -155,6 +157,11 @@ def main(args):
         utilities.log.info('Explicit URL provided {}'.format(urls))
     else:
         utilities.log.error('No Proper URL specified')
+
+    if knockout is not None:
+        utilities.log.info('A station and time knockout file was specified {}'.format(knockout))
+        dict_knockout = utilities.read_json_file(knockout)
+        utilities.log.debug('Knockout dict {}'.format(dict_knockout))
 
     # 1) Setup main config data
     iosubdir = args.iosubdir
@@ -282,6 +289,7 @@ if __name__ == '__main__':
     parser.add_argument('--url', action='store', dest='url', default=None,
                         help='String: url.')
     parser.add_argument('--grid', default='hsofs',dest='grid', help='Choose name of available grid',type=str)
+    parser.add_argument('--knockout', default=None, dest='knockout', help='knockout jsonfilename', type=str)
     args = parser.parse_args()
     sys.exit(main(args))
 

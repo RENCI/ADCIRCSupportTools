@@ -9,6 +9,12 @@
 ## specify the timeout for a previous nowcast.
 ###################################################################
 
+##
+## An new version that now requires URL formatting as used in the ASGS. 
+## We must determine based on the URL forecast path if this is a hurricane 
+## or not. Thus, passing in local files will almost certainly fail
+##
+
 import os,sys
 import shutil
 import time as tm
@@ -146,7 +152,7 @@ def exec_adcirc_nowcast_hurricane(inurls, rootdir, iometadata, adc_yamlname, nod
     ADCfile = rootdir+'/adc_wl'+iometadata+'.pkl'
     ADCjson = rootdir+'/adc_wl'+iometadata+'.json'
     df = get_water_levels63(adc.urls, node_idx, station_ids) # Gets ADCIRC water levels
-    adc.T1 = df.index[0] # Optional update to actual times fetched form ADC
+    adc.T1 = df.index[0] 
     adc.T2 = df.index[-1]
     ADCfile = utilities.writePickle(df, rootdir=rootdir,subdir='',fileroot='adc_wl_forecast',iometadata=iometadata)
     ##df.to_pickle(ADCfile)
@@ -184,7 +190,7 @@ def exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdi
 
 def exec_error(obsf, adcf, meta, err_yamlname, rootdir, iometadata, iosubdir): 
     cmp = computeErrorField(obsf, adcf, meta, yamlname=err_yamlname, rootdir=rootdir)
-    cmp.executePipelineNoTidalTransform(metadata=iometadata,subdir=iosubdir)
+    cmp.executePipelineNoTidalTransform_NoAveraging(metadata=iometadata,subdir=iosubdir)
     errf, finalf, cyclef, metaf, mergedf,jsonf = cmp._fetchOutputFilenames()
     return errf, finalf, cyclef, metaf, mergedf, jsonf
 
@@ -257,6 +263,36 @@ def buildCSV(dataDict):
     df['Lon'] = df['Lon'].astype(float)
     return df[['StationName','State','Lat','Lon','Node','Filename']]
 
+def checkAdvisory(value):
+    """
+    Try to ensure a typical advisaory number was passed
+    """
+    state_hurricane=False
+    utilities.log.debug('Check advisory {}'.format(value))
+    try:
+        test=dt.datetime.strptime(value,'%Y%m%d%H')
+        utilities.log.error('A timestamp data was found Not aHurricane URL ? {}'.format(test))
+        #sys.exit()
+    except ValueError:
+        try:
+            outid = int(value)
+            state_hurricane=True
+        except ValueError:
+            utilities.log.error('Expected an Advisory value but could convert to int {}'.format(value))
+            sys.exit()
+    utilities.log.info('URL state_hurricane is {}'.format(state_hurricane))
+    return state_hurricane 
+
+def checkIfHurricane(dicturls):
+    """
+    Very simple procedure but we anticipate more complex tests in the future
+    """
+    url= list(dicturls.values())[0]
+    words=url.split('/')
+    state_hurricane = checkAdvisory(words[-6])
+    return state_hurricane
+  
+
 # noinspection PyPep8Naming,DuplicatedCode
 def main(args):
 
@@ -265,6 +301,12 @@ def main(args):
 
     doffset = args.doffset
     chosengrid=args.grid
+
+    instanceid=args.instanceid
+    if instanceid is not None:
+        utilities.log.info('A logger instanceid was specified as {}'.format(instanceid))
+        utilities.initialize_logging(instanceid=instanceid) # Override internal defaulkt to support the special case of cloud usage
+
     utilities.log.info('Grid specified was {}'.format(chosengrid))
     if args.cloudfinal is not None:
         utilities.log.info('PNGs and CSV will be also saved to {}'.format(args.cloudfinal))
@@ -288,6 +330,12 @@ def main(args):
         utilities.log.info('Explicit URL provided {}'.format(urls))
     else:
         utilities.log.error('No Proper URL specified')
+
+    # Assume only a single element in the dict
+    if len(urls)!=1:
+        utilities.log.info('User must only supply a single URL for processing: {} Abort'.format(urls))
+    state_hurricane = checkIfHurricane(urls)
+    utilities.log.debug('hurricane state check is {}'.format(urls))
 
     # 0) Read the ASGS Forecast URL and create a nowcast timeout from it
     # NOTE the dict key (datecycle) is not actually used in this code as it is yet to be defined to me
@@ -364,8 +412,14 @@ def main(args):
     adc_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'adc.yml')
     #adc_config = utilities.load_config(adc_yamlname)
     #ADCfile, ADCjson, timestart, timeend = exec_adcirc(timeout.strftime('%Y-%m-%d %H:%M'), rootdir, '_nowcast'+iometadata, adc_yamlname, node_idx, station_ids, doffset=doffset)
-    ADCfile, ADCjson, timestart, timeend = exec_adcirc_nowcast(urls, rootdir, '_nowcast'+iometadata, adc_yamlname, node_idx, station_ids, chosengrid, doffset=doffset)
-    utilities.log.info('Completed ADCIRC nowcast Reads')
+  
+    if state_hurricane:
+        ADCfile, ADCjson, timestart, timeend = exec_adcirc_nowcast_hurricane(urls, rootdir, '_nowcast'+iometadata, adc_yamlname, node_idx, station_ids, chosengrid, doffset=doffset)
+        utilities.log.info('Completed ADCIRC hurricane nowcast Reads')
+    else:
+        ADCfile, ADCjson, timestart, timeend = exec_adcirc_nowcast(urls, rootdir, '_nowcast'+iometadata, adc_yamlname, node_idx, station_ids, chosengrid, doffset=doffset)
+        utilities.log.info('Completed ADCIRC synoptic nowcast Reads')
+
     outfiles['ADCIRC_WL_PKL']=os.path.basename(ADCfile)
     outfiles['ADCIRC_WL_JSON']=os.path.basename(ADCjson)
 
@@ -401,7 +455,7 @@ def main(args):
 
     # 4) Setup ERR specific YML-resident values
     utilities.log.info('Error computation NOTIDAL corrections')
-    err_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'err.yml')
+    err_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'err.APSVIZ.yml')
     meta = metapkl
     obsf = smoothedpkl
     adcf = ADCfile 
@@ -484,8 +538,10 @@ if __name__ == '__main__':
     parser.add_argument('--inputURL', action='store', dest='inputURL', default=None,
                         help='String: url.')
     parser.add_argument('--grid', default='hsofs',help='Choose name of available grid',type=str)
-    parser.add_argument('--final', action='store', dest='cloudfinal', default=None,
+    parser.add_argument('--finalDIR', action='store', dest='cloudfinal', default=None,
                         help='String: specialized kubernetes PV location for ONLY PNGs and lookup CSV')
+    parser.add_argument('--instanceId', action='store', dest='instanceid', default=None,
+                        help='String: Extra optional ID for use by the logger for specifying log location')
     args = parser.parse_args()
     sys.exit(main(args))
 
