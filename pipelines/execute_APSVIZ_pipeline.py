@@ -355,11 +355,11 @@ def main(args):
     iometadata = args.iometadata
     main_config = utilities.load_config() # Get main comnfig. RUNTIMEDIR, etc
 
-    if args.outputDir is None:
+    if args.outputDIR is None:
         rootdir = utilities.fetchBasedir(main_config['DEFAULT']['RDIR'], basedirExtra='')
     else:
-        rootdir = args.outputDir
-        rootdir = utilities.setBasedir(args.outputDir+'/')
+        rootdir = args.outputDIR
+        rootdir = utilities.setBasedir(args.outputDIR+'/')
     utilities.log.info('Specified rootdir underwhich all files will be stored. Rootdir is {}'.format(rootdir))
 
     outfiles['OBS_CREATIONTIME']=dt.datetime.now().strftime('%Y%m%d%H%M')
@@ -527,7 +527,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--experiment_name', action='store', dest='experiment_name', default=None,
                         help='Names highlevel Experiment-tag value')
-    parser.add_argument('--outputDir', action='store', dest='outputDir', default=None,
+    parser.add_argument('--outputDIR', action='store', dest='outputDir', default=None,
                         help='Available high leverl directory')
     parser.add_argument('--ignore_pkl', help="Ignore existing pickle files.", action='store_true')
     parser.add_argument('--doffset', default=-2, help='Day lag or datetime string for analysis: def to YML -2', type=int)
