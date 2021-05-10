@@ -48,5 +48,12 @@ python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/
 
 python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/dodsC/2021/nam/2021050412/ec95d/hatteras.renci.org/ec95d-nam-bob-rptest/namforecast/fort.63.nc" --grid 'ec95d' --instanceId 'CLOUD'
 
+# Example of Florence
+python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/dodsC/2018/temp_florence/50/nc_inundation_v9.99_w_rivers/hatteras.renci.org/062018hiresr/nhcConsensus/fort.63.nc" --grid 'nc_inundation_v9.99_w_rivers' --instanceId 'CLOUD'
+
+# Example when not enough nowcasts are avail
+
+python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/dodsC/2018/temp_florence/44/nc_inundation_v9.99_w_rivers/hatteras.renci.org/062018hiresr/nhcConsensus/fort.63.nc" --grid 'nc_inundation_v9.99_w_rivers' --instanceId 'CLOUD'
+
 
 

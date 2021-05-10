@@ -17,3 +17,5 @@ STATIONS: &stations
   HSOFS: "CERA_NOAA_HSOFS_stations_V2.csv"
   EC95D: "ec95d_stations.V1.csv"
   REGION3: "Region3_Stations_V1.csv"
+  NC_INUNDATION_V9.99_W_RIVERS: "NCV99_Stations_V1.csv"
+
