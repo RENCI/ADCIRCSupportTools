@@ -18,10 +18,12 @@ export CODEBASE=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTo
 export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools
 export BASEDIREXTRA=
 
+export KNOCKOUT=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/reanalysis/knockoutStation.json
+
 export YEAR=$1
 export RUNTIMEDIR=./EC95D/YEARLY-$YEAR
 export LOG_PATH=$RUNTIMEDIR
-URL="/projects/ees/TDS/Reanalysis/ADCIRC/ERA5/ec95d/$YEAR/fort.63.nc"
+URL="/projects/reanalysis/ADCIRC/ERA5/ec95d/$YEAR/fort.63.nc"
 
 #DAILY=DAILY-2018YEAR-12MONTH-REGION3-RANGE$RANGE-SILL$SILL-NUGGET$NUGGET-LP48
 DAILY=DAILY-$GRID-RANGE$RANGE-SILL$SILL-NUGGET$NUGGET-LP24
@@ -35,7 +37,7 @@ echo "xxxxxx"
 ####
 
 # Build the yearly error file store in $RUNTIMEDIR/BASEDIREXTRA
-python $CODEBASE/yearlyReanalysisRoundHourly.py --grid $GRID --url $URL
+python $CODEBASE/yearlyReanalysisRoundHourly.py --grid $GRID --url $URL --knockout $KNOCKOUT
 mv $RUNTIMEDIR/AdcircSupportTools.log $RUNTIMEDIR/$BASEDIREXTRA/log-yearly
 
 # Store files in $RUNTIMEDIR/DAILY/errorfield
