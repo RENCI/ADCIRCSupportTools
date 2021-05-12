@@ -7,11 +7,12 @@ import pandas as pd
 import json
 import datetime
 from utilities.utilities import utilities
+import errno
 
 #############################################################################
 # Build a slurm file
 
-def build_slurm(ROOTDIR,YAMLNAME,ERRFILE,CLAMPFILE,ADCJSON,RANGE,SILL):
+def build_slurm(key,ROOTDIR,YAMLNAME,ERRFILE,CLAMPFILE,ADCJSON,RANGE,SILL):
     slurm = list()
     slurm.append('#!/bin/sh')
     slurm.append('#SBATCH -t 24:00:00')
@@ -24,11 +25,17 @@ def build_slurm(ROOTDIR,YAMLNAME,ERRFILE,CLAMPFILE,ADCJSON,RANGE,SILL):
     slurm.append('export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools')
     slurm.append('dir="/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/reanalysis"')
     slurm.append('python -u $dir/krigListOfErrorSets.py --daily --inrange "'+RANGE+'" --insill "'+SILL+'" --outroot "'+ROOTDIR+'" --yamlname "'+YAMLNAME+'" --errorfile "'+ERRFILE+'" --clampfile "'+CLAMPFILE+'" --gridjsonfile "'+ADCJSON+'"' )
-    with open('runSlurm.sh', 'w') as file:
+    try:
+        os.makedirs('./tmp')
+    except OSError as exc: # Python >2.5
+        if exc.errno == errno.EEXIST and os.path.isdir('./tmp'):
+            pass
+        else: raise
+    with open('./tmp/runSlurm'+key+'.sh', 'w') as file:
         for row in slurm:
             file.write(row+'\n')
     file.close()
-    return ('runSlurm.sh')
+    return ('./tmp/runSlurm'+key+'.sh')
 
 def main(args):
     print('Process the separate reanalysis error files')
@@ -78,7 +85,8 @@ def main(args):
         utilities.log.info('ROOTDIR {}'.format(ROOTDIR))
         utilities.log.info('RANGE {}'.format(RANGE))
         utilities.log.info('SILL {}'.format(SILL))
-        slurmFilename = build_slurm(ROOTDIR,YAMLNAME,ERRFILE,CLAMPFILE,ADCJSON,RANGE,SILL)
+        utilities.log.info('key is {}'.format(key))
+        slurmFilename = build_slurm(key,ROOTDIR,YAMLNAME,ERRFILE,CLAMPFILE,ADCJSON,RANGE,SILL)
         cmd = 'sbatch ./'+slurmFilename
         os.system(cmd)
 
