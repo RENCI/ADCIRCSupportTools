@@ -20,6 +20,7 @@ def build_slurm(key,ROOTDIR,YAMLNAME,ERRFILE,CLAMPFILE,ADCJSON,RANGE,SILL):
     slurm.append('#SBATCH -N 1')
     slurm.append('#SBATCH -n 1')
     slurm.append('#SBATCH -J Interpolate')
+    slurm.append('#SBATCH --exclude=compute-6-23')
     slurm.append('#SBATCH --mem-per-cpu 64000')
     slurm.append('echo "Begin the Interpolation phase" ')
     slurm.append('export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools')

@@ -5,6 +5,7 @@
 #SBATCH -n 1 
 #SBATCH -J EC95DReanalysis
 #SBATCH --mem-per-cpu 64000
+#SBATCH --exclude=compute-6-23
 
 
 export SILL=0.16
@@ -21,9 +22,11 @@ export BASEDIREXTRA=
 export KNOCKOUT=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/reanalysis/knockoutStation.json
 
 export YEAR=$1
-export RUNTIMEDIR=./EC95D/YEARLY-$YEAR
+export RUNTIMEDIR=./EC95D-DA/YEARLY-$YEAR
 export LOG_PATH=$RUNTIMEDIR
-URL="/projects/reanalysis/ADCIRC/ERA5/ec95d/$YEAR/fort.63.nc"
+
+URL="/projects/reanalysis/ADCIRC/ERA5/ec95d/$YEAR-post/fort.63.nc"
+echo $URL
 
 #DAILY=DAILY-2018YEAR-12MONTH-REGION3-RANGE$RANGE-SILL$SILL-NUGGET$NUGGET-LP48
 DAILY=DAILY-$GRID-RANGE$RANGE-SILL$SILL-NUGGET$NUGGET-LP24

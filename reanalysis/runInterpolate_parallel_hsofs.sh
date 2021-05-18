@@ -43,8 +43,9 @@ echo "xxxxxx"
 ####
 
 # Build the yearly error file store in $RUNTIMEDIR/BASEDIREXTRA
-python $CODEBASE/yearlyReanalysisRoundHourly_hsofs.py --grid $GRID --url $URL --knockout $KNOCKOUT
-mv $RUNTIMEDIR/AdcircSupportTools.log $RUNTIMEDIR/$BASEDIREXTRA/log-yearly
+#python $CODEBASE/yearlyReanalysisRoundHourly_hsofs.py --grid $GRID --url $URL --knockout $KNOCKOUT
+#python $CODEBASE/yearlyReanalysis.py --grid $GRID --url $URL --knockout $KNOCKOUT
+#mv $RUNTIMEDIR/AdcircSupportTools.log $RUNTIMEDIR/$BASEDIREXTRA/log-yearly
 
 # Store files in $RUNTIMEDIR/DAILY/errorfield
 export INDIR=$RUNTIMEDIR/
