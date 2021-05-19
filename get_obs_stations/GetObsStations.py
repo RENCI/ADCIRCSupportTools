@@ -468,6 +468,7 @@ class GetObsStations(object):
         utilities.log.info("station IDlist timein {} and timeout {}".format(timein, timeout))
         utilities.log.info('User supplied INTERVAL is {}'.format(interval))
         for station in self.stationlist:
+            utilities.log.debug('Fetch station {}'.format(station))
             try:
                 stationdata = pd.DataFrame()
                 location = coops.Station(station)
