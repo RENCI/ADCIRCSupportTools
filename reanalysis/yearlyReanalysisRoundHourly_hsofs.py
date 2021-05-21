@@ -231,9 +231,21 @@ def main(args):
     timeout = timeend.strftime('%Y%m%d %H:%M')
     utilities.log.info('ADC provided times are {} and {}'.format(timein, timeout))
 
+    utilities.log.info('DEBIG manual override of timein {}'.format(timein))
+    timein='20180101 01:00:00'
+
     # Could also set stations to None
     # Overwrite SMOOTHED data with the hourly data so downstream methods can pick up the filenames
     #detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ = exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdir, stationFile)
+
+
+    ##
+    ## We ask for more data than needed to sidestep the edge-casew failure fond in noaa-coops. See slack channel
+    ##
+    utilities.log.info('OVERRIDE 2018 only: timeout for OBS due to noaa-coops edge-case problem')
+    timeout='20190101 01:00:00'
+    ##
+
     detailedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ = exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdir, stationFile, knockout=dict_knockout)
     outfiles['OBS_DETAILED_PKL']=detailedpkl
     outfiles['OBS_SMOOTHED_PKL']=detailedpkl

@@ -24,11 +24,13 @@ export KNOCKOUT=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTo
 #export YEAR=$1
 export YEAR=2018
 
-#export RUNTIMEDIR=./HSOFS/YEARLY-$YEAR
-export RUNTIMEDIR=./HSOFS-DA/YEARLY-$YEAR
+export RUNTIMEDIR=./HSOFS-JUNK/YEARLY-$YEAR
+#export RUNTIMEDIR=./HSOFS-DA/YEARLY-$YEAR
 export LOG_PATH=$RUNTIMEDIR
 #URL="/projects/ees/TDS/Reanalysis/ADCIRC/ERA5/hsofs/$YEAR-post/fort.63.nc"
 URL="/projects/reanalysis/ADCIRC/ERA5/hsofs/$YEAR-post/fort.63.nc"
+#URL="/projects/reanalysis/ADCIRC/ERA5/hsofs/$YEAR/fort.63.nc"
+
 #URL="C/ERA5/hsofs/$YEAR/fort.63.nc"
 
 #DAILY=DAILY-2018YEAR-12MONTH-REGION3-RANGE$RANGE-SILL$SILL-NUGGET$NUGGET-LP48
@@ -43,15 +45,15 @@ echo "xxxxxx"
 ####
 
 # Build the yearly error file store in $RUNTIMEDIR/BASEDIREXTRA
-#python $CODEBASE/yearlyReanalysisRoundHourly_hsofs.py --grid $GRID --url $URL --knockout $KNOCKOUT
+python $CODEBASE/yearlyReanalysisRoundHourly_hsofs.py --grid $GRID --url $URL --knockout $KNOCKOUT
 #python $CODEBASE/yearlyReanalysis.py --grid $GRID --url $URL --knockout $KNOCKOUT
-#mv $RUNTIMEDIR/AdcircSupportTools.log $RUNTIMEDIR/$BASEDIREXTRA/log-yearly
+mv $RUNTIMEDIR/AdcircSupportTools.log $RUNTIMEDIR/$BASEDIREXTRA/log-yearly
 
 # Store files in $RUNTIMEDIR/DAILY/errorfield
 export INDIR=$RUNTIMEDIR/
 export OUTROOT=$RUNTIMEDIR/$DAILY
-python $CODEBASE/dailyLowpassSampledError_hsofs.py --inyear $YEAR  --inDir $INDIR --outroot $OUTROOT # --stationarity
-mv $RUNTIMEDIR/AdcircSupportTools.log $OUTROOT/log-daily
+#python $CODEBASE/dailyLowpassSampledError_hsofs.py --inyear $YEAR  --inDir $INDIR --outroot $OUTROOT # --stationarity
+#mv $RUNTIMEDIR/AdcircSupportTools.log $OUTROOT/log-daily
 
 # Interpolate a single specific file
 export ADCJSON=$INDIR/adc_coord.json
@@ -59,6 +61,6 @@ export CLAMPFILE=$PYTHONPATH/config/clamp_list_hsofs.dat
 export YAMLNAME=$PYTHONPATH/config/int.REANALYSIS.HSOFS.yml
 export OUTROOT=$RUNTIMEDIR/$DAILY
 export ERRDIR=$OUTROOT/errorfield
-python  $CODEBASE/runInterpolate_parallel.py  --insill $SILL --inrange $RANGE --outroot $OUTROOT --yamlname $YAMLNAME --errordir $ERRDIR --clampfile $CLAMPFILE --gridjsonfile $ADCJSON
-mv $RUNTIMEDIR/AdcircSupportTools.log $OUTROOT/log-interpolate
+#python  $CODEBASE/runInterpolate_parallel.py  --insill $SILL --inrange $RANGE --outroot $OUTROOT --yamlname $YAMLNAME --errordir $ERRDIR --clampfile $CLAMPFILE --gridjsonfile $ADCJSON
+#mv $RUNTIMEDIR/AdcircSupportTools.log $OUTROOT/log-interpolate
 

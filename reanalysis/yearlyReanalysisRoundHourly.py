@@ -78,7 +78,7 @@ def exec_adcirc_url(urls, rootdir, iometadata, adc_yamlname, node_idx, station_i
     # Correct for ec95d 30 sec shifts
     #
     utilities.log.info("NOTE Rounding ADC timer - Use this only for the EC95D data sets")
-    #df.index = df.index + pd.Timedelta(30,'s')
+    ###df.index = df.index + pd.Timedelta(30,'s')
     df.index = df.index.round('60min').to_pydatetime()
     adc.T1 = df.index[0] # Optional update to actual times fetched form ADC
     adc.T2 = df.index[-1]
