@@ -130,10 +130,6 @@ def exec_adcirc_nowcast(inurls, rootdir, iometadata, adc_yamlname, node_idx, sta
     adc.T2 = df.index[-1]
     #utilities.log.info('TEST df {}'.format(df.shape))
     #utilities.log.info('TEST df all {}'.format(df))
-    if df.shape[0]==0: 
-        utilities.log.error('NOWCAST df has no times: Probably no found nowcasts'.format(df.shgape))
-        sys.exit(0) # Exit as successful to allow k8s stuff to proceed
-    
     ADCfile = utilities.writePickle(df, rootdir=rootdir,subdir='',fileroot='adc_wl_forecast',iometadata=iometadata)
     ##df.to_pickle(ADCfile)
     ####df.to_json(ADCjson)
@@ -158,10 +154,6 @@ def exec_adcirc_nowcast_hurricane(inurls, rootdir, iometadata, adc_yamlname, nod
     ADCfile = rootdir+'/adc_wl'+iometadata+'.pkl'
     ADCjson = rootdir+'/adc_wl'+iometadata+'.json'
     df = get_water_levels63(adc.urls, node_idx, station_ids) # Gets ADCIRC water levels
-    if df.shape[0]==0:
-        utilities.log.error('NOWCAST hurricane df has no times: Probably no found nowcasts'.format(df.shgape))
-        sys.exit(0) # Exit as successful to allow k8s stuff to proceed
-
     adc.T1 = df.index[0] 
     adc.T2 = df.index[-1]
     ADCfile = utilities.writePickle(df, rootdir=rootdir,subdir='',fileroot='adc_wl_forecast',iometadata=iometadata)
