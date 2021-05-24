@@ -128,6 +128,8 @@ def exec_adcirc_nowcast(inurls, rootdir, iometadata, adc_yamlname, node_idx, sta
     df = get_water_levels63(adc.urls, node_idx, station_ids) # Gets ADCIRC water levels
     adc.T1 = df.index[0] # Optional update to actual times fetched form ADC
     adc.T2 = df.index[-1]
+    #utilities.log.info('TEST df {}'.format(df.shape))
+    #utilities.log.info('TEST df all {}'.format(df))
     ADCfile = utilities.writePickle(df, rootdir=rootdir,subdir='',fileroot='adc_wl_nowcast',iometadata=iometadata)
     ##df.to_pickle(ADCfile)
     ####df.to_json(ADCjson)
