@@ -496,8 +496,13 @@ def get_water_levels63(urls, nodes, stationids):
                 df = pd.concat((df, df_sub), axis=0)
                 utilities.log.debug("df_concat time range = {} -> {}" .format(df.index[0], df.index[-1]))
     utilities.log.info('Updating internal time range to reflect data values')
-    timestart = df.index[0]
-    timestop = df.index[-1]
+    try:
+        timestart = df.index[0]
+        timestop = df.index[-1]
+    except Exception as e:
+        utilities.log.error(e)
+        utilities.log.error('Levels 63 didnt return any valid data. Usually no found urls: ')
+        sys.exit(0) # Set to 0 to allow k8s to continue
     utilities.log.info('water_levels_63: ADC actual time range {} {}'.format(timestart, timestop))
     return df
 
