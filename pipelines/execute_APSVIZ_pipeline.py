@@ -130,11 +130,11 @@ def exec_adcirc_nowcast(inurls, rootdir, iometadata, adc_yamlname, node_idx, sta
     adc.T2 = df.index[-1]
     #utilities.log.info('TEST df {}'.format(df.shape))
     #utilities.log.info('TEST df all {}'.format(df))
-    ADCfile = utilities.writePickle(df, rootdir=rootdir,subdir='',fileroot='adc_wl_forecast',iometadata=iometadata)
+    ADCfile = utilities.writePickle(df, rootdir=rootdir,subdir='',fileroot='adc_wl_nowcast',iometadata=iometadata)
     ##df.to_pickle(ADCfile)
     ####df.to_json(ADCjson)
     print('write new json')
-    ADCjson=writeToJSON(df, rootdir, iometadata,fileroot='adc_wl_forecast')
+    ADCjson=writeToJSON(df, rootdir, iometadata,fileroot='adc_wl_nowcast')
     #timestart = adc.T1.strftime('%Y%m%d%H%M')
     #timeend = adc.T2.strftime('%Y%m%d%H%M')
     timestart = adc.T1
@@ -156,11 +156,11 @@ def exec_adcirc_nowcast_hurricane(inurls, rootdir, iometadata, adc_yamlname, nod
     df = get_water_levels63(adc.urls, node_idx, station_ids) # Gets ADCIRC water levels
     adc.T1 = df.index[0] 
     adc.T2 = df.index[-1]
-    ADCfile = utilities.writePickle(df, rootdir=rootdir,subdir='',fileroot='adc_wl_forecast',iometadata=iometadata)
+    ADCfile = utilities.writePickle(df, rootdir=rootdir,subdir='',fileroot='adc_wl_nowcast',iometadata=iometadata)
     ##df.to_pickle(ADCfile)
     ####df.to_json(ADCjson)
     print('write new json')
-    ADCjson=writeToJSON(df, rootdir, iometadata,fileroot='adc_wl_forecast')
+    ADCjson=writeToJSON(df, rootdir, iometadata,fileroot='adc_wl_nowcast')
     #timestart = adc.T1.strftime('%Y%m%d%H%M')
     #timeend = adc.T2.strftime('%Y%m%d%H%M')
     timestart = adc.T1
