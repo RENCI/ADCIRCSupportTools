@@ -22,13 +22,16 @@ export BASEDIREXTRA=
 export KNOCKOUT=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/reanalysis/knockoutStation.json
 
 export YEAR=$1
-export RUNTIMEDIR=./EC95D-DA/YEARLY-$YEAR
+export RUNTIMEDIR=./EC95D/YEARLY-$YEAR
 export LOG_PATH=$RUNTIMEDIR
 
-URL="/projects/reanalysis/ADCIRC/ERA5/ec95d/$YEAR-post/fort.63.nc"
+URL="/projects/reanalysis/ADCIRC/ERA5/ec95d/$YEAR/fort.63.nc"
+#URL="/projects/reanalysis/ADCIRC/ERA5/ec95d/$YEAR-post/fort.63.nc"
+
 echo $URL
 
 #DAILY=DAILY-2018YEAR-12MONTH-REGION3-RANGE$RANGE-SILL$SILL-NUGGET$NUGGET-LP48
+
 DAILY=DAILY-$GRID-RANGE$RANGE-SILL$SILL-NUGGET$NUGGET-LP24
 
 echo "xxxxxx"
@@ -52,6 +55,7 @@ mv $RUNTIMEDIR/AdcircSupportTools.log $OUTROOT/log-daily
 # Interpolate a single specific file
 export ADCJSON=$INDIR/adc_coord.json
 export CLAMPFILE=$PYTHONPATH/config/clamp_list_hsofs.dat
+# clamps are disabled in the code itself
 export YAMLNAME=$PYTHONPATH/config/int.REANALYSIS.EC95D.yml
 export OUTROOT=$RUNTIMEDIR/$DAILY
 export ERRDIR=$OUTROOT/errorfield
