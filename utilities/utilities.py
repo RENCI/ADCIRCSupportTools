@@ -197,7 +197,11 @@ class Utilities:
             try:
                 os.makedirs(fulldir)
             except OSError:
-                sys.exit("Creation of the directory %s failed" % fulldir)
+                #sys.exit("Creation of the directory %s failed" % fulldir)
+                if not os.path.isdir(fulldir): 
+                    sys.exit("Creation of the directory %s failed" % fulldir)
+                    raise
+                utilities.log.warn('mkdirs reports couldnt make directory. butmight be a race condition that can be ignored')
             #else:
             #    print("Successfully created the directory %s " % fulldir)
         return os.path.join(fulldir, fname)
