@@ -502,7 +502,7 @@ def get_water_levels63(urls, nodes, stationids):
     except Exception as e:
         utilities.log.error(e)
         utilities.log.error('Levels 63 didnt return any valid data. Usually no found urls: ')
-        sys.exit(0) # Set to 0 to allow k8s to continue
+        sys.exit(0) # None found: Set to 0 to allow k8s to continue
     utilities.log.info('water_levels_63: ADC actual time range {} {}'.format(timestart, timestop))
     return df
 
