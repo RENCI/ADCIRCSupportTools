@@ -14,6 +14,7 @@ export NUGGET=0.001
 export NLAGS=6
 
 GRID="ec95d"
+OBSNAME="/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/config/obs.ec95d.yml"
 
 export CODEBASE=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/reanalysis
 export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools
@@ -22,11 +23,12 @@ export BASEDIREXTRA=
 export KNOCKOUT=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/reanalysis/knockoutStation.json
 
 export YEAR=$1
-export RUNTIMEDIR=./EC95D/YEARLY-$YEAR
+#export RUNTIMEDIR=./EC95D/YEARLY-$YEAR
+export RUNTIMEDIR=./EC95D-DA/YEARLY-$YEAR
 export LOG_PATH=$RUNTIMEDIR
 
-URL="/projects/reanalysis/ADCIRC/ERA5/ec95d/$YEAR/fort.63.nc"
-#URL="/projects/reanalysis/ADCIRC/ERA5/ec95d/$YEAR-post/fort.63.nc"
+#URL="/projects/reanalysis/ADCIRC/ERA5/ec95d/$YEAR/fort.63.nc"
+URL="/projects/reanalysis/ADCIRC/ERA5/ec95d/$YEAR-post/fort.63.nc"
 
 echo $URL
 
@@ -43,7 +45,7 @@ echo "xxxxxx"
 ####
 
 # Build the yearly error file store in $RUNTIMEDIR/BASEDIREXTRA
-python $CODEBASE/yearlyReanalysisRoundHourly.py --grid $GRID --url $URL --knockout $KNOCKOUT
+python $CODEBASE/yearlyReanalysisRoundHourly.py --obsfile $OBSNAME --grid $GRID --url $URL --knockout $KNOCKOUT
 mv $RUNTIMEDIR/AdcircSupportTools.log $RUNTIMEDIR/$BASEDIREXTRA/log-yearly
 
 # Store files in $RUNTIMEDIR/DAILY/errorfield

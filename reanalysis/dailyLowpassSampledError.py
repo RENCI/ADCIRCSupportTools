@@ -383,8 +383,8 @@ def main(args):
     #stime=''.join(['2017','-12-20 00:00:00'])
     #etime=''.join(['2019','-01-01 00:00:00'])
 
-    stime=''.join(['2018','-01-01 00:00:00'])
-    etime=''.join(['2018','-12-31 18:00:00'])
+    #stime=''.join(['2018','-01-01 00:00:00'])
+    #etime=''.join(['2018','-12-31 18:00:00'])
 
     #stime=''.join(['2018','-01-01 00:00:00'])
     #etime=''.join(['2018','-05-01 00:00:00'])
@@ -392,8 +392,10 @@ def main(args):
     #stime=timein
     #etime=timeout
 
-    starttime = dt.datetime.strptime(stime,'%Y-%m-%d %H:%M:%S')
-    endtime = dt.datetime.strptime(etime,'%Y-%m-%d %H:%M:%S')
+    #starttime = dt.datetime.strptime(stime,'%Y-%m-%d %H:%M:%S')
+    #endtime = dt.datetime.strptime(etime,'%Y-%m-%d %H:%M:%S')
+    starttime = dt.datetime.strptime(stime,'%Y-%m-%d') #  %H:%M:%S')
+    endtime = dt.datetime.strptime(etime,'%Y-%m-%d') #  %H:%M:%S')
     numDays = (endtime-starttime).days + 1
 
     utilities.log.info('Specified time ranges are {} and {}'.format(starttime, endtime))
