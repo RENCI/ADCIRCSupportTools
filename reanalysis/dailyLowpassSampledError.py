@@ -115,8 +115,8 @@ def fft_lowpass(signal, lowhrs):
     # Insert ramp into factor.
     factor[sl] = a
     result = result * factor
-    print('Freqs {}'.format(result))
-    print('FREQ TYPEW {}'.format(type(result)))
+    ###print('Freqs {}'.format(result))
+    ###print('FREQ TYPEW {}'.format(type(result)))
     return np.fft.irfft(result, len(signal))
 
 # The means are proper means for the month./week. The offset simply changes the index underwhich it will be stored
@@ -250,7 +250,6 @@ def fetch_data_metadata(f, meta):
 def main(args):
     t0 = tm.time()
 
-
     if not args.inDir:
         utilities.log.error('Need inDir on command line: --inDir <inDir>')
         return 1
@@ -266,12 +265,8 @@ def main(args):
     timein = '-'.join([inyear,'01','01'])
     timeout = '-'.join([inyear,'12','31'])
 
-    # Winnowq out the range
-    #utilities.log.info('Manaul limit to 4 months')
-    #timein = '-'.join([inyear,'01','01'])
-    #timeout = '-'.join([inyear,'05','01'])
-
     #rootdir = '/'.join([outroot,'WEEKLY'])
+
     # Ensure the destination is created
     ##rootdir = utilities.fetchBasedir(rootdir,basedirExtra='')
 
@@ -279,9 +274,9 @@ def main(args):
     utilities.log.info('Specified rootdir underwhich all files will be stored. Rootdir is {}'.format(rootdir))
     #f='/'.join([topdir,'adc_obs_error_merged.json'])
     #meta='/'.join([topdir,'obs_water_level_metadata.json'])
-    #utilities.log.info('ASSUMING HOURLY_HEIGHT INSTEAD OF WATER_LEVEL')
+    utilities.log.info('ASSUMING HOURLY_HEIGHT INSTEAD OF WATER_LEVEL')
     f='/'.join([topdir,'adc_obs_error_merged.json'])
-    meta='/'.join([topdir,'obs_water_level_metadata.json'])
+    meta='/'.join([topdir,'obs_hourly_height_metadata.json'])
 
     dataDict, metaDict = fetch_data_metadata(f, meta)
     stations = list(dataDict.keys()) # For subsequent naming - are we sure order is maintained?
@@ -292,27 +287,12 @@ def main(args):
 
     #timein=args.timein
     #timeout=args.timeout
-
     # A total hack on specifying the times. We need to deal with this later
     # FFT the entire year
 
     ##timein = '-'.join(['2017','12','20'])   
     ##timeout = '-'.join(['2019','1','1'])
 
-    # Winnow manmually
-
-    #timein = '-'.join(['2017','12','20'])
-    #timeout = '-'.join(['2019','1','1'])
-    #utilities.log.info('Input data chosen range is {}, {}'.format(timein, timeout))
-
-
-    #timein=''.join(['2018','-01-01 00:00:00'])
-    #timeout=''.join(['2018','-05-01 00:00:00'])
-    #etime=timeout
-
-    starttime = dt.datetime.strptime(timein,'%Y-%m-%d')
-    endtime = dt.datetime.strptime(timeout,'%Y-%m-%d')
-    numDays = (endtime-starttime).days + 1
     utilities.log.info('Input data chosen range is {}, {}'.format(timein, timeout))
 
     # Metadata
@@ -329,7 +309,7 @@ def main(args):
 
     # FFT Lowpass each station for entire range time. Then, extract values for all stations every day
     upshift=0
-    hourly_cutoff= 24 # 48 # 168 # 48 # 6 # 168 #48
+    hourly_cutoff= 24 # 168 # 48 # 6 # 168 #48
     cutoff = hourly_cutoff+upshift
     utilities.log.info('FFT hourly_cutoff {}, actual_cutoff {}'.format(hourly_cutoff,cutoff))
 
@@ -386,14 +366,12 @@ def main(args):
     #stime=''.join(['2018','-01-01 00:00:00'])
     #etime=''.join(['2018','-12-31 18:00:00'])
 
-    #stime=''.join(['2018','-01-01 00:00:00'])
-    #etime=''.join(['2018','-05-01 00:00:00'])
+    #stime=''.join(['1979','-01-01 00:00:00'])
+    #etime=''.join(['1979','-05-01 00:00:00'])
 
-    #stime=timein
-    #etime=timeout
+    stime=timein
+    etime=timeout
 
-    #starttime = dt.datetime.strptime(stime,'%Y-%m-%d %H:%M:%S')
-    #endtime = dt.datetime.strptime(etime,'%Y-%m-%d %H:%M:%S')
     starttime = dt.datetime.strptime(stime,'%Y-%m-%d') #  %H:%M:%S')
     endtime = dt.datetime.strptime(etime,'%Y-%m-%d') #  %H:%M:%S')
     numDays = (endtime-starttime).days + 1
@@ -420,6 +398,7 @@ def main(args):
     utilities.log.info('df_err_all times {}'.format(df_err_all.index))
     utilities.log.info('df_err_lowpass times {}'.format(df_err_all_lowpass.index))
     intersect = [value for value in startday if value in df_err_all_lowpass.index] 
+
     utilities.log.info('Residual data: intersect list {}'.format(intersect))
     df_err_all_lowpass_subselect=df_err_all_lowpass.loc[intersect]
 
@@ -427,11 +406,9 @@ def main(args):
     # df_meta and df report stationids as diff types. Yuk.
     # Store the list of filenames into a dict for krig processing
 
-    # Because ADCIRC skips 00Z on the first day, the very first date entry will be skipped 
     subdir='errorfield'
     datadict = dict()
     for index, df in df_err_all_lowpass_subselect.iterrows():
-        print(index)
         metadata='_'+iometa[index]
         df.index = df.index.astype('int64')    
         df_merged=df_meta.join(df)

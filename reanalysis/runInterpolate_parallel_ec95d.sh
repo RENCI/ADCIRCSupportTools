@@ -51,7 +51,7 @@ mv $RUNTIMEDIR/AdcircSupportTools.log $RUNTIMEDIR/$BASEDIREXTRA/log-yearly
 # Store files in $RUNTIMEDIR/DAILY/errorfield
 export INDIR=$RUNTIMEDIR/
 export OUTROOT=$RUNTIMEDIR/$DAILY
-python $CODEBASE/dailyLowpassSampledError_ec95d.py --inyear $YEAR  --inDir $INDIR --outroot $OUTROOT # --stationarity
+python $CODEBASE/dailyLowpassSampledError.py --inyear $YEAR  --inDir $INDIR --outroot $OUTROOT # --stationarity
 mv $RUNTIMEDIR/AdcircSupportTools.log $OUTROOT/log-daily
 
 # Interpolate a single specific file
