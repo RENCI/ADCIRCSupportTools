@@ -149,6 +149,7 @@ def main(args):
     chosengrid=args.grid
 
     knockout=args.knockout
+    obsfile=args.obsfile
 
     # Get input adcirc url and check for existance
     if args.urljson != None:
@@ -224,7 +225,9 @@ def main(args):
     # 3) Setup OBS specific YML-resident values
     utilities.log.info('Fetch Observations')
     #obs_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'obs.ec95d.yml ')
-    obs_yamlname = '/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/config/obs.ec95d.yml'
+    #obs_yamlname = '/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/config/obs.ec95d.yml'
+    obs_yamlname = obsfile
+    utilities.log.info('OBS file is {}'.format(obs_yamlname))
 
     # Grab time Range and tentative station list from the ADCIRC fetch  (stations may still be filtered out)
     timein = timestart.strftime('%Y%m%d %H:%M')
@@ -308,6 +311,7 @@ if __name__ == '__main__':
                         help='String: url.')
     parser.add_argument('--grid', default='hsofs',dest='grid', help='Choose name of available grid',type=str)
     parser.add_argument('--knockout', default=None, dest='knockout', help='knockout jsonfilename', type=str)
+    parser.add_argument('--obsfile', default=None, dest='obsfile', help='Full path to chosen OBS yml file', type=str)
     args = parser.parse_args()
     sys.exit(main(args))
 
