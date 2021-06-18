@@ -123,6 +123,29 @@ def exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdi
     #detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ = rpl.fetchOutputNames()
     return detailedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ
 
+def exec_observables_tidalpredictions(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdir, stationFile, knockout=None):
+    utilities.log.info('Fetching HOURLY Tidal Predictions WL for observations')
+    rpl = GetObsStations(product='predictions', iosubdir=iosubdir, rootdir=rootdir, yamlname=obs_yamlname, metadata=iometadata, stationFile=stationFile, knockout=knockout)
+    df_stationNodelist = rpl.fetchStationNodeList()
+    stations = df_stationNodelist['stationid'].to_list()
+    #utilities.log.info('Choose a limited number of stations')
+    #stations = rpl.stationListFromYaml()
+    #
+    utilities.log.info('Grabing station list from OBS YML')
+    df_stationData, stationNodelist = rpl.fetchStationMetaDataFromIDs(stations)
+    df_detailed, count_nan, newstationlist, excludelist = rpl.fetchStationProductFromIDlist(timein, timeout, interval='h')
+    #df_pruned, count_nan, newstationlist, excludelist = rpl.fetchStationSmoothedHourlyProductFromIDlist(timein, timeout)
+    retained_times = df_detailed.index.to_list() # some may have gotten wacked during the smoothing`
+    dummy = rpl.buildURLsForStationPlotting(newstationlist, timein, timeout) # Could also use newstationlist+excludelist
+    outputdict = rpl.writeFilesToDisk(extra='TP')
+    detailedpkl=outputdict['PKLdetailedTP']
+    detailedJ=outputdict['JSONdetailedTP']
+    metapkl=outputdict['PKLmetaTP']
+    metaJ=outputdict['JSONmetaTP']
+    urlcsv=outputdict['CSVurlTP']
+    exccsv=outputdict['CSVexcludeTP']
+    return detailedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ
+
 def exec_error(obsf, adcf, meta, local_config, rootdir, iometadata, iosubdir): 
     """
     Build a new config that rangers over the entire time range
@@ -250,6 +273,18 @@ def main(args):
     outfiles['OBS_METADATA_JSON']=metaJ
     utilities.log.info('Completed OBS: Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {} MetaJ {}, DetailedJ {}, SmoothedJ {}'.format(detailedpkl, detailedpkl, metapkl, urlcsv, exccsv,metaJ, detailedJ, detailedJ))
 
+    # Fetch the NOAA Tidal predictions for each station
+    detailedpklTP, metapklTP, urlcsvTP, exccsvTP, metaJTP, detailedJTP = exec_observables_tidalpredictions(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdir, stationFile, knockout=dict_knockout)
+    outfiles['OBS_DETAILED_TP_PKL']=detailedpklTP
+    outfiles['OBS_SMOOTHED_TP_PKL']=detailedpklTP
+    outfiles['OBS_SMOOTHED_TP_PKL']=detailedpklTP
+    outfiles['OBS_METADATA_TP_PKL']=metapklTP
+    outfiles['OBS_NOAA_COOPS_URLS_TP_CSV']=urlcsvTP
+    outfiles['OBS_EXCLUDED_TP_CSV']=exccsvTP
+    outfiles['OBS_DETAILED_TP_JSON']=detailedJTP
+    outfiles['OBS_SMOOTHED_TP_JSON']=detailedJTP
+    outfiles['OBS_METADATA_TP_JSON']=metaJTP
+    utilities.log.info('Completed Todal Predictions OBS: Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {} MetaJ {}, DetailedJ {}, SmoothedJ {}'.format(detailedpklTP, detailedpklTP, metapklTP, urlcsvTP, exccsvTP, metaJTP, detailedJTP, detailedJTP))
 
     # 4) Setup ERR specific YML-resident values
     # utilities.log.info('Error computation NOTIDAL corrections')
