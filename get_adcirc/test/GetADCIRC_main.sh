@@ -24,3 +24,6 @@ python  ../GetADCIRC.py --ignore_pkl --timeout='2020-09-21 18:00' --doffset=-2 -
 
 # Call a hurricane
 python  ../GetADCIRC.py --ignore_pkl --grid 'ec95d' --urljson data1_hurricaneFlorence_forecast.json
+
+# Call a hurricane
+python  ../GetADCIRC.py --ignore_pkl --writeJson --grid 'ec95d' --urljson data1_ec95d.json 

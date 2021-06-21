@@ -6,6 +6,7 @@ import json
 
 urljson='./data.json'
 urljson='data_reanalysis.json'
+urljson='data1_ec95d.json'
 
 config = utilities.load_config() # Get main comnfig. RUNTIMEDIR, etc
 iometadata=''
