@@ -416,7 +416,7 @@ class Adcirc:
         num6hourTimes=4*abs(doffset)
         for key, forecast in in_forecast.items():
             words=forecast.split('/')
-            advisory = checkAdvisory(words[-6])
+            advisory = int(checkAdvisory(words[-6])) # Just to be sure
             advisories=list()
             #for adv in range(advisory,max(1,advisory-num6hourTimes),-1):
             for adv in range(max(1,advisory-num6hourTimes),advisory+1):
@@ -425,7 +425,7 @@ class Adcirc:
             # Build a new list of urls and add appropriate time key to the dict
             words[-2]='nowcast' # This is constant for all grids
             for adv in advisories:
-                words[-6]=str(adv)
+                words[-6]='%02d'%adv # str(adv) # Need a preceding 0 is a singke digit number
                 url = '/'.join(words)
                 try:
                     nc = nc4.Dataset(url)
