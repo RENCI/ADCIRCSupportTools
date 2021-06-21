@@ -138,12 +138,12 @@ def exec_observables_tidalpredictions(timein, timeout, obs_yamlname, rootdir, io
     retained_times = df_detailed.index.to_list() # some may have gotten wacked during the smoothing`
     dummy = rpl.buildURLsForStationPlotting(newstationlist, timein, timeout) # Could also use newstationlist+excludelist
     outputdict = rpl.writeFilesToDisk(extra='TP')
-    detailedpkl=outputdict['PKLdetailedTP']
-    detailedJ=outputdict['JSONdetailedTP']
-    metapkl=outputdict['PKLmetaTP']
-    metaJ=outputdict['JSONmetaTP']
-    urlcsv=outputdict['CSVurlTP']
-    exccsv=outputdict['CSVexcludeTP']
+    detailedpkl=outputdict['PKLdetailed']
+    detailedJ=outputdict['JSONdetailed']
+    metapkl=outputdict['PKLmeta']
+    metaJ=outputdict['JSONmeta']
+    urlcsv=outputdict['CSVurl']
+    exccsv=outputdict['CSVexclude']
     return detailedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ
 
 def exec_error(obsf, adcf, meta, local_config, rootdir, iometadata, iosubdir): 
