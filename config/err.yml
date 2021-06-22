@@ -1,7 +1,7 @@
 --- #  Compute errors and interpolate
 TIME: &time
-  AvgPer: 4     # multiple of M2 cycles to do averaging over
-  n_period: 12  # Number of values per period (hourly =12)
+  AvgPer: 16     # multiple of M2 cycles to do averaging over
+  n_period: 12 # 12  # Number of values per period (hourly =12)
   n_tide: 12.42 # semidiurnal time period
   n_pad: 1      # Number of extra steps to include for interpolating into tide time
 

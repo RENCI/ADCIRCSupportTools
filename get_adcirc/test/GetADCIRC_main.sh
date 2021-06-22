@@ -27,3 +27,6 @@ python  ../GetADCIRC.py --ignore_pkl --grid 'ec95d' --urljson data1_hurricaneFlo
 
 # Call a hurricane
 python  ../GetADCIRC.py --ignore_pkl --writeJson --grid 'ec95d' --urljson data1_ec95d.json 
+
+# Call LA new data
+python  ../GetADCIRC.py --ignore_pkl --writeJson --grid "LA_v20a-WithUpperAtch_chk" --urljson data1_LAtest.sh

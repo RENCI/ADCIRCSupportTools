@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 
 ###################################################################
-##
 ## Pipeline that is useful in the APSVIZ context. Entry an adcirc URL and the nodelist
 ## and generate the ADS,OBS,ERR data sets.
 ##
 ## Read the input url forecast first, so that we can get its timein, and used that to 
 ## specify the timeout for a previous nowcast.
+##
+## Rewrote to bettrer account for the newq req that no nowcasts may be present.
+##
 ###################################################################
 
 ##
@@ -29,6 +31,7 @@ from utilities.utilities import utilities as utilities
 from visualization.stationPlotter import stationPlotter
 
 import datetime as dt
+from datetime import timedelta
 
 ## Invoke a basic pipeline. 
 
@@ -107,8 +110,6 @@ def exec_adcirc_forecast(urls, rootdir, iometadata, adc_yamlname, node_idx, stat
     ####df.to_json(ADCjson)
     print('write new json')
     ADCjson=writeToJSON(df, rootdir, iometadata,fileroot='adc_wl_forecast')
-    #timestart = adc.T1.strftime('%Y%m%d%H%M')
-    #timeend = adc.T2.strftime('%Y%m%d%H%M')
     timestart = adc.T1
     timeend = adc.T2
     df.index = pd.to_datetime(df.index)
@@ -161,8 +162,6 @@ def exec_adcirc_nowcast_hurricane(inurls, rootdir, iometadata, adc_yamlname, nod
     ####df.to_json(ADCjson)
     print('write new json')
     ADCjson=writeToJSON(df, rootdir, iometadata,fileroot='adc_wl_nowcast')
-    #timestart = adc.T1.strftime('%Y%m%d%H%M')
-    #timeend = adc.T2.strftime('%Y%m%d%H%M')
     timestart = adc.T1
     timeend = adc.T2
     df.index = pd.to_datetime(df.index)
@@ -402,7 +401,9 @@ def main(args):
     outfiles['ADCIRC_WL_FORECAST_JSON']=os.path.basename(ADCjsonFore)
     outfiles['RUNDATE_FORECAST']= runDataMetadata # netCDF4 supplied model initialization time for the forecast
 
-    # 5) Build the nowcast URL
+    # 5) Build the nowcast URL - If NONE exist then, this method will simple bomb
+    # and we shall retain the times as timestart_forecast, timeend_forecast
+    # 
     #utilities.log.info('Build a nowcast style url')
     #urlnow = buildNowcast(urls)
     #utilities.log.info('Resulting nowcast style url {}'.format(urlnow))
@@ -415,31 +416,47 @@ def main(args):
     #adc_config = utilities.load_config(adc_yamlname)
     #ADCfile, ADCjson, timestart, timeend = exec_adcirc(timeout.strftime('%Y-%m-%d %H:%M'), rootdir, '_nowcast'+iometadata, adc_yamlname, node_idx, station_ids, doffset=doffset)
   
-    if state_hurricane:
-        ADCfile, ADCjson, timestart, timeend = exec_adcirc_nowcast_hurricane(urls, rootdir, '_nowcast'+iometadata, adc_yamlname, node_idx, station_ids, chosengrid, doffset=doffset)
-        utilities.log.info('Completed ADCIRC hurricane nowcast Reads')
-    else:
-        ADCfile, ADCjson, timestart, timeend = exec_adcirc_nowcast(urls, rootdir, '_nowcast'+iometadata, adc_yamlname, node_idx, station_ids, chosengrid, doffset=doffset)
-        utilities.log.info('Completed ADCIRC synoptic nowcast Reads')
+    gotNowcasts=False
+    try:
+        if state_hurricane:
+            ADCfile, ADCjson, timestart, timeend = exec_adcirc_nowcast_hurricane(urls, rootdir, '_nowcast'+iometadata, adc_yamlname, node_idx, station_ids, chosengrid, doffset=doffset)
+            utilities.log.info('Completed ADCIRC hurricane nowcast Reads')
+        else:
+            ADCfile, ADCjson, timestart, timeend = exec_adcirc_nowcast(urls, rootdir, '_nowcast'+iometadata, adc_yamlname, node_idx, station_ids, chosengrid, doffset=doffset)
+            utilities.log.info('Completed ADCIRC synoptic nowcast Reads')
+        outfiles['ADCIRC_WL_PKL']=os.path.basename(ADCfile)
+        outfiles['ADCIRC_WL_JSON']=os.path.basename(ADCjson)
+        gotNowcasts=True
+    except Exception as e:
+        utilities.log.warning(e)
+        utilities.log.warning('Fetching nowcasts failed. Slip and try to plot only the forecast')
+        # We want to override times to now be simply 1 day ending on timestart 
+        timeend=timestart_forecast
+        timestart = timeend-timedelta(days=2)
+        utilities.log.info('Override times to be {} {}'.format(timestart,timeend))
+        #timein = timestart_forecast # If nowcasts we must adjust these to include them else, not
+        #timeout = timeend_forecast
 
-    outfiles['ADCIRC_WL_PKL']=os.path.basename(ADCfile)
-    outfiles['ADCIRC_WL_JSON']=os.path.basename(ADCjson)
+    #outfiles['ADCIRC_WL_PKL']=os.path.basename(ADCfile)
+    #outfiles['ADCIRC_WL_JSON']=os.path.basename(ADCjson)
 
     # 3) Setup OBS specific YML-resident values
+    ## Even if no nowcasts, we must do this to fetch the station metadata. SO we must fake the timerange to ensure it is valid
     utilities.log.info('Fetch Observations')
     #obs_yamlname = os.path.join('~/ADCIRCSupportTools', 'config', 'obs.yml')
 
     # Grab time Range and tentative station list from the ADCIRC fetch  (stations may still be filtered out)
+
     timein = timestart.strftime('%Y%m%d %H:%M')
     timeout = timeend.strftime('%Y%m%d %H:%M')
-    utilities.log.info('ADC provided times are {} and {}'.format(timein, timeout))
 
-    # New approach to account for the changing grid names
+    utilities.log.info('ADC provided times are {} and {}'.format(timein, timeout))
     try:
         stationFile=main_config['STATIONS'][args.grid.upper()]
     except KeyError as e:
         utilities.log.error('Error specifying grid. Uppercase version Not found in the main.yml {}'.format(args.grid))
         utilities.log.error(e)
+    # New approach to account for the changing grid names
     obs_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'obs.yml')
     obs_config = utilities.load_config(obs_yamlname)
     detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ = exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdir, stationFile)
@@ -454,29 +471,36 @@ def main(args):
     outfiles['OBS_SMOOTHED_JSON']=os.path.basename(smoothedJ)
     outfiles['OBS_METADATA_JSON']=os.path.basename(metaJ)
     utilities.log.info('Completed OBS: Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {} MetaJ {}, DetailedJ {}, SmoothedJ {}'.format(detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv,metaJ, detailedJ, smoothedJ))
+    OBS_DETAILED_JSON_FULLPATH=detailedJ # Need this if plotting OBS and no nowcasts
 
     # 4) Setup ERR specific YML-resident values
-    utilities.log.info('Error computation NOTIDAL corrections')
-    err_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'err.APSVIZ.yml')
-    meta = metapkl
-    obsf = smoothedpkl
-    adcf = ADCfile 
-    errf, finalf, cyclef, metaf, mergedf, jsonf = exec_error(obsf, adcf, meta, err_yamlname, rootdir, iometadata, iosubdir)
-    outfiles['ERR_TIME_PKL']=os.path.basename(errf)
-    outfiles['ERR_TIME_JSON']=os.path.basename(jsonf)
-    outfiles['ERR_STATION_AVES_CSV']=os.path.basename(errf)  # THis would pass to interpolator
-    outfiles['ERR_STATION_PERIOD_AVES_CSV']=os.path.basename(cyclef)
-    outfiles['ERR_METADATA_CSV']=os.path.basename(metaf)
-    outfiles['ERR_ADCOBSERR_MERGED_CSV']=os.path.basename(mergedf) # This is useful for visualization insets of station bahavior
-    utilities.log.info('Completed ERR')
+    if gotNowcasts:
+        utilities.log.info('Residual/Error computation NOTIDAL corrections')
+        err_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'err.APSVIZ.yml')
+        meta = metapkl
+        obsf = smoothedpkl
+        adcf = ADCfile 
+        errf, finalf, cyclef, metaf, mergedf, jsonf = exec_error(obsf, adcf, meta, err_yamlname, rootdir, iometadata, iosubdir)
+        outfiles['ERR_TIME_PKL']=os.path.basename(errf)
+        outfiles['ERR_TIME_JSON']=os.path.basename(jsonf)
+        outfiles['ERR_STATION_AVES_CSV']=os.path.basename(errf)  # THis would pass to interpolator
+        outfiles['ERR_STATION_PERIOD_AVES_CSV']=os.path.basename(cyclef)
+        outfiles['ERR_METADATA_CSV']=os.path.basename(metaf)
+        outfiles['ERR_ADCOBSERR_MERGED_CSV']=os.path.basename(mergedf) # This is useful for visualization insets of station bahavior
+        utilities.log.info('Completed ERR')
 
 
     # 6) Build a series of station-PNGs.
-    # Build input dict for the plotting
+    # Build input dict for the plotting. Need full paths for these names Yuk.
     files=dict()
     files['META']=metaJ # outfiles['OBS_METADATA_JSON']
-    files['DIFFS']=jsonf # outfiles['ERR_TIME_JSON']
+    #files['DIFFS']=jsonf # outfiles['ERR_TIME_JSON']
     files['FORECAST']=ADCjsonFore # outfiles['ADCIRC_WL_FORECAST_JSON']
+    if gotNowcasts:
+        files['DIFFS']=jsonf # outfiles['ERR_TIME_JSON']
+    else:
+        utilities.log.info('No nowcasts used for plotting')
+
     #utilities.log.info('PNG plotter dict is {}'.format(files))
     #png_dict = exec_pngs(files=files, rootdir=rootdir, iometadata=iometadata, iosubdir=iosubdir)
 
