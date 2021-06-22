@@ -325,7 +325,7 @@ class Adcirc:
                 try:
                     nc = nc4.Dataset(url)
                     # test access
-                    z = nc['zeta'][:, 0]
+                    ##z = nc['zeta'][:, 0]
                     url2add = url
                 except:
                     utilities.log.info("Could not access {}. It will be skipped.".format(url))
@@ -372,7 +372,7 @@ class Adcirc:
                 try:
                     nc = nc4.Dataset(url)
                     # test access
-                    z = nc['zeta'][:, 0]
+                    ##z = nc['zeta'][:, 0]
                     url2add = url
                     utilities.log.info('Grabbed url {}'.format(url))
                     urls[words[-6]]=url
@@ -430,7 +430,7 @@ class Adcirc:
                 try:
                     nc = nc4.Dataset(url)
                     # test access
-                    z = nc['zeta'][:, 0]
+                    ##z = nc['zeta'][:, 0]
                     url2add = url
                     utilities.log.info('Grabbed url {}'.format(url))
                     urls[words[-6]]=url
