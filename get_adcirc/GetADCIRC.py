@@ -438,7 +438,7 @@ class Adcirc:
                     utilities.log.info("Could not access {}. It will be skipped.".format(url))
         if len(urls)==0:
             utilities.log.error('No nowcast urls were found for advisory {}'.format(advisory))
-            sys.exit()
+            #sys.exit()
         utilities.log.info('Invert nowcast list for hurricane status {}'.format(urls))
         self.urls = urls
 
@@ -502,7 +502,7 @@ def get_water_levels63(urls, nodes, stationids):
     except Exception as e:
         utilities.log.error(e)
         utilities.log.error('Levels 63 didnt return any valid data. Usually no found urls: ')
-        sys.exit(0) # None found: Set to 0 to allow k8s to continue
+        #sys.exit(0) # None found: Set to 0 to allow k8s to continue
     utilities.log.info('water_levels_63: ADC actual time range {} {}'.format(timestart, timestop))
     return df
 
