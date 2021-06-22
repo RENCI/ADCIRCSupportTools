@@ -19,3 +19,4 @@ STATIONS: &stations
   REGION3: "Region3_Stations_V1.csv"
   NC_INUNDATION_V9.99_W_RIVERS: "NCV99_Stations_V1.csv"
   NC_INUNDATION_V9.99D: "NCV99_Stations_V1.csv"
+  LA_V20A-WITHUPPERATCH_CHK: "LA_v20a-WithUpperAtch_chk_Stations_V1.csv"
