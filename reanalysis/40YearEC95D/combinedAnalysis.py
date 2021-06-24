@@ -127,7 +127,7 @@ years=[1979,1980,1981,1982,1983,1984,1985,1986,1987,1988,1989,1990,1991,1992,199
 
 basefilename='adc_obs_error_merged.csv'
 metafilename='obs_hourly_height_metadata.json'
-basedirectory='/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/reanalysis/40YearEC95D/EC95D'
+basedirectory='/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/reanalysis/40YearEC95D/EC95D-DA'
 
 # Loop overall data sets and read data files
 yearlyData=list()
@@ -322,7 +322,7 @@ yearlyOBS=list()
 
 for year in years:
     print('Processing year {}'.format(year))
-    fulldirectory='/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/reanalysis/40YearEC95D/EC95D/YEARLY-'+str(year)
+    fulldirectory=basedirectory+'/YEARLY-'+str(year)
     df = pd.read_csv('/'.join([fulldirectory,basefilename]), header=0)
     yearlyMeta.append(fetch_metadata('/'.join([fulldirectory,metafilename])))
     yearlyERR.append(fetchDataFrameSource(df, name='ERR'))
