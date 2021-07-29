@@ -76,5 +76,7 @@ python execute_APSVIZ_pipeline.py --inputURL "https://fortytwo.cct.lsu.edu/thred
 python execute_APSVIZ_pipeline.py --inputURL "https://fortytwo.cct.lsu.edu/thredds/dodsC/2021/al03/10/LA_v20a-WithUpperAtch_chk/supermic.hpc.lsu.edu/LAv20a_al032021_jgf_23kcms/nhcConsensus/fort.63.nc" --grid "LA_v20a-WithUpperAtch_chk"
 
 
+python execute_APSVIZ_pipeline.py --inputURL 'http://tds.renci.org:8080/thredds/dodsC/2021/nam/2021072606/nc_inundation_v9.99_w_rivers/hatteras.renci.org/ncv99-nam-bob-2021/namforecast/fort.63.nc'
+
 
 
