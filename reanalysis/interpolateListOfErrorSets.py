@@ -13,6 +13,7 @@
 # Need large memory to run this job
 import os
 import sys
+import numpy as np
 import pandas as pd
 import matplotlib
 matplotlib.use('Agg')
@@ -141,13 +142,13 @@ def main(args):
     if controlfile==None:
     #    controlfile = os.path.join(os.path.dirname(__file__), "../config", config['DEFAULT']['ControlList'])
         utilities.log.info('No controlfile specified. Grab the one specified in the yaml')
-        clampingfile = os.path.join(os.path.dirname(__file__), "../ADCIRCSupportTools/config", self.config['DEFAULT']['ControlList'])
+        controlfile = os.path.join(os.path.dirname(__file__), "../ADCIRCSupportTools/config", self.config['DEFAULT']['ControlList'])
     #    controlfile='../ADCIRCSupportTools/config/control_list_hsofs.dat '
 
 
-    do_adcird_grid=False
-    if clampfile!='Skip':
-        do_adcird_grid=True
+    do_adcird_grid=True
+    ###if clampfile!='Skip':
+    ###    do_adcird_grid=True
 
     #gridjsonfile='./ADCIRCSupportTools/get_adcirc/ADCIRC/adc_coord.json'
     # gridjson is not really needed if you only want the 2D approximate image
@@ -161,13 +162,12 @@ def main(args):
     
     if (gridjsonfile!=None) and (gridjsonfile!='Skip'):
         utilities.log.info('Fetching JSON data')
-        print('OPen adc coords {}'.format(gridjsonfile))
         adc_json = utilities.read_json_file(gridjsonfile)
         adcgridx = adc_json['lon']
         adcgridy = adc_json['lat']
 
     # Start the interpolation kriging
-    utilities.log.info('Begin Kriging')
+    utilities.log.info('Begin Interpolation')
     adddata=None
     if args.inrange is not None or args.insill is not None:
         krig_object = interpolateScalerField(datafile=inerrorfile, inputcfg=config,  clampingfile=clampfile, controlfile=controlfile, metadata=iometadata, rootdir=rootdir)
@@ -205,22 +205,23 @@ def main(args):
     utilities.log.info('vparams: {}'.format(vparams))
     # Always do this final model is saved for subseqent reuse.
 
-    status = krig_object.singleStepKrigingFit( param_dict, vparams, filename = 'interpolate_model'+extraFilebit+iometadata+'.h5')
+    status = krig_object.singleStepInterpolationFit( param_dict, vparams, filename = 'interpolate_linear_model'+extraFilebit+iometadata+'.h5')
 
     #############################################################################
     # Start predictions
 
-    print('KRIG VERSION')
     # Pull out the krid predicted values at the stations
     #station_gridx,station_gridy =krig_object.fetchRawInputData() # lons and lats
     df_interpolate_stations = pd.read_csv(inerrorfile, index_col=0, header=0).dropna(axis=0)
+
     lons=df_interpolate_stations['lon'].to_list()
     lats=df_interpolate_stations['lat'].to_list()
+    meandata = df_interpolate_stations['mean'].to_list()
     utilities.log.info('Station points:Number of lons {} number of lats {}'.format(len(lons), len(lats)))
 
-    Allvalues = krig_object.krigingTransform(lons, lats, style='points', filename='interpolate_model'+extraFilebit+iometadata+'.h5')
+    Allvalues = krig_object.interpolationTransform(lons, lats, style='points', filename='interpolate_linear_model'+extraFilebit+iometadata+'.h5')
 
-    df_interpolate_stations['krig']=Allvalues['value'].to_list()
+    df_interpolate_stations['interpolate']=Allvalues['value'].to_list()
     krigfilename=utilities.writeCsv(df_interpolate_stations,rootdir=rootdir,subdir='interpolated',fileroot='stationSummaryKrig',iometadata=iometadata)
     utilities.log.info('Wrote Station krig values to {}'.format(krigfilename))
 
@@ -228,12 +229,17 @@ def main(args):
     # Write this data to disk using a PKL simple format (lon,lat,val, Fortran order)
 
     gridx, gridy = krig_object.input_grid() # Grab from the config file
-    df_grid = krig_object.krigingTransform(gridx, gridy,style='grid',filename = 'interpolate_model'+extraFilebit+iometadata+'.h5')
 
+    # Set up a gridded plotter. THis is not working we need to pass regular gridx,gridy to the plotter.
+    #g = np.meshgrid(gridx,gridy)
+    #positions = np.vstack(map(np.ravel, g))
+    #gridx,gridy = positions[0], positions[1] 
+    df_grid = krig_object.interpolationTransform(gridx, gridy,style='grid',filename = 'interpolate_linear_model'+extraFilebit+iometadata+'.h5')
     # Pass dataframe for the plotter
     gridz = df_grid['value'].values
     n=gridx.shape[0]
     gridz = gridz.reshape(-1, n)
+
     krig_object.plot_model(gridx, gridy, gridz, keepfile=True, filename='image'+iometadata+'.png', metadata=iometadata)
     krig_interfilename = krig_object.writeTransformedDataToDisk(df_grid)
 
@@ -245,7 +251,7 @@ def main(args):
         adcirc_gridx=adcgridx
         adcirc_gridy=adcgridy
         utilities.log.info('Number of lons {} number of lats {}'.format(len(adcirc_gridx), len(adcirc_gridy)))
-        df_adcirc_grid = krig_object.krigingTransform(adcirc_gridx, adcirc_gridy, style='points', filename='interpolate_model'+extraFilebit+iometadata+'.h5')
+        df_adcirc_grid = krig_object.interpolationTransform(adcirc_gridx, adcirc_gridy, style='points', filename='interpolate_linear_model'+extraFilebit+iometadata+'.h5')
         krig_adcircfilename = krig_object.writeADCIRCFormattedTransformedDataToDisk(df_adcirc_grid)
         utilities.log.info('Transformed interpolated data are in '+krig_interfilename)
         utilities.log.info('Transformed interpolated ADCIRC formatteddata are in '+krig_adcircfilename)

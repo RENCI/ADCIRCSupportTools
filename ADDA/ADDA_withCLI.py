@@ -254,6 +254,7 @@ def main(args):
     #clampfile = os.path.join(os.path.dirname(__file__), "../config", config['DEFAULT']['ClampList'])
     #clampfile='/home/jtilson/ADCIRCSupportTools/config/clamp_list_hsofs.dat'
     #Send a None to clampingfile and code automatically looks in yaml
+    #krig_object = interpolateScalerField(datafile=inerrorfile, yamlname=int_yamlname, metadata=iometadata, rootdir=rootdir)
     krig_object = interpolateScalerField(datafile=inerrorfile, yamlname=int_yamlname, metadata=iometadata, rootdir=rootdir)
 
     vparams=None
@@ -287,14 +288,16 @@ def main(args):
     utilities.log.info('param_dict: {}'.format(param_dict))
     utilities.log.info('vparams: {}'.format(vparams))
 
-    model_filename = 'interpolate_model'+extraFilebit+iometadata+'.h5' if cvKriging else 'interpolate_model'+iometadata+'.h5'
+    model_filename = 'interpolate_model'+extraFilebit+iometadata+'.h5' if cvKriging else 'interpolate_linear_model'+iometadata+'.h5'
 
-    status = krig_object.singleStepKrigingFit( param_dict, vparams, filename = model_filename)
+    #status = krig_object.singleStepKrigingFit( param_dict, vparams, filename = model_filename)
+    status = krig_object.singleStepInterpolationFit( param_dict, vparams, filename = model_filename)
 
     # Use a simple grid for generating visualization work
     gridx, gridy = krig_object.input_grid() # Grab from the config file
 
-    df_grid = krig_object.krigingTransform(gridx, gridy,style='grid',filename = model_filename)
+    #df_grid = krig_object.krigingTransform(gridx, gridy,style='grid',filename = model_filename)
+    df_grid = krig_object.interpolationTransform(gridx, gridy,style='grid',filename = model_filename)
 
     # Pass dataframe for the plotter
     gridz = df_grid['value'].values
@@ -303,7 +306,8 @@ def main(args):
     krig_object.plot_model(gridx, gridy, gridz, keepfile=True, filename='image'+iometadata+'.png', metadata=iometadata)
 
     # Repeat now using the real adcirc data adcirc_gridx, and adcirc_gridy 
-    df_adcirc_grid = krig_object.krigingTransform(adcirc_gridx, adcirc_gridy, style='points', filename = model_filename)
+    #df_adcirc_grid = krig_object.krigingTransform(adcirc_gridx, adcirc_gridy, style='points', filename = model_filename)
+    df_adcirc_grid = krig_object.interpolationTransform(adcirc_gridx, adcirc_gridy, style='points', filename = model_filename)
 
     krig_adcircfilename = krig_object.writeADCIRCFormattedTransformedDataToDisk(df_adcirc_grid)
     krig_interfilename = krig_object.writeTransformedDataToDisk(df_grid)
@@ -318,9 +322,6 @@ def main(args):
     # Perform some possible diagnostics
 
     krig_object.plot_scatter_discrete(newx,newy,newz,showfile=False, keepfile=True, filename='image_Discrete'+iometadata+'.png', metadata='testmetadataDiscrete')
-
-
-    krig_object.plot_scatter_discrete(newx,newy,newz,showfile=False, keepfile=True, filename='image_Discrete_'+iometadata+'.png', metadata='testmetadataDiscrete')
 
     # Get error statistics for both the visualization and actual ADC IRC nodes data
 

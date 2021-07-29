@@ -5,8 +5,7 @@
 #SBATCH -n 1 
 #SBATCH -J EC95DReanalysis
 #SBATCH --mem-per-cpu 64000
-#SBATCH --exclude=compute-6-23
-
+#SBATCH --exclude=compute-7-30
 
 export SILL=0.16
 export RANGE=8
@@ -23,12 +22,13 @@ export BASEDIREXTRA=
 export KNOCKOUT=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/reanalysis/knockoutStation.json
 
 export YEAR=$1
+export ERUNTIMEDIR=/projects/sequence_analysis/vol1/prediction_work/REANALYSIS-KRIG-vs-INTERPOLATION/INTERPOLATION/EC95D/YEARLY-$YEAR
 #export RUNTIMEDIR=./EC95D/YEARLY-$YEAR
-export RUNTIMEDIR=./EC95D-DA/YEARLY-$YEAR
+#export RUNTIMEDIR=./EC95D-DA/YEARLY-$YEAR
 export LOG_PATH=$RUNTIMEDIR
 
-#URL="/projects/reanalysis/ADCIRC/ERA5/ec95d/$YEAR/fort.63.nc"
-URL="/projects/reanalysis/ADCIRC/ERA5/ec95d/$YEAR-post/fort.63.nc"
+URL="/projects/reanalysis/ADCIRC/ERA5/ec95d/$YEAR/fort.63.nc"
+#URL="/projects/reanalysis/ADCIRC/ERA5/ec95d/$YEAR-post/fort.63.nc"
 
 echo $URL
 
@@ -56,11 +56,12 @@ mv $RUNTIMEDIR/AdcircSupportTools.log $OUTROOT/log-daily
 
 # Interpolate a single specific file
 export ADCJSON=$INDIR/adc_coord.json
-export CLAMPFILE=$PYTHONPATH/config/clamp_list_hsofs.dat
+export CLAMPFILE=$PYTHONPATH/config/clamp_list_hsofs_nobox.dat
+export CONTROLFILE=$PYTHONPATH/config/control_list_hsofs.dat
 # clamps are disabled in the code itself
 export YAMLNAME=$PYTHONPATH/config/int.REANALYSIS.EC95D.yml
 export OUTROOT=$RUNTIMEDIR/$DAILY
 export ERRDIR=$OUTROOT/errorfield
-python  $CODEBASE/runInterpolate_parallel.py  --insill $SILL --inrange $RANGE --outroot $OUTROOT --yamlname $YAMLNAME --errordir $ERRDIR --clampfile $CLAMPFILE --gridjsonfile $ADCJSON
+python  $CODEBASE/runInterpolate_parallel.py  --insill $SILL --inrange $RANGE --outroot $OUTROOT --yamlname $YAMLNAME --errordir $ERRDIR --clampfile $CLAMPFILE --controlfile $CONTROLFILE --gridjsonfile $ADCJSON
 mv $RUNTIMEDIR/AdcircSupportTools.log $OUTROOT/log-interpolate
 
