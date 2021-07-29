@@ -284,9 +284,9 @@ def main(args):
     #else:
     #    status = krig_object.singleStepKrigingFit(filename = 'interpolate_model'+iometadata+'.h5')
 
-    utilities.log.info('doing a single krige using current best parameters')
-    utilities.log.info('param_dict: {}'.format(param_dict))
-    utilities.log.info('vparams: {}'.format(vparams))
+    utilities.log.info('doing a single step interpolation ')
+    #utilities.log.info('param_dict: {}'.format(param_dict))
+    #utilities.log.info('vparams: {}'.format(vparams))
 
     model_filename = 'interpolate_model'+extraFilebit+iometadata+'.h5' if cvKriging else 'interpolate_linear_model'+iometadata+'.h5'
 
