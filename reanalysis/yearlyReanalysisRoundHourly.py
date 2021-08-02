@@ -24,6 +24,7 @@ from compute_error_field.computeErrorField import computeErrorField
 from utilities.utilities import utilities as utilities
 from visualization.stationPlotter import stationPlotter
 import datetime as dt
+from datetime import timedelta
 
 def buildLocalConfig(n_aveper=4, n_period=24, n_tide=12.42, n_pad=1):
     """
@@ -257,9 +258,25 @@ def main(args):
     timeout = timeend.strftime('%Y%m%d %H:%M')
     utilities.log.info('ADC provided times are {} and {}'.format(timein, timeout))
 
+    # NOAA-COOPS issue if exactly 354 days. See slack channel. Sent email to to Greg Clunies appreox May 21. Never heard back 
+    # If the d.days is 365 days, we can simply ADD a day and request for more info. This will work AND, later on,m the ADCIRC data will be
+    # Timer aligned with the obs data effectively removing the extras. 
+
+    d=(timeend-timestart).days
+    utilities.log.info('Num days in the OBS initial range request {}'.format(d))
+    if d==365:
+        utilities.log.info("Added 1 day to the OBSE data range to get around NOAA_COOPS 365-day BUG")
+        timeend=timeend+timedelta(days=1)
+
+    # Grab time Range and tentative station list from the ADCIRC fetch  (stations may still be filtered out)
+    timein = timestart.strftime('%Y%m%d %H:%M')
+    timeout = timeend.strftime('%Y%m%d %H:%M')
+    utilities.log.info('FINAL times for OBS range are {} and {}'.format(timein, timeout))
+
     # Could also set stations to None
     # Overwrite SMOOTHED data with the hourly data so downstream methods can pick up the filenames
     #detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ = exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdir, stationFile)
+
     detailedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ = exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdir, stationFile, knockout=dict_knockout)
     outfiles['OBS_DETAILED_PKL']=detailedpkl
     outfiles['OBS_SMOOTHED_PKL']=detailedpkl
