@@ -2,11 +2,10 @@
 #SBATCH -t 512:00:00
 #SBATCH -p batch
 #SBATCH -N 1
-#SBATCH -n 2 
+#SBATCH -n 1 
 #SBATCH -J Reanalysis
 #SBATCH --mem-per-cpu 512000
 #SBATCH --exclude=compute-5-17
-
 
 GRID="region3"
 OBSNAME="/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/config/obs.region.yml"
@@ -21,7 +20,6 @@ export YEAR=$1
 export RUNTIMEDIR=./REGION3/YEARLY-$YEAR
 #export RUNTIMEDIR=./REGION3-DA/YEARLY-$YEAR
 export LOG_PATH=$RUNTIMEDIR
-
 
 URL="/projects/reanalysis/ADCIRC/ERA5/fr3/$YEAR/fort.63.nc"
 #URL="/projects/reanalysis/ADCIRC/ERA5/fr3/$YEAR-post/fort.63.nc"
@@ -57,6 +55,6 @@ export CONTROLFILE=$PYTHONPATH/config/land_control_list.dat
 export YAMLNAME=$PYTHONPATH/config/int.REANALYSIS.REGION3.yml
 export OUTROOT=$RUNTIMEDIR/$DAILY
 export ERRDIR=$OUTROOT/errorfield
-python  $CODEBASE/runInterpolate_parallel.py  --insill $SILL --inrange $RANGE --outroot $OUTROOT --yamlname $YAMLNAME --errordir $ERRDIR --clampfile $CLAMPFILE --controlfile $CONTROLFILE --gridjsonfile $ADCJSON
+python  $CODEBASE/runInterpolate_parallel.py  --outroot $OUTROOT --yamlname $YAMLNAME --errordir $ERRDIR --clampfile $CLAMPFILE --controlfile $CONTROLFILE --gridjsonfile $ADCJSON
 mv $RUNTIMEDIR/AdcircSupportTools.log $OUTROOT/log-interpolate
 
