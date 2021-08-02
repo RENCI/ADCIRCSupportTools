@@ -22,12 +22,10 @@ export BASEDIREXTRA=
 export KNOCKOUT=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/reanalysis/knockoutStation.json
 
 ###
-#export YEAR=$1
-export YEAR=2018
+export YEAR=$1
 
 export RUNTIMEDIR=./HSOFS-DA/YEARLY-$YEAR
 export LOG_PATH=$RUNTIMEDIR
-#URL="/projects/ees/TDS/Reanalysis/ADCIRC/ERA5/hsofs/$YEAR-post/fort.63.nc"
 URL="/projects/reanalysis/ADCIRC/ERA5/hsofs/$YEAR-post/fort.63.nc"
 #URL="/projects/reanalysis/ADCIRC/ERA5/hsofs/$YEAR/fort.63.nc"
 
