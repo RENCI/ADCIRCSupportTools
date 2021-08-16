@@ -75,7 +75,7 @@ def fetch_data_metadata(metaFile=None):
 def main(args):
     utilities.log.info(args)
 
-    cv_kriging = args.cv_kriging
+    cv_testing = args.cv_testing
     classdataFile = args.classdataFile
     utilities.log.info('Input classdata file is {}'.format(classdataFile))
 
@@ -174,39 +174,31 @@ def main(args):
     else:
         krig_object = interpolateScalerField(datafile=inerrorfile, yamlname=yamlname, clampingfile=clampfile, controlfile=controlfile, metadata=iometadata, rootdir=rootdir)
 
-    if cv_kriging:
-        extraFilebit='_CV_'
-    else:
-        extraFilebit=''
-
-    vparams=None
-    param_dict=None
-
-    if cv_kriging:
+    if cv_testing:
         if classdataFile is not None:
-            utilities.log.info('Attempt a stratified CV procedure using {}'.format(classdataFile))
+            utilities.log.info('Attempt a CV test using {}'.format(classdataFile))
             classdata=fetch_data_metadata(classdataFile)
             print('class data {}'.format(classdata))
-        utilities.log.info('Building kriging model using CV procedure')
-        param_dict, vparams, best_score, full_scores = krig_object.optimize_kriging(krig_object, classdataFile=classdata) # , param_dict_list, vparams_dict_list)
-        utilities.log.info('Kriging best score is {}'.format(best_score))
-        print('List of all scores {}'.format(full_scores))
-        #fullScoreDict = {'best_score':best_score,'scores': full_scores, 'params':param_dict,'vparams':vparams}
-        fullScoreDict = {'best_score':best_score,'params':param_dict,'vparams':vparams}
-        ##jsonfilename = '_'.join(['','fullScores.json']) 
+        utilities.log.info('Testing interpolation model using CV procedure')
+        full_scores, best_score = krig_object.test_interpolationFit()
+        print('Optimize {}'.format(full_scores))
+        utilities.log.info('Interpolation overall best score is {}'.format(best_score))
+        fullScoreDict = full_scores # {'best_score':best_score,'params':param_dict,'vparams':vparams}
         jsonfilename = 'fullCVScores.json'
         utilities.log.info('Partial CV score {}'.format(fullScoreDict))
-        print('Partial CV score {}'.format(fullScoreDict))
-        with open(jsonfilename, 'w') as fp:
-            json.dump(fullScoreDict, fp)
-        
-    utilities.log.info('doing a single krige using current best parameters')
-    utilities.log.info('param_dict: {}'.format(param_dict))
-    utilities.log.info('vparams: {}'.format(vparams))
-    # Always do this final model is saved for subseqent reuse.
+        #print('Partial CV score {}'.format(fullScoreDict))
+        cvfilename=utilities.writeDictToJson(fullScoreDict,rootdir=rootdir,subdir='interpolated',fileroot='interpolationSummaryCV',iometadata=iometadata)
+        utilities.log.info('Wrote Daily CV values to {}'.format(cvfilename))
 
-    status = krig_object.singleStepInterpolationFit( param_dict, vparams, filename = 'interpolate_linear_model'+extraFilebit+iometadata+'.h5')
+    #status = krig_object.singleStepInterpolationFit(X,Y,V,filename = 'interpolate_linear_model'+extraFilebit+iometadata+'.h5')
+    #kf_dict = krig_object.test_interpolationFit(filename = 'interpolate_linear_model'+extraFilebit+iometadata+'.h5')
+    #print('Optimize {}'.format(kf_dict))
 
+    utilities.log.info('Start interpolation')
+    combineddata = np.concatenate([krig_object.data, krig_object.clamps, krig_object.controls], axis=0).astype(float)
+    X,Y,V = combineddata[:,0], combineddata[:,1], combineddata[:,2]
+    status = krig_object.singleStepInterpolationFit(X,Y,V,filename = 'interpolate_linear_model'+iometadata+'.h5')
+    
     #############################################################################
     # Start predictions
 
@@ -219,7 +211,7 @@ def main(args):
     meandata = df_interpolate_stations['mean'].to_list()
     utilities.log.info('Station points:Number of lons {} number of lats {}'.format(len(lons), len(lats)))
 
-    Allvalues = krig_object.interpolationTransform(lons, lats, style='points', filename='interpolate_linear_model'+extraFilebit+iometadata+'.h5')
+    Allvalues = krig_object.interpolationTransform(lons, lats, style='points', filename='interpolate_linear_model'+iometadata+'.h5')
 
     df_interpolate_stations['interpolate']=Allvalues['value'].to_list()
     krigfilename=utilities.writeCsv(df_interpolate_stations,rootdir=rootdir,subdir='interpolated',fileroot='stationSummaryKrig',iometadata=iometadata)
@@ -234,7 +226,7 @@ def main(args):
     #g = np.meshgrid(gridx,gridy)
     #positions = np.vstack(map(np.ravel, g))
     #gridx,gridy = positions[0], positions[1] 
-    df_grid = krig_object.interpolationTransform(gridx, gridy,style='grid',filename = 'interpolate_linear_model'+extraFilebit+iometadata+'.h5')
+    df_grid = krig_object.interpolationTransform(gridx, gridy,style='grid',filename = 'interpolate_linear_model'+iometadata+'.h5')
     # Pass dataframe for the plotter
     gridz = df_grid['value'].values
     n=gridx.shape[0]
@@ -251,7 +243,7 @@ def main(args):
         adcirc_gridx=adcgridx
         adcirc_gridy=adcgridy
         utilities.log.info('Number of lons {} number of lats {}'.format(len(adcirc_gridx), len(adcirc_gridy)))
-        df_adcirc_grid = krig_object.interpolationTransform(adcirc_gridx, adcirc_gridy, style='points', filename='interpolate_linear_model'+extraFilebit+iometadata+'.h5')
+        df_adcirc_grid = krig_object.interpolationTransform(adcirc_gridx, adcirc_gridy, style='points', filename='interpolate_linear_model'+iometadata+'.h5')
         krig_adcircfilename = krig_object.writeADCIRCFormattedTransformedDataToDisk(df_adcirc_grid)
         utilities.log.info('Transformed interpolated data are in '+krig_interfilename)
         utilities.log.info('Transformed interpolated ADCIRC formatteddata are in '+krig_adcircfilename)
@@ -303,7 +295,9 @@ def main(args):
     if visualiseErrorField:
         print('plot new diagnostics')
         #selfX,selfY,selfZ = krig_object.fetchRawInputData() # Returns the unclamped input data for use by the scatter method
+
         selfX, selfY, selfZ = krig_object.fetchInputAndClamp()  # Returns the clamped input data for use by the scatter method
+
         diag.plot_interpolation_model(gridx, gridy, gridz, selfX, selfY, selfZ, metadata=iometadata)
 
     #vizScatterPlot=False
@@ -325,7 +319,7 @@ if __name__ == '__main__':
                         help='Names highlevel $RUNTIMEDIR/subdir_name')
     parser.add_argument('--iometadata', action='store', dest='iometadata', default='',
                         help='Amends all output filenames with iometadata')
-    parser.add_argument('--cv_kriging', action='store_true', dest='cv_kriging',
+    parser.add_argument('--cv_testing', action='store_true', dest='cv_testing',
                         help='Boolean: Invoke a CV procedure prior to fitting kriging model')
     parser.add_argument('--yamlname', action='store', dest='yamlname', default=None)
     parser.add_argument('--error_histograms', action='store_true',dest='error_histograms',

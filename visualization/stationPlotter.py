@@ -20,12 +20,15 @@ from utilities.utilities import utilities
 ## Some attempt at managing colors.
 ## For now do not change the order of these
 
+# We amended the colors abit, for better pics for reanalysis. THios can effect ADDA as well and OBS-MOD
+col = sns.color_palette("bright")[0:3]
+
 colordict=dict()
 colordict['forecast']='b'
 colordict['nowcast']='gray'
-colordict['adc']='b'
-colordict['obs']='g'
-colordict['err']='r'
+colordict['adc']=col[1] # 'b'
+colordict['obs']=col[0] # 'g'
+colordict['err']=col[2] # 'r'
 colordict['misc']='o'
 
 dashdict=dict()
@@ -92,7 +95,7 @@ class stationPlotter(object):
         state = df_meta.loc[int(station)]['state']
         return {'LAT':str(lat), 'LON':str(lon), 'NODE':str(node), 'STATE': state, 'STATIONNAME': stname, 'FILENAME':pngfile}
 
-## Now a string manipulator to help fiund the proper color
+## Now a string manipulator to help find the proper color
 ## Uses a greedy approach
     def varToStyle(self, varlist):
         """

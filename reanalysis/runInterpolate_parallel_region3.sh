@@ -8,7 +8,7 @@
 #SBATCH --exclude=compute-5-17
 
 GRID="region3"
-OBSNAME="/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/config/obs.region.yml"
+OBSNAME="/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/config/obs.region3.yml"
 
 export CODEBASE=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/reanalysis
 export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools
@@ -17,12 +17,12 @@ export BASEDIREXTRA=
 export KNOCKOUT=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/reanalysis/knockoutStation.json
 
 export YEAR=$1
-export RUNTIMEDIR=./REGION3/YEARLY-$YEAR
-#export RUNTIMEDIR=./REGION3-DA/YEARLY-$YEAR
+#export RUNTIMEDIR=./REGION3/YEARLY-$YEAR
+export RUNTIMEDIR=./REGION3-DA/YEARLY-$YEAR
 export LOG_PATH=$RUNTIMEDIR
 
-URL="/projects/reanalysis/ADCIRC/ERA5/fr3/$YEAR/fort.63.nc"
-#URL="/projects/reanalysis/ADCIRC/ERA5/fr3/$YEAR-post/fort.63.nc"
+#URL="/projects/reanalysis/ADCIRC/ERA5/fr3/$YEAR/fort.63.nc"
+URL="/projects/reanalysis/ADCIRC/ERA5/fr3/$YEAR-post/fort.63.nc"
 
 echo $URL
 

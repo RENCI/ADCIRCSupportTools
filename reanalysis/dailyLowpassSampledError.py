@@ -160,16 +160,18 @@ def dictToDataFrame(dataDict, src):
 
 def makePlot(start, end, station, src, stationName, dfs, dfs_7d, dfs_weekly_mean, dfs_monthly_mean, odir): 
     sns.set(rc={'figure.figsize':(11, 4)}) # Setr gray background and white gird
+    col = sns.color_palette("bright")[0:3] # CHanged to make figs for reananalysis more consistent
+
     # Plot daily, weekly resampled, and 7-day rolling mean time series together
     fig, ax = plt.subplots()
     ax.plot(dfs.loc[start:end, src],
-    marker='.', markersize=1, linewidth=0.1,color='gray',label='Hourly')
+    marker='.', markersize=1, linewidth=0.1,label='Hourly', color=col[0]) # color='gray',)
     ax.plot(dfs_7d.loc[start:end, src],
-    color='red', alpha=0.3, linewidth=.5, linestyle='-', label='7-d Rolling Mean')
+    color='red', alpha=0.3, linewidth=.5, linestyle='-', label='7-d Rolling Mean') # red
     ax.plot(dfs_weekly_mean.loc[start:end, src],
-    marker='o', color='green',markersize=6, linestyle='-', label='Weekly Mean')
+    marker='o', color=col[2] ,markersize=6, linestyle='-', label='Weekly Mean') # green
     ax.plot(dfs_monthly_mean.loc[start:end, src],
-    color='black',linewidth=0.5, linestyle='-', label='Monthly Mean')
+    color='black',linewidth=0.5, linestyle='-', label='Monthly Mean') # black
     ax.set_ylabel(r'$\Delta$ WL (m) versus MSL')
     ax.set_title(stationName, fontdict={'fontsize': 12, 'fontweight': 'medium'})
     ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=None))
@@ -190,6 +192,7 @@ def makeLowpassPlot(start, end, lowpassAllstations, filterOrder='', metadata=['l
     An entry the dict (lowpassAllStations) carries all ther OBS,DIFF,LP data sets
     Plot the OBS and Diff data in a prominant way. Then layer on the cutoffs
     """
+    col = sns.color_palette("bright")[0:3] 
     colMetadata = metadata[1]
     nameMetadata = metadata[0]
     plotterDownmove=0.6
@@ -202,9 +205,9 @@ def makeLowpassPlot(start, end, lowpassAllstations, filterOrder='', metadata=['l
     fig, ax = plt.subplots()
     # OBS and DIFF
     ax.plot(lowpassAllstations[station]['OBS'][start:end],
-    marker='.', markersize=1, linewidth=0.1,color='gray',label='Obs Hourly')
+    marker='.', markersize=1, linewidth=0.1,color=col[0],label='Obs Hourly') # gray
     ax.plot(lowpassAllstations[station]['ERR'][start:end],
-    color='black', marker='o',markersize=2, linewidth=.5, linestyle='-', label='ADCIRC-OBS')
+    color=col[2], marker='o',markersize=2, linewidth=.5, linestyle='-', label='ADCIRC-OBS') # black
     # Now start with the lowpass filters
     df_lp = lowpassAllstations[station][colMetadata]
     cutoffs=df_lp.columns.to_list()

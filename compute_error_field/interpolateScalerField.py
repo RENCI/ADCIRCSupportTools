@@ -141,21 +141,17 @@ class interpolateScalerField(object):
         # At this stage, zeroX,Y,V also include the knn process control points
         # As does self.X,Y,Values
         if datafile != None and clampingfile != None and controlfile != None:
-            self.X, self.Y, self.Values, self.inX, self.inY, self.inV, self.zeroX, self.zeroY, self.zeroV = self.readAndProcessData( self.f, self.c, self.cn )
+            #self.X, self.Y, self.Values, self.inX, self.inY, self.inV, self.zeroX, self.zeroY, self.zeroV self.controlX, self.controlY, self.controlV = self.readAndProcessData( self.f, self.c, self.cn )
+            self.data, self.clamps, self.controls = self.readAndProcessData( self.f, self.c, self.cn )
         else:
             utilities.log.error('interpolateScalerField initialized with no input file nor clamping file: Abort')
-            sys.exit('Abort interpolatrion job')
+            sys.exit('Abort interpolation job')
         self.rootdir = rootdir
         if self.rootdir == None:
             utilities.log.error('No rootdir was specified')
             sys.exit('No rootdir was specified')
 
-        #utilities.log.info("OVERRIDE clamps. No clamps used for interpolation")
-        #self.X=self.inX
-        #self.Y=self.inY
-        #self.Values=self.inV
-
-    def fetchInputAndClamp(self):
+    def fetchInput(self):
         """
         Return the X,Y,Value data and clamped input data.
 
@@ -164,7 +160,7 @@ class interpolateScalerField(object):
             Y: numpy.ndarray list of lats
             Values: numpy.ndarray list of krigevalues
         """
-        return self.X, self.Y, self.Values
+        return self.data[:,0], self.data[:,1], self.data[:,2]
 
     def fetchClamp(self):
         """
@@ -175,7 +171,19 @@ class interpolateScalerField(object):
             Y: numpy.ndarray list of lats
             Values: numpy.ndarray list of clamp values (=0.0)
         """
-        return self.zeroX, self.zeroY, self.zeroV
+        return self.clamps[:,0], self.clamps[:, 1], self.clamps[:, 2]
+
+    def fetchControl(self):
+        """
+        Return the X,Y,Value for the landbased control data only.
+
+        Results:
+            X: numpy.ndarray list of lons
+            Y: numpy.ndarray list of lats
+            Values: numpy.ndarray list of clamp values (=0.0)
+        """
+        return self.controls[:,0], self.controls[:, 1], self.controls[:, 2] 
+
 
     def fetchRawInputData(self):
         """
@@ -186,7 +194,7 @@ class interpolateScalerField(object):
             inY: numpy.ndarray list of lats
             inV: numpy.ndarray list of krigevalues
         """
-        return self.inX, self.inY, self.inV
+        return self.data[:,0], self.data[:,1], self.data[:,2]
 
     def generic_grid(self):
         """
@@ -253,6 +261,8 @@ class interpolateScalerField(object):
         newcontrols = np.append(Xcont,ypred_control.reshape(-1,1),axis=1)
         return newcontrols
 
+# This should continue to run as before since data contains everything
+#
     def readAndProcessData(self, f, c, cn):
         """
         Read the input data file (f) and the input clamping file (c).
@@ -269,15 +279,18 @@ class interpolateScalerField(object):
            cn: fullpath filename to control data (requires knn fitting()
 
         Results:
-            Xpoints: numpy.ndarray of lons (integrated with clamp) + fit controls
-            Ypoints: numpy.ndarray of lats (integrated with clamp) + fit controls
-            Zpoints: numpy.ndarray of values (integrated with clamp) + fit controls
+            Xpoints: numpy.ndarray of lons +clamps+controls
+            Ypoints: numpy.ndarray of lats +clamps+controls
+            Zpoints: numpy.ndarray of values +clamps+controls
             inX: numpy.ndarray of lons (no clamp)
             inY: numpy.ndarray of lats (no clamp)
             inZ: numpy.ndarray of vals (no clamp)
-            zeroX: numpy.ndarray of lons for clamp + fit controls
-            zeroY: numpy.ndarray of lats for clamp + fit controls
-            zeroV: numpy.ndarray of Values for clamp + fit controls
+            zeroX: numpy.ndarray of lons for clamp 
+            zeroY: numpy.ndarray of lats for clamp 
+            zeroV: numpy.ndarray of Values for clamp 
+            controlX: numpy.ndarray of lons for control 
+            controlY: numpy.ndarray of lats for control
+            controlV: numpy.ndarray of Values for control
 
         We also add some additional data structures to try and test stratified CV. This architecture is 
         terrible and will be corrected once we decide how best to do the science
@@ -289,11 +302,12 @@ class interpolateScalerField(object):
         zeros = pd.read_csv(c,header=0).values  # Note we have a header here
         controls=pd.read_csv(cn,header=0).values  # values are empty. We must popul,ate them with knn values
         controls=self.knnFitControlPoints(controls, indata, k=3) #3)
-        utilities.log.info('Fit control point values {}'.format(controls))
-        data = np.concatenate([indata, zeros, controls], axis=0).astype(float)
+        utilities.log.info('Initial all-stations Fit of control point values {}'.format(controls))
+        #data = np.concatenate([indata, zeros, controls], axis=0).astype(float)
+        data = indata
         utilities.log.debug(indata)
         # Merge controls INTO zeros for saubsequent interpolation
-        zeros = np.concatenate([zeros, controls], axis=0).astype(float)
+        ##zeros = np.concatenate([zeros, controls], axis=0).astype(float)
         # we want headers to be included
         np.random.shuffle(data) # incase we want to do CV studies
         Xpoints, Ypoints, Valuepoints = data[:,0], data[:, 1], data[:, 2]
@@ -302,8 +316,10 @@ class interpolateScalerField(object):
         ##print('INDATA and controls {}'.format(indata))
         inX, inY, inV = indata[:,0], indata[:, 1], indata[:, 2]
         zeroX,zeroY,zeroV = zeros[:,0], zeros[:, 1], zeros[:, 2]
+        controlX, controlY, controlV = controls[:,0], controls[:, 1], controls[:, 2]
         if not np.isnan(Xpoints).any() and not np.isnan(Ypoints).any() and not np.isnan(Valuepoints).any():
-            return Xpoints, Ypoints, Valuepoints, inX, inY, inV, zeroX, zeroY, zeroV
+            #return Xpoints, Ypoints, Valuepoints, inX, inY, inV, zeroX, zeroY, zeroV, controlX, controlY, controlV
+            return data, zeros, controls 
         else:
             utilities.log.error('Some of the input data are nans: Aborting ')
             sys.exit('Some of the input data are nans: Aborting ')
@@ -358,20 +374,22 @@ class interpolateScalerField(object):
         # kt.write_asc_grid(x, y, z_krige, filename="output.asc") # No need to write to an output file at this time
         return status
 
-    def singleStepInterpolationFit(self, param_dict=None, vparams=None,filename = 'interpolate_model.h5'):
+    def singleStepInterpolationFit(self, X, Y, V, filename = 'interpolate_model.h5'):
         """
         Build a simple linear interpolation mnodel.'
+        Need to take the input data and manually construct a combined data+clamps+controls
 
         Parameters:
             filename: (str) name to save model
 
         Results:
-            newfilename: rootdir/models/interpolate_model_metadata.h5
+            newfilename: rootdir/models/interpolate_model.h5
         """
         subdir = "models"
         status = False
         
-        model = sci.LinearNDInterpolator((self.X,self.Y), self.Values, fill_value=0.0)
+        # The model must contain all data+clamps+controls
+        model = sci.LinearNDInterpolator((X,Y), V, fill_value=0.0)
         imgdir = self.rootdir # fetchBasedir(self.config['DEFAULT']['RDIR'].replace('$',''))# Yaml call to be subsequently removed except:
         newfilename = utilities.getSubdirectoryFileName(imgdir, subdir, filename)
         try:
@@ -381,6 +399,81 @@ class interpolateScalerField(object):
         except:
             utilities.log.error('Could not dump model interpolation file to disk '+ newfilename)
         return status
+
+    def test_interpolationFit(self):
+        """
+        Build a simple linear interpolation mnodel.'
+        Need to plan on on recomputing control point values for the available number of stations in the 
+        relevant set (train /test)
+        No FIT optimization is performed here. We simply attempt to test the quality of the fits by
+        doing CV. 
+        The user will still want to run the singleStepInterpolationFit to build the actual data for ADCIRC
+        grid interpolation  
+
+        Report RMSE versus data and control nodes
+
+        Parameters:
+            filename: (str) name to save model
+
+        Results:
+            newfilename: rootdir/models/interpolate_cv_model_metadata.h5
+        """
+        from sklearn.model_selection import train_test_split, KFold
+        from sklearn.metrics import mean_squared_error
+
+        subdir = "models"
+        status = False
+
+        # First build a training/test set. Then populate the control points in the training set with the appropriate knn values
+        # The clamp and copntrol points will be used for all splits BUT, we need to knn fit the controls points for each fold.
+        # So we can simply split on the actual station data then merge as necc.
+
+        # https://www.quantstart.com/articles/Using-Cross-Validation-to-Optimise-a-Machine-Learning-Method-The-Regression-Setting/
+
+        utilities.log.info('Initiating the CV testing: Using station drop outs to check overfitting')
+        kf = KFold(n_splits=5)
+        folds = kf.get_n_splits(self.data)
+        kf_dict = dict([("fold_%s" % i,[]) for i in range(1, folds+1)])
+        kfcntl_dict = dict([("Cnrl_fold_%s" % i,[]) for i in range(1, folds+1)])
+        fold = 0
+        k=3
+        for train_index, test_index in kf.split(self.data):
+            fold += 1
+            #print('Fold: {}'.format(fold))
+            data_train, data_test = self.data[train_index], self.data[test_index]
+            controls_train=self.knnFitControlPoints(self.controls, data_train, k=k) 
+            ktest = len(data_test) if len(data_test) < k else  k
+            controls_test=self.knnFitControlPoints(self.controls, data_test, k=ktest)
+            X_train = np.concatenate([data_train, self.clamps, controls_train], axis=0).astype(float)
+            X_test = np.concatenate([data_test, self.clamps, controls_test], axis=0).astype(float)
+            model = sci.LinearNDInterpolator((X_train[:,0],X_train[:,1]), X_train[:,2], fill_value=0.0)
+            Y_pred=model(X_test[:,0],X_test[:,1])
+            Y_test=X_test[:,2]
+            test_mse = mean_squared_error(Y_test, Y_pred)
+            #print(test_mse)
+            kf_dict["fold_%s" % fold].append(test_mse)
+            # Now check just the controls: Retain the stations and zero clamps
+            Ycntl_pred=model(controls_test[:,0],controls_test[:,1])
+            Ycntl_test=controls_test[:,2]
+            testcntl_mse = mean_squared_error(Ycntl_test, Ycntl_pred)
+            #print(testcntl_mse)
+            kfcntl_dict["Cnrl_fold_%s" % fold].append(testcntl_mse)
+        best_score = min(kf_dict.values())
+        bestcntl_score = min(kfcntl_dict.values())
+        #
+        kf_dict["best"]=best_score
+        kf_dict["avgMSE"] = 0.0
+        for i in range(1, folds+1):
+            kf_dict["avgMSE"] += kf_dict["fold_%s" % i][0]
+        kf_dict["avgMSE"] /= float(folds)
+
+        kfcntl_dict["best"]=bestcntl_score
+        kfcntl_dict["avgCnrlMSE"] = 0.0
+        for i in range(1, folds+1):
+            kfcntl_dict["avgCnrlMSE"] += kfcntl_dict["Cnrl_fold_%s" % i][0]
+        kfcntl_dict["avgCnrlMSE"] /= float(folds)
+        return {**kf_dict, **kfcntl_dict}, best_score
+
 
     def krigingTransform(self, gridx, gridy, style = 'grid',  filename = 'interpolate_model.h5'):
         """
@@ -651,14 +744,19 @@ class interpolateScalerField(object):
         Results:
             rootdir/images/image_metadata.png
         """
+        # ALso fetch clamp and station information
         subdir = "images"  # The yaml imgdir/subdir for storing images
         fig = plt.figure(figsize=(8, 10))
         ax = fig.add_axes([0.1, 0.1, 0.8, 0.8])
         ax.pcolormesh(x, y, z_krige,
                       cmap=plt.cm.jet,
                       vmin=-.2, vmax=1.15)
-        ax.scatter(self.X, self.Y, s=100, marker='o',
-                   c=self.Values, cmap=plt.cm.jet, edgecolor='k',
+        combineddata = np.concatenate([self.clamps, self.controls], axis=0).astype(float)
+        sX, sY, sV = combineddata[:,0], combineddata[:,1], combineddata[:,2]
+        #print(sX)
+        #print(sV)
+        ax.scatter(sX, sY, s=100, marker='o',
+                   c=sV, cmap=plt.cm.jet, edgecolor='k',
                    vmin=-.2, vmax=1.15)
         ax.set_xlim([min(x), max(x)])
         ax.set_ylim([min(y), max(y)])
