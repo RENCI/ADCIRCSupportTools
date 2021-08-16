@@ -18,12 +18,10 @@ OBSNAME="/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADC
 export CODEBASE=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/reanalysis
 export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools
 export BASEDIREXTRA=
-
 export KNOCKOUT=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/reanalysis/knockoutStation.json
 
 export YEAR=$1
-export ERUNTIMEDIR=/projects/sequence_analysis/vol1/prediction_work/REANALYSIS-KRIG-vs-INTERPOLATION/INTERPOLATION/EC95D/YEARLY-$YEAR
-#export RUNTIMEDIR=./EC95D/YEARLY-$YEAR
+export RUNTIMEDIR=./EC95D/YEARLY-$YEAR
 #export RUNTIMEDIR=./EC95D-DA/YEARLY-$YEAR
 export LOG_PATH=$RUNTIMEDIR
 
@@ -32,9 +30,7 @@ URL="/projects/reanalysis/ADCIRC/ERA5/ec95d/$YEAR/fort.63.nc"
 
 echo $URL
 
-#DAILY=DAILY-2018YEAR-12MONTH-REGION3-RANGE$RANGE-SILL$SILL-NUGGET$NUGGET-LP48
-
-DAILY=DAILY-$GRID-RANGE$RANGE-SILL$SILL-NUGGET$NUGGET-LP24
+DAILY=DAILY-$GRID-LP24
 
 echo "xxxxxx"
 echo $YEAR
@@ -56,12 +52,13 @@ mv $RUNTIMEDIR/AdcircSupportTools.log $OUTROOT/log-daily
 
 # Interpolate a single specific file
 export ADCJSON=$INDIR/adc_coord.json
-export CLAMPFILE=$PYTHONPATH/config/clamp_list_hsofs_nobox.dat
-export CONTROLFILE=$PYTHONPATH/config/control_list_hsofs.dat
+export CLAMPFILE=$PYTHONPATH/config/water_control_list.dat
+export CONTROLFILE=$PYTHONPATH/config/land_control_list.dat
 # clamps are disabled in the code itself
 export YAMLNAME=$PYTHONPATH/config/int.REANALYSIS.EC95D.yml
 export OUTROOT=$RUNTIMEDIR/$DAILY
 export ERRDIR=$OUTROOT/errorfield
-python  $CODEBASE/runInterpolate_parallel.py  --insill $SILL --inrange $RANGE --outroot $OUTROOT --yamlname $YAMLNAME --errordir $ERRDIR --clampfile $CLAMPFILE --controlfile $CONTROLFILE --gridjsonfile $ADCJSON
+#python  $CODEBASE/runInterpolate_parallel.py  --insill $SILL --inrange $RANGE --outroot $OUTROOT --yamlname $YAMLNAME --errordir $ERRDIR --clampfile $CLAMPFILE --controlfile $CONTROLFILE --gridjsonfile $ADCJSON
+python  $CODEBASE/runInterpolate_parallel.py  --outroot $OUTROOT --yamlname $YAMLNAME --errordir $ERRDIR --clampfile $CLAMPFILE --controlfile $CONTROLFILE --gridjsonfile $ADCJSON
 mv $RUNTIMEDIR/AdcircSupportTools.log $OUTROOT/log-interpolate
 

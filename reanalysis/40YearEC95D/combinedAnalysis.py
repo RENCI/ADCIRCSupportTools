@@ -73,6 +73,8 @@ def noFitStationPlot(station, stationName, df_ADC, df_OBS, df_ERR):
     plt.show()
 
 def fitStationPlot(station, stationName, df_ADC, df_OBS, df_ERR):
+    col = sns.color_palette('bright')[0:4] 
+    print('cols {}'.format(col))
     df = df_ERR.copy()
     df['hours_from_start'] = (df.index - df.index[0]).total_seconds()//3600
     x_all = df['hours_from_start'].values.reshape(-1, 1)
@@ -91,19 +93,30 @@ def fitStationPlot(station, stationName, df_ADC, df_OBS, df_ERR):
     # Compare get some basic stats
     ypred = model.predict(x_all)
     # Prepare data for overlay plotting
-    df_FIT=df_ERR
+    df_FIT=df_ERR.copy()
     df_FIT['FIT']=ypred
     # Form plot
     fig, ax = plt.subplots(figsize=(12, 8))
     sns.set(font_scale=1.0, style="darkgrid")
-    ax.plot(df_OBS,
-        marker='.', markersize=1, linestyle='-',linewidth=0.1,color='darkgray', alpha=0.3,label='OBS')
-    ax.plot(df_ADC,
-        marker='.', markersize=0, linestyle='-', linewidth=0.1,color='lightblue',label='ADC')
+    col = sns.color_palette("bright")[0:3]
+
+    # Alpha channels are not helping sometimes ADS > OBS and sometimes vice versa
+    # Try to detemrtine which is larger
+    if max(df_OBS.values) > max(df_ADC.values):
+        ax.plot(df_OBS,
+            marker='.', markersize=1, linestyle='-',linewidth=0.2, color=col[0], label='NOAA/NOS')
+        ax.plot(df_ADC,
+            marker='.', markersize=0, linestyle='-', linewidth=0.3, color=col[1],label='ADCIRC')
+    else:
+        ax.plot(df_ADC,
+            marker='.', markersize=0, linestyle='-', linewidth=0.3, color=col[1],label='ADCIRC')
+        ax.plot(df_OBS,
+            marker='.', markersize=1, linestyle='-',linewidth=0.2, color=col[0], label='NOAA/NOS')
     ax.plot(df_ERR,
-        marker='.', markersize=.0, linestyle='-', linewidth=0.1,color='red',label='ADC-OBS')
+        marker='.', markersize=.0, linestyle='-', linewidth=0.2,color=col[2],label='ADC-NOS')
     ax.plot(df_FIT['FIT'],
-        markersize=.0, linestyle='-', linewidth=0.3,color='black',label=r"$\widehat{ADC-OBS}$")
+        markersize=.0, linestyle='-', linewidth=0.3,color='black',label=r"$\mathbb{E}(ADC-NOS)$")
+
     ax.set_ylabel('meters')
     ax.set_title(stationName, fontdict={'fontsize': 12, 'fontweight': 'medium'})
     ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=12))
@@ -112,7 +125,7 @@ def fitStationPlot(station, stationName, df_ADC, df_OBS, df_ERR):
     plt.xticks(rotation=90, fontsize=10)
     plt.yticks(fontsize=10)
     fitresult='Intercept %s m, slope %s mm/yr'%(intercept, slope)
-    plt.text('1980', -1.0, fitresult, horizontalalignment='left', size='small', color='black')
+    plt.text('1980', -1.0, fitresult, horizontalalignment='left', size='medium', color='black')
     plt.tight_layout()
     plt.savefig(str(station)+'_withFit.png')
     plt.close()
@@ -127,7 +140,8 @@ years=[1979,1980,1981,1982,1983,1984,1985,1986,1987,1988,1989,1990,1991,1992,199
 
 basefilename='adc_obs_error_merged.csv'
 metafilename='obs_hourly_height_metadata.json'
-basedirectory='/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/reanalysis/40YearEC95D/EC95D-DA'
+#basedirectory='/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/reanalysis/40YearEC95D/EC95D-DA'
+basedirectory='/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/reanalysis/40YearEC95D/EC95D'
 
 # Loop overall data sets and read data files
 yearlyData=list()
