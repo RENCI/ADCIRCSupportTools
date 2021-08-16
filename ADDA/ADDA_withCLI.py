@@ -9,6 +9,7 @@
 # Need large memory to run this job
 import os
 import sys
+import numpy as np
 import pandas as pd
 import matplotlib
 #matplotlib.use('Agg')
@@ -291,7 +292,10 @@ def main(args):
     model_filename = 'interpolate_model'+extraFilebit+iometadata+'.h5' if cvKriging else 'interpolate_linear_model'+iometadata+'.h5'
 
     #status = krig_object.singleStepKrigingFit( param_dict, vparams, filename = model_filename)
-    status = krig_object.singleStepInterpolationFit( param_dict, vparams, filename = model_filename)
+    combineddata = np.concatenate([krig_object.data, krig_object.clamps, krig_object.controls], axis=0).astype(float)
+    X,Y,V = combineddata[:,0], combineddata[:,1], combineddata[:,2]
+
+    status = krig_object.singleStepInterpolationFit(X, Y, V, filename = model_filename)
 
     # Use a simple grid for generating visualization work
     gridx, gridy = krig_object.input_grid() # Grab from the config file
@@ -378,8 +382,11 @@ def main(args):
     if visualiseErrorField:
         # print('plot new diagnostics')
         #selfX,selfY,selfZ = krig_object.fetchRawInputData() # Returns the unclamped input data for use by the scatter method
-        selfX, selfY, selfZ = krig_object.fetchInputAndClamp()  # Returns the clamped input data for use by the scatter method
-        diag.plot_interpolation_model(gridx, gridy, gridz, selfX, selfY, selfZ, metadata=iometadata)
+
+        combineddata = np.concatenate([krig_object.data, krig_object.clamps, krig_object.controls], axis=0).astype(float)
+        X,Y,V = combineddata[:,0], combineddata[:,1], combineddata[:,2]
+        #selfX, selfY, selfZ = krig_object.fetchInputAndClamp()  # Returns the clamped input data for use by the scatter method
+        diag.plot_interpolation_model(gridx, gridy, gridz, X, Y, V, metadata=iometadata)
 
     if vizScatterPlot:
         # print('final scatter plot')
