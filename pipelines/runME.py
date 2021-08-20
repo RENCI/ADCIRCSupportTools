@@ -78,5 +78,16 @@ python execute_APSVIZ_pipeline.py --inputURL "https://fortytwo.cct.lsu.edu/thred
 
 python execute_APSVIZ_pipeline.py --inputURL 'http://tds.renci.org:8080/thredds/dodsC/2021/nam/2021072606/nc_inundation_v9.99_w_rivers/hatteras.renci.org/ncv99-nam-bob-2021/namforecast/fort.63.nc'
 
+# Test the uriv18 grid
+
+# A new grid test
+
+python execute_APSVIZ_pipeline.py --grid "uriv18" --inputURL "http://tds.renci.org:8080/thredds/dodsC/2021/nam/2021082000/uriv18/hatteras.renci.org/uriv18-nam-bob-2021/namforecast/fort.63.nc"
+
+~             
+~                                                                                                                                                                                               
+~             
+
+
 
 
