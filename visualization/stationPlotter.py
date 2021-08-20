@@ -23,12 +23,13 @@ from utilities.utilities import utilities
 # We amended the colors abit, for better pics for reanalysis. THios can effect ADDA as well and OBS-MOD
 col = sns.color_palette("bright")[0:3]
 
+# Revert back to orig color scheme for now
 colordict=dict()
-colordict['forecast']='b'
-colordict['nowcast']='gray'
-colordict['adc']=col[1] # 'b'
-colordict['obs']=col[0] # 'g'
-colordict['err']=col[2] # 'r'
+colordict['forecast']='b' # col[1] # 'b'
+colordict['nowcast']='gray' # Not used 
+colordict['adc']='b' # col[1] # 'b'
+colordict['obs']='g' # col[0] # 'g'
+colordict['err']='r' # col[2] # 'r'
 colordict['misc']='o'
 
 dashdict=dict()
