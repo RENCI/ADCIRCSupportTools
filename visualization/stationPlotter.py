@@ -23,22 +23,35 @@ from utilities.utilities import utilities
 # We amended the colors abit, for better pics for reanalysis. THios can effect ADDA as well and OBS-MOD
 col = sns.color_palette("bright")[0:3]
 
+# Build a basic map of possible color choices
+
 # Revert back to orig color scheme for now
 colordict=dict()
 colordict['forecast']='b' # col[1] # 'b'
-colordict['nowcast']='gray' # Not used 
+##colordict['nowcast']='gray' # Not used 
 colordict['adc']='b' # col[1] # 'b'
 colordict['obs']='g' # col[0] # 'g'
 colordict['err']='r' # col[2] # 'r'
 colordict['misc']='o'
+colordict['Prediction']='b' # col[1] # 'b'
+#colordict['Nowcast']='gray' # Not used 
+colordict['Nowcast']='b' # col[1] # 'b'
+colordict['Observations']='g' # col[0] # 'g'
+colordict['Difference']='r' # col[2] # 'r'
+colordict['NOAA Tidal']='orange'
 
 dashdict=dict()
 dashdict['forecast']=(3,1)
-dashdict['nowcast']=(3,1)
+#dashdict['nowcast']=(3,1)
 dashdict['adc']=(1,0)
 dashdict['obs']=(1,0)
 dashdict['err']=(1,0)
 dashdict['misc']=(3,2)
+dashdict['Prediction']=(3,1)
+dashdict['Nowcast']=(1,0)
+dashdict['Observations']=(1,0)
+dashdict['Difference']=(1,0)
+dashdict['NOAA Tidal']=(1,0)
 
 class stationPlotter(object):
     """
@@ -71,21 +84,38 @@ class stationPlotter(object):
         nCols = len(variables)
         sns.set_style('darkgrid')
         ax=sns.lineplot(data=df_concat, palette=colorlist, dashes=dashlist)
-        ax.legend(loc = 4,fontsize = 10)
-        ax.set_ylabel('WL (m) versus MSL')
+        ax.legend(loc = 4,fontsize = 7)
+        #ax.set_ylabel('WL (m) versus MSL')
+        ax.set_ylabel('Water Level (m)')
         ax.set_ylim([ymin, ymax])
         ax.get_xaxis().set_visible(True)
         ax.set(xlabel=None)
-        ax.set_title('Time range {} to {}'.format( df_concat.index.min(),df_concat.index.max()),fontdict={'fontsize': 10, 'fontweight': 'medium'})
+        #ax.set_title('Time range {} to {}'.format( df_concat.index.min(),df_concat.index.max()),fontdict={'fontsize': 10, 'fontweight': 'medium'})
         ax.grid(linestyle='-', linewidth='0.5', color='gray')
         plt.setp(ax.get_xticklabels(), rotation = 15)
-        fig.suptitle('Station Name={}'.format(station))
+        #fig.suptitle('Station Name={}'.format(station))
+        fig.suptitle(station)
 
     def convertToDF(self, compDict,var):
         df=pd.DataFrame(compDict[var])
         df.set_index('TIME',inplace=True)
         df.index = pd.to_datetime(df.index)
-        df.columns=[''.join([var,'WL'])]
+        # Change names of the datrasetrs for more informative plotting
+        #print('{}'.format(df))
+        if var=='OBS':
+            newname='Observations'
+        elif var=='ADC':
+            newname='Nowcast' 
+        elif var=='ERR':
+            newname='Difference'
+        elif var=='ADCForecast':
+            newname='Prediction'
+        elif var=='NOAAPrediction':
+            newname='NOAA Tidal'
+        else:
+            newname=var
+        #df.columns=[''.join([var,'WL'])]
+        df.columns=[newname]
         return df
 
     def makeDict(self, station, df_meta, pngfile):
@@ -106,7 +136,7 @@ class stationPlotter(object):
         colorlist = list()
         listcolors = list(colordict.keys())
         for var in varlist:
-            testvar = var.lower() 
+            testvar = var #.lower() 
             for test in listcolors:
                 if test in testvar:
                     colorlist.append(colordict[test])
@@ -114,7 +144,7 @@ class stationPlotter(object):
         listdashes = list(dashdict.keys())
         dashlist=list()
         for var in varlist:
-            testvar = var.lower()
+            testvar = var # .lower()
             for test in listdashes:
                 if test in testvar:
                     dashlist.append(dashdict[test])
@@ -125,8 +155,8 @@ class stationPlotter(object):
         """
         """
         listDicts = list()
+        print('self.files {}'.format(self.files))
         for key,val in self.files.items():
-            print(key)
             if key=='META':
                 with open(val, 'r') as fp:
                     metaDict = json.load(fp) 
@@ -181,11 +211,11 @@ class stationPlotter(object):
             df_concat = pd.concat(listdfs,axis=1)
             new_variables = df_concat.columns.to_list()
             # A per-station plot
-            fig = plt.figure()
+            fig = plt.figure(figsize=(6, 2))
             self.addPlot(fig, stationName, station, df_concat, new_variables)
             #self.metajsonname = utilities.getSubdirectoryFileName(self.rootdir, self.iosubdir, 'obs_wl_metadata'+self.iometadata+'.json')
             pngfile = utilities.getSubdirectoryFileName(self.rootdir, self.iosubdir, station+self.iometadata+'_WL.png')
-            #pngfile='_'.join([station,'WL.png'])
+            plt.subplots_adjust(bottom=0.25)
             plt.savefig(pngfile)
             # Create a dict of lons,lats,nodes,filenames 
             runProps[station]=self.makeDict(station, df_meta, os.path.basename(pngfile)) # Remove full path

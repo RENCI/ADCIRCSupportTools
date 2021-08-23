@@ -108,7 +108,6 @@ def exec_adcirc_forecast(urls, rootdir, iometadata, adc_yamlname, node_idx, stat
     ADCfile = utilities.writePickle(df, rootdir=rootdir,subdir='',fileroot='adc_wl_forecast',iometadata=iometadata)
     ##df.to_pickle(ADCfile)
     ####df.to_json(ADCjson)
-    print('write new json')
     ADCjson=writeToJSON(df, rootdir, iometadata,fileroot='adc_wl_forecast')
     timestart = adc.T1
     timeend = adc.T2
@@ -134,7 +133,6 @@ def exec_adcirc_nowcast(inurls, rootdir, iometadata, adc_yamlname, node_idx, sta
     ADCfile = utilities.writePickle(df, rootdir=rootdir,subdir='',fileroot='adc_wl_nowcast',iometadata=iometadata)
     ##df.to_pickle(ADCfile)
     ####df.to_json(ADCjson)
-    print('write new json')
     ADCjson=writeToJSON(df, rootdir, iometadata,fileroot='adc_wl_nowcast')
     #timestart = adc.T1.strftime('%Y%m%d%H%M')
     #timeend = adc.T2.strftime('%Y%m%d%H%M')
@@ -160,14 +158,12 @@ def exec_adcirc_nowcast_hurricane(inurls, rootdir, iometadata, adc_yamlname, nod
     ADCfile = utilities.writePickle(df, rootdir=rootdir,subdir='',fileroot='adc_wl_nowcast',iometadata=iometadata)
     ##df.to_pickle(ADCfile)
     ####df.to_json(ADCjson)
-    print('write new json')
     ADCjson=writeToJSON(df, rootdir, iometadata,fileroot='adc_wl_nowcast')
     timestart = adc.T1
     timeend = adc.T2
     df.index = pd.to_datetime(df.index)
     rundate = generateRUNTIMEmetadata(df)
     return ADCfile, ADCjson, timestart, timeend
-
 
 def exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdir, stationFile):
     rpl = GetObsStations(iosubdir=iosubdir, rootdir=rootdir, yamlname=obs_yamlname, metadata=iometadata, stationFile=stationFile)
@@ -188,6 +184,26 @@ def exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdi
     urlcsv=outputdict['CSVurl']
     exccsv=outputdict['CSVexclude']
     return detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ 
+
+def exec_observables_tidalpredictions(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdir, stationFile, knockout=None):
+    utilities.log.info('Fetching HOURLY Tidal Predictions WL for observations')
+    rpl = GetObsStations(product='predictions', iosubdir=iosubdir, rootdir=rootdir, yamlname=obs_yamlname, metadata=iometadata, stationFile=stationFile, knockout=knockout)
+    df_stationNodelist = rpl.fetchStationNodeList()
+    stations = df_stationNodelist['stationid'].to_list()
+    utilities.log.info('Grabing station list from OBS YML')
+    df_stationData, stationNodelist = rpl.fetchStationMetaDataFromIDs(stations)
+    df_detailed, count_nan, newstationlist, excludelist = rpl.fetchStationProductFromIDlist(timein, timeout, interval='h')
+    #df_pruned, count_nan, newstationlist, excludelist = rpl.fetchStationSmoothedHourlyProductFromIDlist(timein, timeout)
+    retained_times = df_detailed.index.to_list() # some may have gotten wacked during the smoothing`
+    dummy = rpl.buildURLsForStationPlotting(newstationlist, timein, timeout) # Could also use newstationlist+excludelist
+    outputdict = rpl.writeFilesToDisk(extra='TP')
+    detailedpkl=outputdict['PKLdetailed']
+    detailedJ=outputdict['JSONdetailed']
+    metapkl=outputdict['PKLmeta']
+    metaJ=outputdict['JSONmeta']
+    urlcsv=outputdict['CSVurl']
+    exccsv=outputdict['CSVexclude']
+    return detailedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ
 
 def exec_error(obsf, adcf, meta, err_yamlname, rootdir, iometadata, iosubdir): 
     cmp = computeErrorField(obsf, adcf, meta, yamlname=err_yamlname, rootdir=rootdir)
@@ -473,6 +489,30 @@ def main(args):
     utilities.log.info('Completed OBS: Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {} MetaJ {}, DetailedJ {}, SmoothedJ {}'.format(detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv,metaJ, detailedJ, smoothedJ))
     OBS_DETAILED_JSON_FULLPATH=detailedJ # Need this if plotting OBS and no nowcasts
 
+    # New addition. Get the NOAA hourly predictions for the stations
+    # Fetch the NOAA Tidal predictions for each station
+    # NOTE we want tides for the full range  timein ( start of nowcast) timeend_forecast
+    detailedpklTP, metapklTP, urlcsvTP, exccsvTP, metaJTP, detailedJTP = exec_observables_tidalpredictions(timein, timeend_forecast, obs_yamlname, rootdir, iometadata, iosubdir, stationFile)
+    outfiles['OBS_DETAILED_TP_PKL']=detailedpklTP
+    outfiles['OBS_SMOOTHED_TP_PKL']=detailedpklTP
+    outfiles['OBS_SMOOTHED_TP_PKL']=detailedpklTP
+    outfiles['OBS_METADATA_TP_PKL']=metapklTP
+    outfiles['OBS_NOAA_COOPS_URLS_TP_CSV']=urlcsvTP
+    outfiles['OBS_EXCLUDED_TP_CSV']=exccsvTP
+    outfiles['OBS_DETAILED_TP_JSON']=detailedJTP
+    outfiles['OBS_SMOOTHED_TP_JSON']=detailedJTP
+    outfiles['OBS_METADATA_TP_JSON']=metaJTP
+    utilities.log.info('Completed Todal Predictions OBS: Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {} MetaJ {}, DetailedJ {}, SmoothedJ {}'.format(detailedpklTP, detailedpklTP, metapklTP, urlcsvTP, exccsvTP, metaJTP, detailedJTP, detailedJTP))
+
+    # Special case. Take the detailedTP pkl and read iot and reformat it to be suitabnle for adding to insert plots.
+    df_tidal = pd.read_pickle(detailedpklTP)
+    utilities.log.info('Write tidal predictions to data also as a JSON format')
+    df_tidal.index.name='TIME' # Need to adjust this for how the underlying DICT is generated
+    merged_dictTP = utilities.convertTimeseriesToDICTdata(df_tidal, variables='NOAAPrediction')
+    fileroot='NOAA_tidalpredictions'
+    jsonfilenameTP=utilities.writeDictToJson(merged_dictTP,rootdir=rootdir,subdir='',fileroot=fileroot,iometadata=iometadata)
+    utilities.log.info('Wrote ADC Json as {}'.format(jsonfilenameTP))
+
     # 4) Setup ERR specific YML-resident values
     if gotNowcasts:
         utilities.log.info('Residual/Error computation NOTIDAL corrections')
@@ -496,6 +536,7 @@ def main(args):
     files['META']=metaJ # outfiles['OBS_METADATA_JSON']
     #files['DIFFS']=jsonf # outfiles['ERR_TIME_JSON']
     files['FORECAST']=ADCjsonFore # outfiles['ADCIRC_WL_FORECAST_JSON']
+    files['NOAATIDAL']=jsonfilenameTP
     if gotNowcasts:
         files['DIFFS']=jsonf # outfiles['ERR_TIME_JSON']
     else:

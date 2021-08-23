@@ -238,7 +238,6 @@ class GetObsStations(object):
         iosubdir=self.iosubdir
         iometadata=self.iometadata
         product = self.product
-        print('write dicts')
         obsword='obs' if extra is None else '_'.join(['obs',extra])
         utilities.log.info('Amending OBS filenames with {}'.format(extra))
         for key in fileobj.keys():
