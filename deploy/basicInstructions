@@ -23,3 +23,6 @@ sudo docker push renciorg/adcirc_supp:latest
 
 # Start an interactive shell to the image
 sudo docker run -it adcirc_supp:latest bash
+
+# CLeanup
+# sudo docker system prune -a
