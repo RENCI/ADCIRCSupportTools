@@ -63,8 +63,8 @@ class computeErrorField(object):
             raise IOError("Failed to read %s" % self.meta_filename)
         utilities.log.debug('input ADC wl data are {}'.format(str(self.df_adc_wl)))
         utilities.log.debug('input OBS wl data are {}'.format(str(self.df_obs_wl)))
-        print(self.df_adc_wl)
-        print(self.df_obs_wl)
+        #print(self.df_adc_wl)
+        #print(self.df_obs_wl)
 
     def _intersectionStations(self):
         """ Reduces the columns to the greatest common number
@@ -128,7 +128,7 @@ class computeErrorField(object):
             #print('Averaging bounds range too wide for actual data. ADC only of length '+str(len(self.df_adc_wl.index)))
             utilities.log.warning('Averaging bounds range too wide for actual data. ADC only of length '+str(len(self.df_adc_wl.index)))
             #sys.exit('Failed averaging bounds setting')
-        print(self.df_adc_wl)
+        #print(self.df_adc_wl)
         print(self.bound_lo)
         print(self.bound_hi)
         print(self.n_cycles)
