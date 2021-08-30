@@ -8,10 +8,14 @@ sudo docker image rm -f adcirc_supp
 sudo docker image rm -f renciorg/adcirc_supp
 
 # Build an image
-sudo docker build --no-cache -t adcirc_supp:latest .
+# sudo docker build --no-cache -t adcirc_supp:latest .
+sudo docker build --no-cache -t adcirc_supp:v0.0.1 .
+
 
 # Reset the tag ID
-sudo docker image tag adcirc_supp:latest renciorg/adcirc_supp:latest
+#sudo docker image tag adcirc_supp:latest renciorg/adcirc_supp:latest
+sudo docker image tag adcirc_supp:v0.0.1 renciorg/adcirc_supp:v0.0.1
+
 
 # Push the image to docker 
 
@@ -19,10 +23,13 @@ sudo docker login
 # Give your userid/passwd
 
 # Load for actual cluster usage
-sudo docker push renciorg/adcirc_supp:latest
+# sudo docker push renciorg/adcirc_supp:latest
+sudo docker push renciorg/adcirc_supp:v0.0.1
+
 
 # Start an interactive shell to the image
-sudo docker run -it adcirc_supp:latest bash
+# sudo docker run -it adcirc_supp:latest bash
+sudo docker run -it adcirc_supp:v0.0.1 bash
 
 # CLeanup
 # sudo docker system prune -a
