@@ -1,4 +1,4 @@
-serial_nr,stationid,stationname,state,source,vertical_datum,NOAA lon,NOAA lat,navd_to_msl [ft],navd_to_msl [m],Datum Source,HSOFS lon,HSOFS lat,HSOFS bathy,HSOFS Element,HSOFS Node
+serial_nr,stationid,stationname,state,source,vertical_datum,NOAA lon,NOAA lat,navd_to_msl [ft],navd_to_msl [m],Datum Source,lon,lat,bathy,Element,Node
 -,-,-,-,-,,deg,deg,ft,m,-,deg,deg,m MSL,-,-
 1,2695540,Bermuda Esso Pier,BM,NOAA_NOS,MSL,-64.703306,32.373389,NaN,NaN,NOAA gage,-64.703306,32.373389,459.26,2934241,1491932
 2,8410140,Eastport Passamaquoddy Bay,ME,NOAA_NOS,MSL,-66.982315,44.903300,0.23,0.07,NOAA gage,-66.982315,44.903300,36.32,2034577,1034613
