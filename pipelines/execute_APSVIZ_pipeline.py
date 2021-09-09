@@ -389,7 +389,11 @@ def main(args):
 
     utilities.log.info('Fetch station data for grid {}'.format(chosengrid))
     try:
-        stationFile=main_config['STATIONS'][chosengrid.upper()]
+        if chosengrid=='hsofs':
+            #stationFile=main_config['STATIONS'][chosengrid.upper()]
+            stationFile='CERA_NOAA_HSOFS_stations_V3.csv' # Override to show more stations in the APSVIZ2 scenario
+        else:
+            stationFile=main_config['STATIONS'][chosengrid.upper()]
         stationFile=os.path.join(os.path.dirname(__file__), "../config", stationFile)
     except KeyError as e:
         utilities.log.error('ADDA: Error specifying grid. Uppercase version Not found in the main.yml {}'.format(chosengrid))
@@ -467,11 +471,11 @@ def main(args):
     timeout = timeend.strftime('%Y%m%d %H:%M')
 
     utilities.log.info('ADC provided times are {} and {}'.format(timein, timeout))
-    try:
-        stationFile=main_config['STATIONS'][args.grid.upper()]
-    except KeyError as e:
-        utilities.log.error('Error specifying grid. Uppercase version Not found in the main.yml {}'.format(args.grid))
-        utilities.log.error(e)
+    #try:
+    #    stationFile=main_config['STATIONS'][args.grid.upper()]
+    #except KeyError as e:
+    #    utilities.log.error('Error specifying grid. Uppercase version Not found in the main.yml {}'.format(args.grid))
+    #    utilities.log.error(e)
     # New approach to account for the changing grid names
     obs_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'obs.yml')
     obs_config = utilities.load_config(obs_yamlname)
