@@ -4,17 +4,17 @@ sudo docker image ls
 
 # Remove existing images
 
-sudo docker image rm -f adcirc_supp
-sudo docker image rm -f renciorg/adcirc_supp
+sudo docker image rm -f adcirc_supp:v0.0.1
+sudo docker image rm -f renciorg/adcirc_supp:v0.0.1
 
 # Build an image
 # sudo docker build --no-cache -t adcirc_supp:latest .
-sudo docker build --no-cache -t adcirc_supp:v0.0.1 .
+sudo docker build --no-cache -t adcirc_supp:v0.0.2 .
 
 
 # Reset the tag ID
 #sudo docker image tag adcirc_supp:latest renciorg/adcirc_supp:latest
-sudo docker image tag adcirc_supp:v0.0.1 renciorg/adcirc_supp:v0.0.1
+sudo docker image tag adcirc_supp:v0.0.1 renciorg/adcirc_supp:v0.02.
 
 
 # Push the image to docker 
