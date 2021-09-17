@@ -195,8 +195,9 @@ class stationPlotter(object):
         for station in stations:
             for variable in variables:
                 if all(np.isnan(newDict[station][variable]['WL'])):
-                    utilities.log.info('Removing a station for nans {}'.format(station))
-                    del newDict[station]
+                    utilities.log.info('Keeping a fully NAN a station: Removal procedure has been discontinued {}'.format(station))
+                    #utilities.log.info('Removing a station for nans {}'.format(station))
+                    #del newDict[station]
                     break
 
     # Recheck station list
