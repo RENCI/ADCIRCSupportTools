@@ -84,6 +84,17 @@ python execute_APSVIZ_pipeline.py --inputURL 'http://tds.renci.org:8080/thredds/
 
 python execute_APSVIZ_pipeline.py --grid "uriv18" --inputURL "http://tds.renci.org:8080/thredds/dodsC/2021/nam/2021082000/uriv18/hatteras.renci.org/uriv18-nam-bob-2021/namforecast/fort.63.nc"
 
+# A data set rerun
+
+python execute_APSVIZ_pipeline.py --grid "hsofs" --inputURL "http://tds.renci.org:8080/thredds/dodsC/2021/al08/22/hsofs/hatteras.renci.org/hsofs-al08-bob-2021/nhcOfcl/fort.63.nc"
+
+# 
+
+python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/dodsC/2021/nam/2021060912/ec95d/hatteras.renci.org/ec95d-nam-bob-postNowcast/namforecast/fort.63.nc" --grid "ec95d"
+
+python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/catalog/2021/nam/2021091712/NCSC_SAB_v1.15/hatteras.renci.org/ncsc115-nam-2021/namforecast/catalog.html" --grid "ncsc115"
+
+
 ~             
 ~                                                                                                                                                                                               
 ~             
