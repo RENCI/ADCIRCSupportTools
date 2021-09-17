@@ -493,6 +493,14 @@ def main(args):
     utilities.log.info('Completed OBS: Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {} MetaJ {}, DetailedJ {}, SmoothedJ {}'.format(detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv,metaJ, detailedJ, smoothedJ))
     OBS_DETAILED_JSON_FULLPATH=detailedJ # Need this if plotting OBS and no nowcasts
 
+    # Add the abilitt to plot the OBS in isolation. This will all get refactored for the next generation
+    df_o = pd.read_pickle(detailedpkl)
+    utilities.log.info('Write OBS to data also as a JSON format')
+    df_o.index.name='TIME' # Need to adjust this for how the underlying DICT is generated
+    merged_dict = utilities.convertTimeseriesToDICTdata(df_o, variables='obs')
+    fileroot='NOAA_OBS'
+    jsonfilename_o=utilities.writeDictToJson(merged_dict,rootdir=rootdir,subdir='',fileroot=fileroot,iometadata=iometadata)
+
     # New addition. Get the NOAA hourly predictions for the stations
     # Fetch the NOAA Tidal predictions for each station
     # NOTE we want tides for the full range  timein ( start of nowcast) timeend_forecast
@@ -533,7 +541,6 @@ def main(args):
         outfiles['ERR_ADCOBSERR_MERGED_CSV']=os.path.basename(mergedf) # This is useful for visualization insets of station bahavior
         utilities.log.info('Completed ERR')
 
-
     # 6) Build a series of station-PNGs.
     # Build input dict for the plotting. Need full paths for these names Yuk.
     files=dict()
@@ -544,6 +551,8 @@ def main(args):
     if gotNowcasts:
         files['DIFFS']=jsonf # outfiles['ERR_TIME_JSON']
     else:
+        # INcase no nowcasts were provided, we still want to view the OBS data
+        files['OBS']=jsonfilename_o
         utilities.log.info('No nowcasts used for plotting')
 
     #utilities.log.info('PNG plotter dict is {}'.format(files))
