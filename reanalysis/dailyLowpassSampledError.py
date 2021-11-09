@@ -23,6 +23,11 @@ from utilities.utilities import utilities
 
 from statsmodels.tsa.stattools import adfuller
 
+from requests.exceptions import ConnectionError
+from requests.exceptions import Timeout
+from requests.exceptions import HTTPError
+
+
 def check_stationarity(timeseries): # pd.Series on input
     # rolling statistics
     rolling_mean = timeseries.rolling(window=12).mean()
@@ -355,8 +360,11 @@ def main(args):
             #
             df_err_all_lowpass[station]=df_fft[str(cutoff)]
             ##df_err_all_lowpass_stationarity[station]=df_fft_stationarity[str(cutoff)]
-        except:
+        except Exception as ex:
+            excludedStations.append(station)
+            message = template.format(type(ex).__name__, ex.args)
             utilities.log.info('FFT failed for stastion {}'.format(station))
+            utilities.log.info('Error Value: Probably the station simply had no data; Skip {}, msg {}'.format(station, message))
 
     utilities.writePickle(df_err_all_lowpass, rootdir=rootdir,subdir='',fileroot='df_err_all_lowpass',iometadata='')
     ##utilities.writePickle(df_err_all_lowpass_stationarity, rootdir=rootdir,subdir='',fileroot='df_err_all_lowpass_stationarity',iometadata='')
