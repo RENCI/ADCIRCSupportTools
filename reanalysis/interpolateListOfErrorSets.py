@@ -194,6 +194,17 @@ def main(args):
     #kf_dict = krig_object.test_interpolationFit(filename = 'interpolate_linear_model'+extraFilebit+iometadata+'.h5')
     #print('Optimize {}'.format(kf_dict))
 
+    # Extra code to capture the errorsw+clamps+knn process controls for research on the surface structure
+    utilities.log.info('Special error,clamp,control node assembly for interpolartion research')
+    #print(krig_object.clamps)
+    #print(krig_object.controls)
+    #print(krig_object.data)
+    temporaryNodeDict = dict()
+    temporaryNodeDict['ERRORS']=krig_object.data.tolist()
+    temporaryNodeDict['WATER_CLAMPS']=krig_object.clamps.tolist()
+    temporaryNodeDict['LAND_CONTROLS']=krig_object.controls.tolist()
+    utilities.writeDictToJson(temporaryNodeDict,rootdir=rootdir,subdir='interpolated',fileroot='controlNodeSummary',iometadata=iometadata)
+
     utilities.log.info('Start interpolation')
     combineddata = np.concatenate([krig_object.data, krig_object.clamps, krig_object.controls], axis=0).astype(float)
     X,Y,V = combineddata[:,0], combineddata[:,1], combineddata[:,2]
