@@ -200,9 +200,9 @@ def main(args):
     #print(krig_object.controls)
     #print(krig_object.data)
     temporaryNodeDict = dict()
-    temporaryNodeDict['ERRORS']=krig_object.data
-    temporaryNodeDict['WATER_CLAMPS']=krig_object.clamps
-    temporaryNodeDict['LAND_CONTROLS']=krig_object.controls
+    temporaryNodeDict['ERRORS']=krig_object.data.tolist()
+    temporaryNodeDict['WATER_CLAMPS']=krig_object.clamps.tolist()
+    temporaryNodeDict['LAND_CONTROLS']=krig_object.controls.tolist()
     utilities.writeDictToJson(temporaryNodeDict,rootdir=rootdir,subdir='interpolated',fileroot='controlNodeSummary',iometadata=iometadata)
 
     utilities.log.info('Start interpolation')
