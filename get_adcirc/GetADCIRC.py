@@ -29,7 +29,7 @@ from siphon.catalog import TDSCatalog
 
 # noinspection PyPep8Naming,DuplicatedCode
 
-instance={2020: 'hsofs-nam-bob', 2021: 'hsofs-nam-bob-2021'}
+instance={2020: 'hsofs-nam-bob', 2021: 'hsofs-nam-bob-2021', 2022: 'hsofs-nam-bob-2021'}
 gridinstance={'ec95b': 'ec95d-nam-bob-rptest'}
 
 def checkAdvisory(value):
