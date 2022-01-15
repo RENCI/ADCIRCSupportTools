@@ -29,7 +29,7 @@ from siphon.catalog import TDSCatalog
 
 # noinspection PyPep8Naming,DuplicatedCode
 
-instance={2020: 'hsofs-nam-bob', 2021: 'hsofs-nam-bob-2021'}
+instance={2020: 'hsofs-nam-bob', 2021: 'hsofs-nam-bob-2021', 2022: 'hsofs-nam-bob-2021'}
 gridinstance={'ec95b': 'ec95d-nam-bob-rptest'}
 
 def checkAdvisory(value):
@@ -504,6 +504,16 @@ def get_water_levels63(urls, nodes, stationids):
         utilities.log.error('Levels 63 didnt return any valid data. Usually no found urls: ')
         #sys.exit(0) # None found: Set to 0 to allow k8s to continue
     utilities.log.info('water_levels_63: ADC actual time range {} {}'.format(timestart, timestop))
+    ##
+    ## Spuriously, ADCIRC can report back duplicates time. This causes downstream problems. SO remove them here
+    ## No checking of values. Just prune the dup and thgrow a warning to the user.
+    ##
+    idx = df.index
+    if idx.duplicated().any():
+        utilities.log.info("Duplicated ADCIRC data times found . will keep first value(s) only")
+        df = df.loc[~df.index.duplicated(keep='first')]
+    if len(idx) != len(df.index):
+        utilities.log.warning('ADCIRC: had duplicate times {} {}'.format(len(idx),len(df.index)))
     return df
 
 def get_water_levels61(urls, stationids):
