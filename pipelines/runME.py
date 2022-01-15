@@ -92,10 +92,15 @@ python execute_APSVIZ_pipeline.py --grid "hsofs" --inputURL "http://tds.renci.or
 
 python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/dodsC/2021/nam/2021060912/ec95d/hatteras.renci.org/ec95d-nam-bob-postNowcast/namforecast/fort.63.nc" --grid "ec95d"
 
-python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/catalog/2021/nam/2021091712/NCSC_SAB_v1.15/hatteras.renci.org/ncsc115-nam-2021/namforecast/catalog.html" --grid "ncsc115"
+python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/dodsC/2021/nam/2021091712/NCSC_SAB_v1.15/hatteras.renci.org/ncsc115-nam-2021/namforecast/fort.63.nc" --grid "NCSC_SAB_v1.15"
 
 
-~             
+python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/dodsC/2021/nam/2021092018/NCSC_SAB_v1.15/hatteras.renci.org/ncsc115-nam-2021/namforecast/maxele.63.nc" --grid "NCSC_SAB_v1.15"
+
+python execute_APSVIZ_pipeline.py --inputURL "http://adcircvis.tacc.utexas.edu:8080/thredds/dodsC/asgs/2021/nam/2021092306/SABv20a/frontera.tacc.utexas.edu/SABv20a_nam_jgf_status/namforecast/fort.63.nc" --grid "SABv20a"
+
+
+
 ~                                                                                                                                                                                               
 ~             
 
