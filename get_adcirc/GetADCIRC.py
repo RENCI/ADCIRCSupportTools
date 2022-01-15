@@ -509,6 +509,7 @@ def get_water_levels63(urls, nodes, stationids):
     ## No checking of values. Just prune the dup and thgrow a warning to the user.
     ##
     idx = df.index
+    utilities.log.info('Check for ADCIRC time duplicates')
     if idx.duplicated().any():
         utilities.log.info("Duplicated ADCIRC data times found . will keep first value(s) only")
         df = df.loc[~df.index.duplicated(keep='first')]
