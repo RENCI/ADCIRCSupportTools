@@ -13,21 +13,18 @@ OBSNAME="/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADC
 export CODEBASE=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/reanalysis
 export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools
 export BASEDIREXTRA=
-
 export KNOCKOUT=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/reanalysis/knockoutStation.json
 
 ###
 export YEAR=$1
 
-export RUNTIMEDIR=./HSOFS-DA/YEARLY-$YEAR
+export RUNTIMEDIR=./HSOFS/YEARLY-$YEAR
+#export RUNTIMEDIR=./HSOFS-DA/YEARLY-$YEAR
 export LOG_PATH=$RUNTIMEDIR
-URL="/projects/reanalysis/ADCIRC/ERA5/hsofs/$YEAR-post/fort.63.nc"
-#URL="/projects/reanalysis/ADCIRC/ERA5/hsofs/$YEAR/fort.63.nc"
+#URL="/projects/reanalysis/ADCIRC/ERA5/hsofs/$YEAR-post/fort.63.nc"
+URL="/projects/reanalysis/ADCIRC/ERA5/hsofs/$YEAR/fort.63.nc"
 
-#URL="C/ERA5/hsofs/$YEAR/fort.63.nc"
-
-#DAILY=DAILY-2018YEAR-12MONTH-REGION3-RANGE$RANGE-SILL$SILL-NUGGET$NUGGET-LP48
-DAILY=TEST_DAILY-$GRID-LP24
+DAILY=DAILY-$GRID-LP24
 
 echo "xxxxxx"
 echo $YEAR
@@ -36,23 +33,25 @@ echo $RUNTIMEDIR
 echo "xxxxxx"
 
 ####
-
 # Build the yearly error file store in $RUNTIMEDIR/BASEDIREXTRA
 python $CODEBASE/yearlyReanalysisRoundHourly.py --obsfile $OBSNAME --grid $GRID --url $URL --knockout $KNOCKOUT
-mv $RUNTIMEDIR/AdcircSupportTools.log $RUNTIMEDIR/$BASEDIREXTRA/log-yearly
+#mv $RUNTIMEDIR/AdcircSupportTools.log $RUNTIMEDIR/$BASEDIREXTRA/log-yearly
 
 # Store files in $RUNTIMEDIR/DAILY/errorfield
 export INDIR=$RUNTIMEDIR/
 export OUTROOT=$RUNTIMEDIR/$DAILY
-python $CODEBASE/dailyLowpassSampledError_hsofs.py --inyear $YEAR  --inDir $INDIR --outroot $OUTROOT # --stationarity
+python $CODEBASE/dailyLowpassSampledError.py --inyear $YEAR  --inDir $INDIR --outroot $OUTROOT # --stationarity
 mv $RUNTIMEDIR/AdcircSupportTools.log $OUTROOT/log-daily
 
 # Interpolate a single specific file
 export ADCJSON=$INDIR/adc_coord.json
-export CLAMPFILE=$PYTHONPATH/config/clamp_list_hsofs.dat
+export CLAMPFILE=$PYTHONPATH/config/water_control_list.dat
+export CONTROLFILE=$PYTHONPATH/config/land_control_list.dat
+
 export YAMLNAME=$PYTHONPATH/config/int.REANALYSIS.HSOFS.yml
 export OUTROOT=$RUNTIMEDIR/$DAILY
 export ERRDIR=$OUTROOT/errorfield
-python  $CODEBASE/runInterpolate_parallel.py  --outroot $OUTROOT --yamlname $YAMLNAME --errordir $ERRDIR --clampfile $CLAMPFILE --gridjsonfile $ADCJSON
+python  $CODEBASE/runInterpolate_parallel.py  --outroot $OUTROOT --yamlname $YAMLNAME --errordir $ERRDIR --clampfile $CLAMPFILE --controlfile $CONTROLFILE --gridjsonfile $ADCJSON
 mv $RUNTIMEDIR/AdcircSupportTools.log $OUTROOT/log-interpolate
+
 

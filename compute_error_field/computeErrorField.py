@@ -63,7 +63,9 @@ class computeErrorField(object):
             raise IOError("Failed to read %s" % self.meta_filename)
         utilities.log.debug('input ADC wl data are {}'.format(str(self.df_adc_wl)))
         utilities.log.debug('input OBS wl data are {}'.format(str(self.df_obs_wl)))
-        #print(self.df_adc_wl)
+
+        #print('ADCIRC temp')
+        #print(self.df_adc_wl[8536110])
         #print(self.df_obs_wl)
 
     def _intersectionStations(self):

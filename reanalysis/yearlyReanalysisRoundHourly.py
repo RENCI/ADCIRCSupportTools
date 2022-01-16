@@ -83,6 +83,8 @@ def exec_adcirc_url(urls, rootdir, iometadata, adc_yamlname, node_idx, station_i
     df.index = df.index.round('60min').to_pydatetime()
     adc.T1 = df.index[0] # Optional update to actual times fetched form ADC
     adc.T2 = df.index[-1]
+    df.dropna(how='all', axis=1)
+    utilities.log.info('ADCIRC: after drop completely empty stations. Remaining is {}'.format(df.shape))
     ADCfile = utilities.writePickle(df, rootdir=rootdir,subdir='',fileroot='adc_wl',iometadata=iometadata)
     print('write new json')
     ADCjson=writeToJSON(df, rootdir, iometadata,fileroot='adc_wl_forecast')
