@@ -169,7 +169,7 @@ class computeErrorField(object):
         """
         normalRange = self.df_adc_wl.index.values
         timein, timeout = normalRange[0], normalRange[-1]
-        normalRange = pd.date_range(timein, timeout, freq='3600S') # NEEDED becasue of datetime format differences
+        normalRange = pd.date_range(str(timein), str(timeout), freq='3600S') # NEEDED becasue of datetime format differences
         n_period = self.n_period
         n_tide = self.n_tide
         n_pad = self.n_pad
