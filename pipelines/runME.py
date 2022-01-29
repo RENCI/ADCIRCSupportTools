@@ -99,6 +99,14 @@ python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/
 
 python execute_APSVIZ_pipeline.py --inputURL "http://adcircvis.tacc.utexas.edu:8080/thredds/dodsC/asgs/2021/nam/2021092306/SABv20a/frontera.tacc.utexas.edu/SABv20a_nam_jgf_status/namforecast/fort.63.nc" --grid "SABv20a"
 
+# New test: comparer passing a namforecast vs a nowcast
+
+# Forecast
+python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/dodsC/2022/nam/2022012618/hsofs/hatteras.renci.org/hsofs-nam-bob-2021/namforecast/fort.63.nc" --grid 'hsofs'
+
+# Nowcast 
+python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/dodsC/2022/nam/2022012618/hsofs/hatteras.renci.org/hsofs-nam-bob-2021/nowcast/fort.63.nc" --grid 'hsofs'
+
 
 
 ~                                                                                                                                                                                               
