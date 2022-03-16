@@ -138,7 +138,6 @@ def main(args):
         if args.ignore_pkl or not os.path.exists(ADCfile):
             utilities.log.info("Building model matrix from fort.63.nc files...")
             df = get_water_levels63(adc.urls, node_idx, station_ids)
-            df = df.sort_index()
             utilities.write_json_file(adc_coords, ADCfilecords)
         else:
             utilities.log.info(ADCfile+" exists.  Using that...")
@@ -515,6 +514,7 @@ def get_water_levels63(urls, nodes, stationids):
         df = df.loc[~df.index.duplicated(keep='first')]
     if len(idx) != len(df.index):
         utilities.log.warning('ADCIRC: had duplicate times {} {}'.format(len(idx),len(df.index)))
+    df = df.sort_index()
     return df
 
 def get_water_levels61(urls, stationids):
