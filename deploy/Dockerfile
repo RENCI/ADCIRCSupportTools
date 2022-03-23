@@ -24,16 +24,19 @@ RUN conda update conda && \
 # tell conda what the shell is
 RUN conda init bash
 
+RUN useradd -m -d /home/nru -u 1000 nru
+RUN chmod 777 /home/nru
+
 # make d directory for the repos and go there
-RUN mkdir /repo
-WORKDIR /repo
+RUN mkdir /home/nru/repo
+WORKDIR /home/nru/repo
 
 # get the repos
 RUN git clone https://github.com/RENCI/ADCIRCSupportTools.git
 RUN git clone https://github.com/GClunies/noaa_coops.git
                
 # move to the install directory
-WORKDIR ADCIRCSupportTools/deploy
+WORKDIR /home/nru/repo/ADCIRCSupportTools/deploy
 
 # install the conda requirements
 RUN conda install --yes --file conda_requirements.txt
@@ -42,17 +45,21 @@ RUN conda install --yes --file conda_requirements.txt
 RUN pip install -r pip_requirements.txt
                               
 # change to the noaa directory
-WORKDIR /repo/noaa_coops
+WORKDIR /home/nru/repo/noaa_coops
 
 # run the noaa seteup
 RUN python setup.py install --user
                         
 # change to the pipelines directory                        
-WORKDIR /repo/ADCIRCSupportTools/pipelines
-                                   
+WORKDIR /home/nru/repo/ADCIRCSupportTools/pipelines
+
 # make a temporary directory for the output.
 # this should eventually point a common PV
-RUN mkdir temp
+RUN mkdir /home/nru/temp
+
+RUN chmod 777 -R /home/nru
+
+USER nru
 
 # set the python path
 ENV PYTHONPATH=/repo/ADCIRCSupportTools
