@@ -55,14 +55,14 @@ WORKDIR /home/nru/repo/ADCIRCSupportTools/pipelines
 
 # make a temporary directory for the output.
 # this should eventually point a common PV
-RUN mkdir /home/nru/temp
+RUN mkdir temp
 
 RUN chmod 777 -R /home/nru
 
 USER nru
 
 # set the python path
-ENV PYTHONPATH=/repo/ADCIRCSupportTools
+ENV PYTHONPATH=/home/nru/repo/ADCIRCSupportTools
 
 # set the location of the output directory
 ENV RUNTIMEDIR=/data
