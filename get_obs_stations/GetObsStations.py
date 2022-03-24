@@ -219,12 +219,14 @@ class GetObsStations(object):
                 #utilities.log.debug('post data {}'.format(df_station[int(station)][value[0]:value[1]]))
         return df_station
 
-    def writeFilesToDisk(self):
+    def writeFilesToDisk(self, extra=None):
         """
         Process all files in the provided dict object andf write them all to disk
         entries can specify PKL,CSV,and JSON files. All files are written to the same 
         subdirectory as specified by rootdir and iosubdir. additionakl metadata is grabbed
         from the class variables
+     
+        Set extra to TP, for example, to amend the overall filenames
 
         Returns:
         A dict of all the files created during this instance of the class
@@ -236,14 +238,15 @@ class GetObsStations(object):
         iosubdir=self.iosubdir
         iometadata=self.iometadata
         product = self.product
-        print('write dicts')
+        obsword='obs' if extra is None else '_'.join(['obs',extra])
+        utilities.log.info('Amending OBS filenames with {}'.format(extra))
         for key in fileobj.keys():
             if key=='META': # Need to treat a little differently
                 utilities.log.info('Writing META file(s) to disk')
                 for format in fileobj[key].keys():
                     metadata=fileobj[key][format]['DESCRIPTION']
                     product=fileobj[key][format]['PRODUCT']
-                    filebase='_'.join(['obs',product,'metadata'])
+                    filebase='_'.join([obsword,product,'metadata'])
                     df_data = fileobj[key][format]['DATA']
                     if format=='PKL':
                         self.metapkl = utilities.writePickle(df_data,rootdir=self.rootdir,subdir=self.iosubdir,fileroot=filebase,iometadata=self.iometadata)
@@ -258,7 +261,7 @@ class GetObsStations(object):
                     metadata=fileobj[key][format]['DESCRIPTION']
                     product=fileobj[key][format]['PRODUCT']
                     interval=fileobj[key][format]['INTERVAL']
-                    filebase='_'.join(['obs',product,'detailed',interval]) if interval=='h' else '_'.join(['obs',product,'detailed'])
+                    filebase='_'.join([obsword,product,'detailed',interval]) if interval=='h' else '_'.join(['obs',product,'detailed'])
                     df_data = fileobj[key][format]['DATA']
                     if format=='PKL':
                         self.detailedpkl = utilities.writePickle(df_data, rootdir=self.rootdir,subdir=self.iosubdir,fileroot=filebase,iometadata=self.iometadata)
@@ -273,7 +276,7 @@ class GetObsStations(object):
                     metadata=fileobj[key][format]['DESCRIPTION']
                     product=fileobj[key][format]['PRODUCT']
                     window=str(fileobj[key][format]['WINDOW'])
-                    filebase='_'.join(['obs',product,'smoothed',window]) 
+                    filebase='_'.join([obsword,product,'smoothed',window]) 
                     #filebase='_'.join(['obs',product,'smoothed',window]) 
                     df_data = fileobj[key][format]['DATA']
                     if format=='PKL':
@@ -285,13 +288,13 @@ class GetObsStations(object):
                         outputdict['JSONsmoothed']=self.smoothedjsonname
             elif key=='EXCLUDED':
                 utilities.log.info('Writing excluded stations to disk')
-                filebase='_'.join(['obs',product,'exclude'])
+                filebase='_'.join([obsword,product,'exclude'])
                 excludeStationID = fileobj[key]['CSV']['DATA']
                 self.excludecsv = utilities.writeCsv(excludeStationID, rootdir=self.rootdir,subdir=self.iosubdir,fileroot=filebase,iometadata=self.iometadata)
                 outputdict['CSVexclude']=self.excludecsv
             elif key=='URL':
                 utilities.log.info('Writing station urls to disk')
-                filebase='_'.join(['obs',product,'urls'])
+                filebase='_'.join([obsword,product,'urls'])
                 df_url = fileobj[key]['CSV']['DATA']
                 self.urlcsv = utilities.writeCsv(df_url, rootdir=self.rootdir,subdir=self.iosubdir,fileroot=filebase,iometadata=self.iometadata)
                 outputdict['CSVurl']=self.urlcsv

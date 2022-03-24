@@ -1,44 +1,60 @@
 #!/bin/sh
-
-export YEAR=2018
-#export YEAR=2018DA #-LP24
-export YEARNUMBER=2018
-
-export SILL=0.16
-export RANGE=8
-export NUGGET=0.001
-export NLAGS=6
+#SBATCH -t 512:00:00
+#SBATCH -p batch
+#SBATCH -N 1
+#SBATCH -n 1 
+#SBATCH -J Reanalysis
+#SBATCH --mem-per-cpu 512000
+#SBATCH --exclude=compute-5-17
 
 GRID="region3"
-
-# /projects/ees/TDS/Reanalysis/ADCIRC/ERA5/fr3/2018/fort.63.nc
-
-#DAILY=DAILY-4MONTH-RANGE$RANGE-SILL$SILL-LP48
-#DAILY=NOCLAMP-DAILY-4MONTH-$GRID-RANGE$RANGE-SILL$SILL-NUGGET$NUGGET-LP48
-DAILY=MORETEST-NOCLAMP-DAILY-12MONTH-$GRID-RANGE$RANGE-SILL$SILL-NUGGET$NUGGET-LP24
-#DAILY=DAILY-4MONTH-$GRID-RANGE$RANGE-SILL$SILL-NUGGET$NUGGET-LP48
+OBSNAME="/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/config/obs.region3.yml"
 
 export CODEBASE=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/reanalysis
 export PYTHONPATH=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools
-export RUNTIMEDIR=.
-export BASEDIREXTRA=REANALYSIS_COMPREHENSIVE_REGION3/YEARLY-$YEAR
+export BASEDIREXTRA=
+
+export KNOCKOUT=/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/reanalysis/knockoutStation.json
+
+export YEAR=$1
+#export RUNTIMEDIR=./REGION3/YEARLY-$YEAR
+export RUNTIMEDIR=./REGION3-DA/YEARLY-$YEAR
+export LOG_PATH=$RUNTIMEDIR
+
+#URL="/projects/reanalysis/ADCIRC/ERA5/fr3/$YEAR/fort.63.nc"
+URL="/projects/reanalysis/ADCIRC/ERA5/fr3/$YEAR-post/fort.63.nc"
+
+echo $URL
+
+DAILY=DAILY-$GRID-LP24
+
+echo "xxxxxx"
+echo $YEAR
+echo $DAILY
+echo $RUNTIMEDIR
+echo "xxxxxx"
+
+####
+
 
 # Build the yearly error file store in $RUNTIMEDIR/BASEDIREXTRA
-#python $CODEBASE/yearlyReanalysis.py --iosubdir $BASEDIREXTRA --urljson region3.json --grid region3
-#python $CODEBASE/yearlyReanalysis.py --iosubdir $BASEDIREXTRA --urljson region3_da.json --grid region3
-#mv $RUNTIMEDIR/AdcircSupportTools.log $RUNTIMEDIR/$BASEDIREXTRA/log-yearly
+python $CODEBASE/yearlyReanalysisRoundHourly.py --obsfile $OBSNAME --grid $GRID --url $URL --knockout $KNOCKOUT
+mv $RUNTIMEDIR/AdcircSupportTools.log $RUNTIMEDIR/$BASEDIREXTRA/log-yearly
 
 # Store files in $RUNTIMEDIR/DAILY/errorfield
-export INDIR=$RUNTIMEDIR/$BASEDIREXTRA
-export OUTROOT=$RUNTIMEDIR/$BASEDIREXTRA/$DAILY
-python $CODEBASE/dailyLowpassSampledError.py --inyear $YEARNUMBER --inDir $INDIR --outroot $OUTROOT # --stationarity
+export INDIR=$RUNTIMEDIR/
+export OUTROOT=$RUNTIMEDIR/$DAILY
+python $CODEBASE/dailyLowpassSampledError.py --inyear $YEAR  --inDir $INDIR --outroot $OUTROOT # --stationarity
 mv $RUNTIMEDIR/AdcircSupportTools.log $OUTROOT/log-daily
 
 # Interpolate a single specific file
 export ADCJSON=$INDIR/adc_coord.json
-export CLAMPFILE=$PYTHONPATH/config/clamp_list_hsofs.dat
-export YAMLNAME=$PYTHONPATH/config/int.REANALYSIS.yml
-export OUTROOT=$RUNTIMEDIR/$BASEDIREXTRA/$DAILY
+export CLAMPFILE=$PYTHONPATH/config/water_control_list.dat 
+export CONTROLFILE=$PYTHONPATH/config/land_control_list.dat
+
+export YAMLNAME=$PYTHONPATH/config/int.REANALYSIS.REGION3.yml
+export OUTROOT=$RUNTIMEDIR/$DAILY
 export ERRDIR=$OUTROOT/errorfield
-python  $CODEBASE/runInterpolate_parallel.py  --insill $SILL --inrange $RANGE --outroot $OUTROOT --yamlname $YAMLNAME --errordir $ERRDIR --clampfile $CLAMPFILE --gridjsonfile $ADCJSON
+python  $CODEBASE/runInterpolate_parallel.py  --outroot $OUTROOT --yamlname $YAMLNAME --errordir $ERRDIR --clampfile $CLAMPFILE --controlfile $CONTROLFILE --gridjsonfile $ADCJSON
 mv $RUNTIMEDIR/AdcircSupportTools.log $OUTROOT/log-interpolate
+

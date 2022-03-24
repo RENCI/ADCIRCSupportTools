@@ -63,8 +63,10 @@ class computeErrorField(object):
             raise IOError("Failed to read %s" % self.meta_filename)
         utilities.log.debug('input ADC wl data are {}'.format(str(self.df_adc_wl)))
         utilities.log.debug('input OBS wl data are {}'.format(str(self.df_obs_wl)))
-        print(self.df_adc_wl)
-        print(self.df_obs_wl)
+
+        #print('ADCIRC temp')
+        #print(self.df_adc_wl[8536110])
+        #print(self.df_obs_wl)
 
     def _intersectionStations(self):
         """ Reduces the columns to the greatest common number
@@ -128,7 +130,7 @@ class computeErrorField(object):
             #print('Averaging bounds range too wide for actual data. ADC only of length '+str(len(self.df_adc_wl.index)))
             utilities.log.warning('Averaging bounds range too wide for actual data. ADC only of length '+str(len(self.df_adc_wl.index)))
             #sys.exit('Failed averaging bounds setting')
-        print(self.df_adc_wl)
+        #print(self.df_adc_wl)
         print(self.bound_lo)
         print(self.bound_hi)
         print(self.n_cycles)
@@ -167,7 +169,7 @@ class computeErrorField(object):
         """
         normalRange = self.df_adc_wl.index.values
         timein, timeout = normalRange[0], normalRange[-1]
-        normalRange = pd.date_range(timein, timeout, freq='3600S') # NEEDED becasue of datetime format differences
+        normalRange = pd.date_range(str(timein), str(timeout), freq='3600S') # NEEDED becasue of datetime format differences
         n_period = self.n_period
         n_tide = self.n_tide
         n_pad = self.n_pad

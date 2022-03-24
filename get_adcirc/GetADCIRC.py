@@ -29,7 +29,7 @@ from siphon.catalog import TDSCatalog
 
 # noinspection PyPep8Naming,DuplicatedCode
 
-instance={2020: 'hsofs-nam-bob', 2021: 'hsofs-nam-bob-2021'}
+instance={2020: 'hsofs-nam-bob', 2021: 'hsofs-nam-bob-2021', 2022: 'hsofs-nam-bob-2021'}
 gridinstance={'ec95b': 'ec95d-nam-bob-rptest'}
 
 def checkAdvisory(value):
@@ -138,7 +138,6 @@ def main(args):
         if args.ignore_pkl or not os.path.exists(ADCfile):
             utilities.log.info("Building model matrix from fort.63.nc files...")
             df = get_water_levels63(adc.urls, node_idx, station_ids)
-            df = df.sort_index()
             utilities.write_json_file(adc_coords, ADCfilecords)
         else:
             utilities.log.info(ADCfile+" exists.  Using that...")
@@ -416,7 +415,7 @@ class Adcirc:
         num6hourTimes=4*abs(doffset)
         for key, forecast in in_forecast.items():
             words=forecast.split('/')
-            advisory = checkAdvisory(words[-6])
+            advisory = int(checkAdvisory(words[-6])) # Just to be sure
             advisories=list()
             #for adv in range(advisory,max(1,advisory-num6hourTimes),-1):
             for adv in range(max(1,advisory-num6hourTimes),advisory+1):
@@ -425,7 +424,7 @@ class Adcirc:
             # Build a new list of urls and add appropriate time key to the dict
             words[-2]='nowcast' # This is constant for all grids
             for adv in advisories:
-                words[-6]=str(adv)
+                words[-6]='%02d'%adv # str(adv) # Need a preceding 0 is a singke digit number
                 url = '/'.join(words)
                 try:
                     nc = nc4.Dataset(url)
@@ -438,7 +437,7 @@ class Adcirc:
                     utilities.log.info("Could not access {}. It will be skipped.".format(url))
         if len(urls)==0:
             utilities.log.error('No nowcast urls were found for advisory {}'.format(advisory))
-            sys.exit()
+            #sys.exit()
         utilities.log.info('Invert nowcast list for hurricane status {}'.format(urls))
         self.urls = urls
 
@@ -502,8 +501,20 @@ def get_water_levels63(urls, nodes, stationids):
     except Exception as e:
         utilities.log.error(e)
         utilities.log.error('Levels 63 didnt return any valid data. Usually no found urls: ')
-        sys.exit(0) # None found: Set to 0 to allow k8s to continue
+        #sys.exit(0) # None found: Set to 0 to allow k8s to continue
     utilities.log.info('water_levels_63: ADC actual time range {} {}'.format(timestart, timestop))
+    ##
+    ## Spuriously, ADCIRC can report back duplicates time. This causes downstream problems. SO remove them here
+    ## No checking of values. Just prune the dup and thgrow a warning to the user.
+    ##
+    idx = df.index
+    utilities.log.info('Check for ADCIRC time duplicates')
+    if idx.duplicated().any():
+        utilities.log.info("Duplicated ADCIRC data times found . will keep first value(s) only")
+        df = df.loc[~df.index.duplicated(keep='first')]
+    if len(idx) != len(df.index):
+        utilities.log.warning('ADCIRC: had duplicate times {} {}'.format(len(idx),len(df.index)))
+    df = df.sort_index()
     return df
 
 def get_water_levels61(urls, stationids):

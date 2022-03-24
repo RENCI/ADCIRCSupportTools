@@ -23,6 +23,11 @@ from utilities.utilities import utilities
 
 from statsmodels.tsa.stattools import adfuller
 
+from requests.exceptions import ConnectionError
+from requests.exceptions import Timeout
+from requests.exceptions import HTTPError
+
+
 def check_stationarity(timeseries): # pd.Series on input
     # rolling statistics
     rolling_mean = timeseries.rolling(window=12).mean()
@@ -115,8 +120,8 @@ def fft_lowpass(signal, lowhrs):
     # Insert ramp into factor.
     factor[sl] = a
     result = result * factor
-    print('Freqs {}'.format(result))
-    print('FREQ TYPEW {}'.format(type(result)))
+    ###print('Freqs {}'.format(result))
+    ###print('FREQ TYPEW {}'.format(type(result)))
     return np.fft.irfft(result, len(signal))
 
 # The means are proper means for the month./week. The offset simply changes the index underwhich it will be stored
@@ -160,16 +165,18 @@ def dictToDataFrame(dataDict, src):
 
 def makePlot(start, end, station, src, stationName, dfs, dfs_7d, dfs_weekly_mean, dfs_monthly_mean, odir): 
     sns.set(rc={'figure.figsize':(11, 4)}) # Setr gray background and white gird
+    col = sns.color_palette("bright")[0:3] # CHanged to make figs for reananalysis more consistent
+
     # Plot daily, weekly resampled, and 7-day rolling mean time series together
     fig, ax = plt.subplots()
     ax.plot(dfs.loc[start:end, src],
-    marker='.', markersize=1, linewidth=0.1,color='gray',label='Hourly')
+    marker='.', markersize=1, linewidth=0.1,label='Hourly', color=col[0]) # color='gray',)
     ax.plot(dfs_7d.loc[start:end, src],
-    color='red', alpha=0.3, linewidth=.5, linestyle='-', label='7-d Rolling Mean')
+    color='red', alpha=0.3, linewidth=.5, linestyle='-', label='7-d Rolling Mean') # red
     ax.plot(dfs_weekly_mean.loc[start:end, src],
-    marker='o', color='green',markersize=6, linestyle='-', label='Weekly Mean')
+    marker='o', color=col[2] ,markersize=6, linestyle='-', label='Weekly Mean') # green
     ax.plot(dfs_monthly_mean.loc[start:end, src],
-    color='black',linewidth=0.5, linestyle='-', label='Monthly Mean')
+    color='black',linewidth=0.5, linestyle='-', label='Monthly Mean') # black
     ax.set_ylabel(r'$\Delta$ WL (m) versus MSL')
     ax.set_title(stationName, fontdict={'fontsize': 12, 'fontweight': 'medium'})
     ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=None))
@@ -190,6 +197,7 @@ def makeLowpassPlot(start, end, lowpassAllstations, filterOrder='', metadata=['l
     An entry the dict (lowpassAllStations) carries all ther OBS,DIFF,LP data sets
     Plot the OBS and Diff data in a prominant way. Then layer on the cutoffs
     """
+    col = sns.color_palette("bright")[0:3] 
     colMetadata = metadata[1]
     nameMetadata = metadata[0]
     plotterDownmove=0.6
@@ -202,9 +210,9 @@ def makeLowpassPlot(start, end, lowpassAllstations, filterOrder='', metadata=['l
     fig, ax = plt.subplots()
     # OBS and DIFF
     ax.plot(lowpassAllstations[station]['OBS'][start:end],
-    marker='.', markersize=1, linewidth=0.1,color='gray',label='Obs Hourly')
+    marker='.', markersize=1, linewidth=0.1,color=col[0],label='Obs Hourly') # gray
     ax.plot(lowpassAllstations[station]['ERR'][start:end],
-    color='black', marker='o',markersize=2, linewidth=.5, linestyle='-', label='ADCIRC-OBS')
+    color=col[2], marker='o',markersize=2, linewidth=.5, linestyle='-', label='ADCIRC-OBS') # black
     # Now start with the lowpass filters
     df_lp = lowpassAllstations[station][colMetadata]
     cutoffs=df_lp.columns.to_list()
@@ -250,7 +258,6 @@ def fetch_data_metadata(f, meta):
 def main(args):
     t0 = tm.time()
 
-
     if not args.inDir:
         utilities.log.error('Need inDir on command line: --inDir <inDir>')
         return 1
@@ -266,12 +273,8 @@ def main(args):
     timein = '-'.join([inyear,'01','01'])
     timeout = '-'.join([inyear,'12','31'])
 
-    # Winnowq out the range
-    #utilities.log.info('Manaul limit to 4 months')
-    #timein = '-'.join([inyear,'01','01'])
-    #timeout = '-'.join([inyear,'05','01'])
-
     #rootdir = '/'.join([outroot,'WEEKLY'])
+
     # Ensure the destination is created
     ##rootdir = utilities.fetchBasedir(rootdir,basedirExtra='')
 
@@ -279,9 +282,9 @@ def main(args):
     utilities.log.info('Specified rootdir underwhich all files will be stored. Rootdir is {}'.format(rootdir))
     #f='/'.join([topdir,'adc_obs_error_merged.json'])
     #meta='/'.join([topdir,'obs_water_level_metadata.json'])
-    #utilities.log.info('ASSUMING HOURLY_HEIGHT INSTEAD OF WATER_LEVEL')
+    utilities.log.info('ASSUMING HOURLY_HEIGHT INSTEAD OF WATER_LEVEL')
     f='/'.join([topdir,'adc_obs_error_merged.json'])
-    meta='/'.join([topdir,'obs_water_level_metadata.json'])
+    meta='/'.join([topdir,'obs_hourly_height_metadata.json'])
 
     dataDict, metaDict = fetch_data_metadata(f, meta)
     stations = list(dataDict.keys()) # For subsequent naming - are we sure order is maintained?
@@ -292,27 +295,12 @@ def main(args):
 
     #timein=args.timein
     #timeout=args.timeout
-
     # A total hack on specifying the times. We need to deal with this later
     # FFT the entire year
 
     ##timein = '-'.join(['2017','12','20'])   
     ##timeout = '-'.join(['2019','1','1'])
 
-    # Winnow manmually
-
-    #timein = '-'.join(['2017','12','20'])
-    #timeout = '-'.join(['2019','1','1'])
-    #utilities.log.info('Input data chosen range is {}, {}'.format(timein, timeout))
-
-
-    #timein=''.join(['2018','-01-01 00:00:00'])
-    #timeout=''.join(['2018','-05-01 00:00:00'])
-    #etime=timeout
-
-    starttime = dt.datetime.strptime(timein,'%Y-%m-%d')
-    endtime = dt.datetime.strptime(timeout,'%Y-%m-%d')
-    numDays = (endtime-starttime).days + 1
     utilities.log.info('Input data chosen range is {}, {}'.format(timein, timeout))
 
     # Metadata
@@ -329,7 +317,7 @@ def main(args):
 
     # FFT Lowpass each station for entire range time. Then, extract values for all stations every day
     upshift=0
-    hourly_cutoff= 24 # 48 # 168 # 48 # 6 # 168 #48
+    hourly_cutoff= 24 # 168 # 48 # 6 # 168 #48
     cutoff = hourly_cutoff+upshift
     utilities.log.info('FFT hourly_cutoff {}, actual_cutoff {}'.format(hourly_cutoff,cutoff))
 
@@ -372,8 +360,11 @@ def main(args):
             #
             df_err_all_lowpass[station]=df_fft[str(cutoff)]
             ##df_err_all_lowpass_stationarity[station]=df_fft_stationarity[str(cutoff)]
-        except:
+        except Exception as ex:
+            excludedStations.append(station)
+            message = template.format(type(ex).__name__, ex.args)
             utilities.log.info('FFT failed for stastion {}'.format(station))
+            utilities.log.info('Error Value: Probably the station simply had no data; Skip {}, msg {}'.format(station, message))
 
     utilities.writePickle(df_err_all_lowpass, rootdir=rootdir,subdir='',fileroot='df_err_all_lowpass',iometadata='')
     ##utilities.writePickle(df_err_all_lowpass_stationarity, rootdir=rootdir,subdir='',fileroot='df_err_all_lowpass_stationarity',iometadata='')
@@ -383,17 +374,17 @@ def main(args):
     #stime=''.join(['2017','-12-20 00:00:00'])
     #etime=''.join(['2019','-01-01 00:00:00'])
 
-    stime=''.join(['2018','-01-01 00:00:00'])
-    etime=''.join(['2018','-12-31 18:00:00'])
-
     #stime=''.join(['2018','-01-01 00:00:00'])
-    #etime=''.join(['2018','-05-01 00:00:00'])
+    #etime=''.join(['2018','-12-31 18:00:00'])
 
-    #stime=timein
-    #etime=timeout
+    #stime=''.join(['1979','-01-01 00:00:00'])
+    #etime=''.join(['1979','-05-01 00:00:00'])
 
-    starttime = dt.datetime.strptime(stime,'%Y-%m-%d %H:%M:%S')
-    endtime = dt.datetime.strptime(etime,'%Y-%m-%d %H:%M:%S')
+    stime=timein
+    etime=timeout
+
+    starttime = dt.datetime.strptime(stime,'%Y-%m-%d') #  %H:%M:%S')
+    endtime = dt.datetime.strptime(etime,'%Y-%m-%d') #  %H:%M:%S')
     numDays = (endtime-starttime).days + 1
 
     utilities.log.info('Specified time ranges are {} and {}'.format(starttime, endtime))
@@ -418,6 +409,7 @@ def main(args):
     utilities.log.info('df_err_all times {}'.format(df_err_all.index))
     utilities.log.info('df_err_lowpass times {}'.format(df_err_all_lowpass.index))
     intersect = [value for value in startday if value in df_err_all_lowpass.index] 
+
     utilities.log.info('Residual data: intersect list {}'.format(intersect))
     df_err_all_lowpass_subselect=df_err_all_lowpass.loc[intersect]
 
@@ -425,11 +417,9 @@ def main(args):
     # df_meta and df report stationids as diff types. Yuk.
     # Store the list of filenames into a dict for krig processing
 
-    # Because ADCIRC skips 00Z on the first day, the very first date entry will be skipped 
     subdir='errorfield'
     datadict = dict()
     for index, df in df_err_all_lowpass_subselect.iterrows():
-        print(index)
         metadata='_'+iometa[index]
         df.index = df.index.astype('int64')    
         df_merged=df_meta.join(df)

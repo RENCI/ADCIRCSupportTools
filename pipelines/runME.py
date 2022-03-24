@@ -49,11 +49,69 @@ python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/
 python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/dodsC/2021/nam/2021050412/ec95d/hatteras.renci.org/ec95d-nam-bob-rptest/namforecast/fort.63.nc" --grid 'ec95d' --instanceId 'CLOUD'
 
 # Example of Florence
-python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/dodsC/2018/temp_florence/50/nc_inundation_v9.99_w_rivers/hatteras.renci.org/062018hiresr/nhcConsensus/fort.63.nc" --grid 'nc_inundation_v9.99_w_rivers' --instanceId 'CLOUD'
+python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/dodsC/2018/temp_florence/58/nc_inundation_v9.99_w_rivers/hatteras.renci.org/062018hiresr/nhcConsensus/fort.63.nc" --grid 'nc_inundation_v9.99_w_rivers' --instanceId 'CLOUD'
 
 # Example when not enough nowcasts are avail
 
 python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/dodsC/2018/temp_florence/44/nc_inundation_v9.99_w_rivers/hatteras.renci.org/062018hiresr/nhcConsensus/fort.63.nc" --grid 'nc_inundation_v9.99_w_rivers' --instanceId 'CLOUD'
+
+
+# Example from apsviz2:
+
+python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/dodsC/2021/nam/2021052106/hsofs/hatteras.renci.org/hsofs-nam-bob-2021/namforecast/fort.63.nc" --grid 'hsofs'
+
+
+# A previously failed example
+
+python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/dodsC/2021/nam/2021052318/hsofs/hatteras.renci.org/hsofs-nam-bob-2021/namforecast/fort.63.nc" --grid 'hsofs'
+
+# A recent APSVIZ run where the number of stations seems to have decreased.
+
+python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/dodsC/2021/nam/2021060912/ec95d/hatteras.renci.org/ec95d-nam-bob-postNowcast/namforecast/fort.63.nc" --grid "ec95d"
+
+# Try the new grid.
+
+python execute_APSVIZ_pipeline.py --inputURL "https://fortytwo.cct.lsu.edu/thredds/dodsC/2021/al03/06/LA_v20a-WithUpperAtch_chk/supermic.hpc.lsu.edu/LAv20a_al032021_jgf_23kcms/nhcConsensus/fort.63.nc" --grid "LA_v20a-WithUpperAtch_chk"
+
+python execute_APSVIZ_pipeline.py --inputURL "https://fortytwo.cct.lsu.edu/thredds/dodsC/2021/al03/10/LA_v20a-WithUpperAtch_chk/supermic.hpc.lsu.edu/LAv20a_al032021_jgf_23kcms/nhcConsensus/fort.63.nc" --grid "LA_v20a-WithUpperAtch_chk"
+
+
+python execute_APSVIZ_pipeline.py --inputURL 'http://tds.renci.org:8080/thredds/dodsC/2021/nam/2021072606/nc_inundation_v9.99_w_rivers/hatteras.renci.org/ncv99-nam-bob-2021/namforecast/fort.63.nc'
+
+# Test the uriv18 grid
+
+# A new grid test
+
+python execute_APSVIZ_pipeline.py --grid "uriv18" --inputURL "http://tds.renci.org:8080/thredds/dodsC/2021/nam/2021082000/uriv18/hatteras.renci.org/uriv18-nam-bob-2021/namforecast/fort.63.nc"
+
+# A data set rerun
+
+python execute_APSVIZ_pipeline.py --grid "hsofs" --inputURL "http://tds.renci.org:8080/thredds/dodsC/2021/al08/22/hsofs/hatteras.renci.org/hsofs-al08-bob-2021/nhcOfcl/fort.63.nc"
+
+# 
+
+python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/dodsC/2021/nam/2021060912/ec95d/hatteras.renci.org/ec95d-nam-bob-postNowcast/namforecast/fort.63.nc" --grid "ec95d"
+
+python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/dodsC/2021/nam/2021091712/NCSC_SAB_v1.15/hatteras.renci.org/ncsc115-nam-2021/namforecast/fort.63.nc" --grid "NCSC_SAB_v1.15"
+
+
+python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/dodsC/2021/nam/2021092018/NCSC_SAB_v1.15/hatteras.renci.org/ncsc115-nam-2021/namforecast/maxele.63.nc" --grid "NCSC_SAB_v1.15"
+
+python execute_APSVIZ_pipeline.py --inputURL "http://adcircvis.tacc.utexas.edu:8080/thredds/dodsC/asgs/2021/nam/2021092306/SABv20a/frontera.tacc.utexas.edu/SABv20a_nam_jgf_status/namforecast/fort.63.nc" --grid "SABv20a"
+
+# New test: comparer passing a namforecast vs a nowcast
+
+# Forecast
+python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/dodsC/2022/nam/2022012618/hsofs/hatteras.renci.org/hsofs-nam-bob-2021/namforecast/fort.63.nc" --grid 'hsofs'
+
+# Nowcast 
+python execute_APSVIZ_pipeline.py --inputURL "http://tds.renci.org:8080/thredds/dodsC/2022/nam/2022012618/hsofs/hatteras.renci.org/hsofs-nam-bob-2021/nowcast/fort.63.nc" --grid 'hsofs'
+
+
+
+~                                                                                                                                                                                               
+~             
+
 
 
 

@@ -3,7 +3,8 @@
 # This is a convenience entry to facilitate some basic diagnostic graphing
 
 DEFAULT: &DEFAULT
-  ClampList: "clamp_list_hsofs.dat"
+  ClampList: "water_control_list.dat"
+  ControlList: "land_control_list.dat"
 
 REGRID: &regrid
   InterpToAdcirc: true

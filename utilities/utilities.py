@@ -197,7 +197,11 @@ class Utilities:
             try:
                 os.makedirs(fulldir)
             except OSError:
-                sys.exit("Creation of the directory %s failed" % fulldir)
+                #sys.exit("Creation of the directory %s failed" % fulldir)
+                if not os.path.isdir(fulldir): 
+                    sys.exit("Creation of the directory %s failed" % fulldir)
+                    raise
+                utilities.log.warn('mkdirs reports couldnt make directory. butmight be a race condition that can be ignored')
             #else:
             #    print("Successfully created the directory %s " % fulldir)
         return os.path.join(fulldir, fname)
@@ -307,6 +311,7 @@ class Utilities:
                 if not isinstance(t, list):
                     self.print_dict(t[key], s + 1)
 
+# This has become uglyfied over time.
     def convertTimeseriesToDICTdata(self, df, variables=None, product='WL'):
         """
         Reformat the df data into an APSVIZ dict with Stations as the main key
@@ -334,6 +339,17 @@ class Utilities:
                         dictdata[station].update({variable: {'TIME': cols, product:val}})
                     else:
                         dictdata[station]={variable: {'TIME': cols, product:val}}
+        elif isinstance(variables, str):
+            df_all = df
+            dataall = df_all.T
+            stations = dataall.index
+            cols = dataall.columns.to_list()
+            for station in stations:
+                val = dataall.loc[station].to_list()
+                if station in dictdata.keys():
+                    dictdata[station].update({variables: {'TIME': cols, product:val}})
+                else:
+                    dictdata[station]={variables: {'TIME': cols, product:val}}
         else:
             if variables == None:
                 variables='ADCForecast'

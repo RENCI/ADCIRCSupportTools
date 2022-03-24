@@ -13,9 +13,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-# import matplotlib.ticker as mticker
 import matplotlib
-# from sympy import pretty_print as pp, latex
 import netCDF4
 
 import webbrowser

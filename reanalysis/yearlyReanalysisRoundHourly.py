@@ -24,6 +24,7 @@ from compute_error_field.computeErrorField import computeErrorField
 from utilities.utilities import utilities as utilities
 from visualization.stationPlotter import stationPlotter
 import datetime as dt
+from datetime import timedelta
 
 def buildLocalConfig(n_aveper=4, n_period=24, n_tide=12.42, n_pad=1):
     """
@@ -82,6 +83,8 @@ def exec_adcirc_url(urls, rootdir, iometadata, adc_yamlname, node_idx, station_i
     df.index = df.index.round('60min').to_pydatetime()
     adc.T1 = df.index[0] # Optional update to actual times fetched form ADC
     adc.T2 = df.index[-1]
+    df.dropna(how='all', axis=1)
+    utilities.log.info('ADCIRC: after drop completely empty stations. Remaining is {}'.format(df.shape))
     ADCfile = utilities.writePickle(df, rootdir=rootdir,subdir='',fileroot='adc_wl',iometadata=iometadata)
     print('write new json')
     ADCjson=writeToJSON(df, rootdir, iometadata,fileroot='adc_wl_forecast')
@@ -123,6 +126,29 @@ def exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdi
     #detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ = rpl.fetchOutputNames()
     return detailedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ
 
+def exec_observables_tidalpredictions(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdir, stationFile, knockout=None):
+    utilities.log.info('Fetching HOURLY Tidal Predictions WL for observations')
+    rpl = GetObsStations(product='predictions', iosubdir=iosubdir, rootdir=rootdir, yamlname=obs_yamlname, metadata=iometadata, stationFile=stationFile, knockout=knockout)
+    df_stationNodelist = rpl.fetchStationNodeList()
+    stations = df_stationNodelist['stationid'].to_list()
+    #utilities.log.info('Choose a limited number of stations')
+    #stations = rpl.stationListFromYaml()
+    #
+    utilities.log.info('Grabing station list from OBS YML')
+    df_stationData, stationNodelist = rpl.fetchStationMetaDataFromIDs(stations)
+    df_detailed, count_nan, newstationlist, excludelist = rpl.fetchStationProductFromIDlist(timein, timeout, interval='h')
+    #df_pruned, count_nan, newstationlist, excludelist = rpl.fetchStationSmoothedHourlyProductFromIDlist(timein, timeout)
+    retained_times = df_detailed.index.to_list() # some may have gotten wacked during the smoothing`
+    dummy = rpl.buildURLsForStationPlotting(newstationlist, timein, timeout) # Could also use newstationlist+excludelist
+    outputdict = rpl.writeFilesToDisk(extra='TP')
+    detailedpkl=outputdict['PKLdetailed']
+    detailedJ=outputdict['JSONdetailed']
+    metapkl=outputdict['PKLmeta']
+    metaJ=outputdict['JSONmeta']
+    urlcsv=outputdict['CSVurl']
+    exccsv=outputdict['CSVexclude']
+    return detailedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ
+
 def exec_error(obsf, adcf, meta, local_config, rootdir, iometadata, iosubdir): 
     """
     Build a new config that rangers over the entire time range
@@ -149,6 +175,7 @@ def main(args):
     chosengrid=args.grid
 
     knockout=args.knockout
+    obsfile=args.obsfile
 
     # Get input adcirc url and check for existance
     if args.urljson != None:
@@ -224,16 +251,34 @@ def main(args):
     # 3) Setup OBS specific YML-resident values
     utilities.log.info('Fetch Observations')
     #obs_yamlname = os.path.join(os.path.dirname(__file__), '../config', 'obs.ec95d.yml ')
-    obs_yamlname = '/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/config/obs.ec95d.yml'
+    #obs_yamlname = '/projects/sequence_analysis/vol1/prediction_work/ADCIRCSupportTools/ADCIRCSupportTools/config/obs.ec95d.yml'
+    obs_yamlname = obsfile
+    utilities.log.info('OBS file is {}'.format(obs_yamlname))
 
     # Grab time Range and tentative station list from the ADCIRC fetch  (stations may still be filtered out)
     timein = timestart.strftime('%Y%m%d %H:%M')
     timeout = timeend.strftime('%Y%m%d %H:%M')
     utilities.log.info('ADC provided times are {} and {}'.format(timein, timeout))
 
+    # NOAA-COOPS issue if exactly 354 days. See slack channel. Sent email to to Greg Clunies appreox May 21. Never heard back 
+    # If the d.days is 365 days, we can simply ADD a day and request for more info. This will work AND, later on,m the ADCIRC data will be
+    # Timer aligned with the obs data effectively removing the extras. 
+
+    d=(timeend-timestart).days
+    utilities.log.info('Num days in the OBS initial range request {}'.format(d))
+    if d==365:
+        utilities.log.info("Added 1 day to the OBSE data range to get around NOAA_COOPS 365-day BUG")
+        timeend=timeend+timedelta(days=1)
+
+    # Grab time Range and tentative station list from the ADCIRC fetch  (stations may still be filtered out)
+    timein = timestart.strftime('%Y%m%d %H:%M')
+    timeout = timeend.strftime('%Y%m%d %H:%M')
+    utilities.log.info('FINAL times for OBS range are {} and {}'.format(timein, timeout))
+
     # Could also set stations to None
     # Overwrite SMOOTHED data with the hourly data so downstream methods can pick up the filenames
     #detailedpkl, smoothedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ, smoothedJ = exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdir, stationFile)
+
     detailedpkl, metapkl, urlcsv, exccsv, metaJ, detailedJ = exec_observables(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdir, stationFile, knockout=dict_knockout)
     outfiles['OBS_DETAILED_PKL']=detailedpkl
     outfiles['OBS_SMOOTHED_PKL']=detailedpkl
@@ -247,6 +292,18 @@ def main(args):
     outfiles['OBS_METADATA_JSON']=metaJ
     utilities.log.info('Completed OBS: Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {} MetaJ {}, DetailedJ {}, SmoothedJ {}'.format(detailedpkl, detailedpkl, metapkl, urlcsv, exccsv,metaJ, detailedJ, detailedJ))
 
+    # Fetch the NOAA Tidal predictions for each station
+    detailedpklTP, metapklTP, urlcsvTP, exccsvTP, metaJTP, detailedJTP = exec_observables_tidalpredictions(timein, timeout, obs_yamlname, rootdir, iometadata, iosubdir, stationFile, knockout=dict_knockout)
+    outfiles['OBS_DETAILED_TP_PKL']=detailedpklTP
+    outfiles['OBS_SMOOTHED_TP_PKL']=detailedpklTP
+    outfiles['OBS_SMOOTHED_TP_PKL']=detailedpklTP
+    outfiles['OBS_METADATA_TP_PKL']=metapklTP
+    outfiles['OBS_NOAA_COOPS_URLS_TP_CSV']=urlcsvTP
+    outfiles['OBS_EXCLUDED_TP_CSV']=exccsvTP
+    outfiles['OBS_DETAILED_TP_JSON']=detailedJTP
+    outfiles['OBS_SMOOTHED_TP_JSON']=detailedJTP
+    outfiles['OBS_METADATA_TP_JSON']=metaJTP
+    utilities.log.info('Completed Todal Predictions OBS: Wrote Station files: Detailed {} Smoothed {} Meta {} URL {} Excluded {} MetaJ {}, DetailedJ {}, SmoothedJ {}'.format(detailedpklTP, detailedpklTP, metapklTP, urlcsvTP, exccsvTP, metaJTP, detailedJTP, detailedJTP))
 
     # 4) Setup ERR specific YML-resident values
     # utilities.log.info('Error computation NOTIDAL corrections')
@@ -308,6 +365,7 @@ if __name__ == '__main__':
                         help='String: url.')
     parser.add_argument('--grid', default='hsofs',dest='grid', help='Choose name of available grid',type=str)
     parser.add_argument('--knockout', default=None, dest='knockout', help='knockout jsonfilename', type=str)
+    parser.add_argument('--obsfile', default=None, dest='obsfile', help='Full path to chosen OBS yml file', type=str)
     args = parser.parse_args()
     sys.exit(main(args))
 
