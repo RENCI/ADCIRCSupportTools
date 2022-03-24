@@ -27,6 +27,9 @@ RUN conda init bash
 # create the non-root user
 RUN useradd -m -d /home/nru -u 1000 nru
 
+# make sure everything is read/write
+RUN chmod 777 -R /home/nru
+
 # make d directory for the repos and go there
 RUN mkdir /home/nru/repo
 WORKDIR /home/nru/repo
@@ -43,7 +46,17 @@ RUN conda install --yes --file conda_requirements.txt
                                 
 # install the pip requirements
 RUN pip install -r pip_requirements.txt
-                              
+
+# make a temporary directory for the output.
+# this should eventually point a common PV
+RUN mkdir /home/nru/repo/ADCIRCSupportTools/pipelines/temp
+
+# make sure everything is read/write
+RUN chmod 777 -R /home/nru
+
+# switch to the non-root user
+USER nru
+
 # change to the noaa directory
 WORKDIR /home/nru/repo/noaa_coops
 
@@ -52,16 +65,6 @@ RUN python setup.py install --user
                         
 # change to the pipelines directory                        
 WORKDIR /home/nru/repo/ADCIRCSupportTools/pipelines
-
-# make a temporary directory for the output.
-# this should eventually point a common PV
-RUN mkdir temp
-
-# make sure everything is read/write
-RUN chmod 777 -R /home/nru
-
-# switch to the non-root user
-USER nru
 
 # set the python path
 ENV PYTHONPATH=/home/nru/repo/ADCIRCSupportTools
