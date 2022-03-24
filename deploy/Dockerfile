@@ -24,8 +24,8 @@ RUN conda update conda && \
 # tell conda what the shell is
 RUN conda init bash
 
+# create the non-root user
 RUN useradd -m -d /home/nru -u 1000 nru
-RUN chmod 777 /home/nru
 
 # make d directory for the repos and go there
 RUN mkdir /home/nru/repo
@@ -35,7 +35,7 @@ WORKDIR /home/nru/repo
 RUN git clone https://github.com/RENCI/ADCIRCSupportTools.git
 RUN git clone https://github.com/GClunies/noaa_coops.git
                
-# move to the install directory
+# move to the deploy directory
 WORKDIR /home/nru/repo/ADCIRCSupportTools/deploy
 
 # install the conda requirements
@@ -57,8 +57,10 @@ WORKDIR /home/nru/repo/ADCIRCSupportTools/pipelines
 # this should eventually point a common PV
 RUN mkdir temp
 
+# make sure everything is read/write
 RUN chmod 777 -R /home/nru
 
+# switch to the non-root user
 USER nru
 
 # set the python path
