@@ -10,12 +10,18 @@
 ## Also assume we need to reconnect each month
 
 import os,sys
+import numpy as np
 import pandas as pd
 import time as tm
 import cdsapi
+import netCDF4 as nc
+import xarray as xr
+import dask
 from argparse import ArgumentParser
 from utilities.utilities import utilities
 from requests.exceptions import ConnectionError,Timeout,HTTPError
+
+# Apply reducr expver to a regular datset. ValueError
 
 ###############################################################################
 # Need this if going for the data < 1979.
@@ -42,9 +48,24 @@ def wrap_retrieve(config, filename):
 #monthList = ['01','02','03','04','05','06','07','08','09','10','11','12']
 
 #basedirExtra='ERA5' # Will build results into a rootdir = $RUNTIMEDSIR/ERA5
-
 #subdir=year will push a year of monthlies into $RUNTIMEDSIR/ERA5/year
 
+def combine_era5_and_era5T_data(infilename):
+    """
+    """
+    # reduce didnt work
+    # Try first converting to netrcdf then writing USING netcdf
+    # d2_nc = nc.Dataset('test_d2_rawNC.nc',mode='w',format='NETCDF4_CLASSIC') 
+    try:
+        data = xr.open_mfdataset(infilename,combine='by_coords')
+        data_combine = data.sel(expver=1).combine_first(data.sel(expver=5))
+        data_combine.load()
+        utilities.log.info('Detected mixed ERA5/ERA5T type dataset. Performing a reduction and overwriting the file {}'.format(infilename))
+        data_combine.to_netcdf(infilename+'.ERA5newreduced')
+    except Exception as e:
+        print('Mixed data test failed: Prob a regular ERA5 data set: skip overwrite {}'.format(e))
+    # Needs DASK in the environment
+    
 def main(args):
     #subdir='ERA5' # Leave it blank
 
@@ -52,6 +73,12 @@ def main(args):
     if testyear != None:
         utilities.log.info('Overriding year value to {}'.format(testyear))
     
+    # Get basic runtime info
+    config = utilities.load_config() # Defaults to main.yml as specified in the config
+    # Get fetch characteristics
+    cds_yaml = os.path.join(os.path.dirname(__file__), "../config/", "cds.yml")
+    cds_config = utilities.load_config(cds_yaml)
+
     month = args.month
     if month != None:
         utilities.log.info('Overriding month value to {}'.format(month))
@@ -64,12 +91,6 @@ def main(args):
 
     utilities.log.info("CDS retriever in {}.".format(os.getcwd()))
     
-    # Get basic runtime info
-    config = utilities.load_config() # Defaults to main.yml as specified in the config
-    # Get fetch characteristics
-    cds_yaml = os.path.join(os.path.dirname(__file__), "../config/", "cds.yml")
-    cds_config = utilities.load_config(cds_yaml)
-
     print('Before any overrides: Config {}'.format(cds_config))
 
     # We assume a single years worth of data in a subdirectory of monthlies
@@ -98,6 +119,8 @@ def main(args):
         #outfilename =  utilities.getSubdirectoryFileName(rootdir, subdir, '_'.join([month,'download_wind.nc']))
         outfilename =  utilities.getSubdirectoryFileName(rootdir, subdir, '.'.join([month,'nc']))
         wrap_retrieve(single_config, outfilename) 
+        print('TRY a REDUCE')
+        combine_era5_and_era5T_data(outfilename)
         utilities.log.info('Wrote file {} to disk'.format(outfilename))
     
     utilities.log.info('Total CDS fetch and write time is {}'.format(tm.time()-t0))
