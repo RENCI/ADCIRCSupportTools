@@ -25,4 +25,5 @@ STATIONS: &stations
   NCSC_SAB_V1.15: "NCSC115_stations_V1.0.csv" 
   NCSC_SAB_V1.20: "NCSC120_stations_V1.0.csv"
   NCSC_SAB_V1.22: "NCSC122_stations_V1.0.csv"
+  NCSC_SAB_V1.23: "NCSC123_stations_V1.0.csv"
   SABV20A: "SABv20a_stations_V1.0.csv"
