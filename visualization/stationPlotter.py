@@ -215,7 +215,7 @@ class stationPlotter(object):
             df_concat = pd.concat(listdfs,axis=1)
             new_variables = df_concat.columns.to_list()
             # A per-station plot
-            fig = plt.figure(figsize=(6, 2))
+            fig = plt.figure(figsize=(6, 4))
             self.addPlot(fig, stationName, station, df_concat, new_variables)
             #self.metajsonname = utilities.getSubdirectoryFileName(self.rootdir, self.iosubdir, 'obs_wl_metadata'+self.iometadata+'.json')
             pngfile = utilities.getSubdirectoryFileName(self.rootdir, self.iosubdir, station+self.iometadata+'_WL.png')
